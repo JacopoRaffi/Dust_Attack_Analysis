@@ -39,7 +39,7 @@ def filter_SD(src, dst, dstSD, ids):
     #line = infos':'inputs':'outputs
     for line in src:
         tx = line.split(':')
-        if((not is_SD(tx[1], ids)) and (not is_SD(tx[2], ids))):
+        if((not is_SD(tx[1], ids))): #filter Tx with Satoshi Dice as Input
             dst.write(line)
             global counter_notSD
             counter_notSD += 1
@@ -68,7 +68,7 @@ def main():
     filter(source, txDust)
     source.close()
     txDust.close()
-    print("Total txDust = %d" %counter)
+    print("Total txDust: %d" %counter)
 
     txDust = open("../txDust.txt", 'r')
     sd_file = open("../dust_SD.txt", 'w+')
@@ -77,6 +77,9 @@ def main():
     identifiers_SD = ID_SD(fileMap)
 
     filter_SD(txDust, notSD_file, sd_file, identifiers_SD)
+    print("Total SD Tx: %d", counter_sd)
+    print("Total not_SD Tx: %d", counter_notSD)
+
 
 if __name__ == "__main__":
     main()

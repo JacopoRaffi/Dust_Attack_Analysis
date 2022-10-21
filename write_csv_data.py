@@ -20,8 +20,8 @@ def writeData(dstI, dstO, src):
 
 
 def main():
-    csv_in = open("../inputs.csv", 'w+')
-    csv_out = open("../outputs.csv", 'w+')
+    csv_in = open("../data_csv/inputs.csv", 'w+')
+    csv_out = open("../data_csv/outputs.csv", 'w+')
     fileInput = open("../dust_notSD.txt", 'r')
 
     writerIn = csv.writer(csv_in)
