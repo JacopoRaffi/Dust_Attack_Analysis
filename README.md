@@ -7,6 +7,6 @@ TODO: \
   b- Classificare le Tx in:\
         1- Possibile vittima di Attacco di Successo(dust speso con almeno due indirizzi diversi)\
         2- Attacco fallito(Output speso con stesso indirizzo)\
-        3- Dust collector(anche questo fallito) perchè dust tutto in fee\
+        3- Dust collector(anche questo fallito) perchè dust tutto in fee
   
-  c- Vedere il dust speso come viene speso, NOD o OD(Stile matteo Loporchio)\
+  c- Vedere il dust speso come viene speso, NOD o OD(Stile matteo Loporchio)
