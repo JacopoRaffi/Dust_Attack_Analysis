@@ -11,10 +11,6 @@ def main():
     inputs = pd.read_csv("../data_csv/inputs_dust.csv.xz", sep=',', header=0, compression='xz')
     spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
     unspent = pd.read_csv("../data_csv/unspent_dust.csv.xz", sep=',', header=0, compression='xz')
-
-    print("Outputs: ", len(outputs))
-    print("Spent: ", len(spent))
-    print("UNspent: ", len(unspent))
     
     outputs = outputs[outputs['amount'] != 0]
     outputs = outputs[outputs['script'] != 4]
@@ -34,10 +30,9 @@ def main():
             bins.append(datetime.date(y, m, 1))
     hist_bins = mdates.date2num(bins)
 
-    fig = plt.figure(figsize=(10,4))
-
-    ax1 = fig.add_subplot(1, 2, 1)
-    ax1.set_title('Output Generation')
+    fig = plt.figure()
+    ax1 = fig.add_subplot()
+    ax1.set_title('Dust Creation')
     ax1.set_xlabel('Year')
     ax1.set_ylabel('N. of outputs')
     ax1.set_yscale('log')
@@ -45,18 +40,8 @@ def main():
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
     ax1.hist(out, bins=hist_bins, color='green', label='Dust Generated', edgecolor='black', linewidth=0.1)
     ax1.legend(loc='upper left')
-
-    ax2 = fig.add_subplot(1, 2, 2)
-    ax2.set_title('Output Generation')
-    ax2.set_xlabel('Year')
-    ax2.set_ylabel('N. of outputs')
-    ax2.set_yscale('log')
-    ax2.xaxis.set_major_locator(mdates.YearLocator())
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-    ax2.hist(sp, bins=hist_bins, color='blue', label='Dust Spent', edgecolor='black', linewidth=0.1)
-    ax2.legend(loc='upper left')
     
-    #plt.show()
+    plt.show()
     return 0
 
 if __name__ == "__main__":
