@@ -1,7 +1,7 @@
 # Dust-Attack-Analysis
 Python scripts made to analyze "Dust attack" on Bitcoin network(from 2010 to 2021)
 
-TODO:
+TODO: 
   a- Tabella per vedere quanto dust è stato speso ogni anno
   
   b- Classificare le Tx in:
