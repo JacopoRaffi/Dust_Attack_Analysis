@@ -8,8 +8,11 @@ def main():
     
     figure, axi = plt.subplots(1, 2)
 
-    datiIn.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, ax=axi[0], title='Distribuzione Numero di Input', edgecolor='black', linewidth=0.2)
-    datiOut.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, color='green', ax=axi[1], title='Distribuzione Numero di Output', edgecolor='black', linewidth=0.2)
+    ax = datiIn.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, ax=axi[0], title='Distribuzione Numero di Input', edgecolor='black', linewidth=0.2)
+    ax1 = datiOut.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, color='green', ax=axi[1], title='Distribuzione Numero di Output', edgecolor='black', linewidth=0.2)
+
+    ax.set_ylabel("N. of inputs")
+    ax1.set_ylabel("N. of outputs")
 
     plt.show()
 
