@@ -1,0 +1,31 @@
+RISULTATI TESI DUST ATTACK:
+
+Punto 1: Tx dust totali 2 114 335
+
+Punto 2: Check fatto
+
+Punto 3:
+	Total input_SD Tx: 1 465 295
+	Total input_not_SD Tx: 649 040
+
+Punto 4:
+	Totale Input:  8 594 633
+	Totale Output:  5 206 291
+	Totale Output dust:  2 893 877
+		Spent(Totale Input dust):  1 402 893 (48.5 %)
+		Unspent:  1 490 984 (51.5 %)
+	Vedere grafici distribuzione Input e Output
+	Vedere grafici distribuzione Input e Output dust
+	Vedere grafico distribuzione creazione dust
+	
+Punto 5: 
+	Tx totali in cui viene speso il dust non proveniente da Satoshi Dice: 263 963
+	Classificazione Transazioni:
+		attacco di successo: 166 906
+		attacco fallito: 97 040
+		speciali: 17 
+	Analisi di ogni anno:
+	         2010  2011  2012   2013   2014   2015  2016  2017  2018  2019  2020  2021
+	success     3   206  6741  82702  49499  20155  3476  4124     0     0     0     0
+	failed      0    16  5390  38199  38919  11095  2066  1355     0     0     0     0
+	special     0     0     0      3      6      5     2     1     0     0     0     0
