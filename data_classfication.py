@@ -1,103 +1,70 @@
 import pandas as pd
 from datetime import datetime
+import matplotlib.pyplot as plt
 
-classes = {}
+categories = {}
 # key = year, value = [success, failed, special]
+# 0->sucess; 1->failed; 2->special(dust collecting or other) 
 
-def isDust(in_out: str) -> bool:
-    if (in_out != ''): #check if string is not empty
-        for input in in_out.split(';'):
-            values = input.split(',')
-            amount = int(values[1])
-            if(amount >= 1 and amount <= 545): #check if is dust
-                return True
-        return False      
-    return False
-
-#infos := timestamp','blockId','txId','isCoinbase','fee','approxSize
-#inputs := 0 or more input semicolon';' separated where input := addrId','amount','prevTxSpending',' position_of_output_in_prevTxSpending
-#outputs := 1 or more output semicolon';' separated where output := addrId','amount',' scriptType
-def tx_category(infos, inputs, sd_txs):
-    addresses = set([])
-    fee = int(infos[4]) #to check if tx is dust collecting
-    tot_import = 0
-
-    for input in inputs.split(";"):
-        values = input.split(",")
-        addr = int(values[0])
-        prevTxId = int(values[2])
-        if(prevTxId not in sd_txs): #i ignore dust from Satoshi Dice
-            addresses.add(addr)
-        amount = int(values[1])
-        tot_import += amount
-
-    #0->sucess; 1->failed; 2->special(dust collecting or other)  
-
-    if(len(addresses) == 0):
-        return -1
-
-    if(fee == tot_import):
-        return 2
-    
-    if(len(addresses) == 1):
-        return 1
-
-    return 0
-
-def classification(file, sd_txs):
+# tx where all input become fee
+def special_tx(file):
+    sp_tx = []
     for line in file:
         fields = line.split(":")
-        infos = fields[0].split(",")
-        timestamp = int(infos[0])
-        year = datetime.fromtimestamp(timestamp).year
-        outputs = fields[2]
+        txid = int(fields[0].split(",")[2])
         inputs = fields[1]
-        if(len(inputs.split(";")) > 1 and isDust(inputs)):
-            index = tx_category(infos, inputs, sd_txs)
-            if(index != -1):
-                classes[year][index] += 1
+        fee = int(fields[0].split(",")[4])
+        if(len(inputs.split(";")) > 1):
+            tot_amount = 0
+            for input in inputs.split(";"):
+                tot_amount += int(input.split(",")[1])
+            
+            if(tot_amount == fee):
+                sp_tx.append(txid)
     
-def ID_SD(file_src) -> list:
-    id = []
-    for line in file_src:
-        fields = line.split(",")
-        id.append(int(fields[1]))
-    
-    return id 
+    return sp_tx 
+
+def classification(inputs, spent, tx_sp=[]):
+    for year in range(2010, 2022):
+        sp = spent[spent.spentTimestamp == year] #all data in one year 
+        txs = set(sp['spentTxId'].to_list()) #take all txs in a set(to avoid repetition)
+        
+        inp = inputs[inputs.TxId.isin(txs)] # all tx with at least one dust input not from Satoshi Dice
+        inp = inp[~inp.TxId.isin(tx_sp)] #avoid special Tx checked before
+        inp = inp.groupby("TxId").agg({'addrId':'nunique'})
+
+        categories[year][0] += len(inp[inp.addrId >= 2]) #success
+        categories[year][1] += len(inp[inp.addrId == 1]) #failed
 
 def main():
     #intialize dict for temporal statistics
     for i in range(2010, 2022):
-        classes[i] = [0, 0, 0]
+        categories[i] = [0, 0, 0]
     
-    fileMap = open("../SDtoID.txt", 'r')
-    identifiers_SD = ID_SD(fileMap)
-    sd = pd.read_csv("../data_csv/inputs_SD.csv.xz", sep=',', header=0, compression='xz')
-    sd = sd[sd.addrId.isin(identifiers_SD)]
-    sd_txs = set(sd['TxId'].to_list())#all TxId with SD as input
-    
-    file = open("../dust_notSD.txt", 'r')
-    #classification(file, sd_txs)
-    tot_0 = 0
-    tot_1 = 0
-    tot_2 = 0
-
-    for year in classes:
-        tot_0 += classes[year][0]
-        tot_1 += classes[year][1]
-        tot_2 += classes[year][2]
-    
-    print("Tx totali in cui viene speso il dust: ", tot_0 + tot_1 + tot_2)
-    print("Attacco di successo: ", tot_0)
-    print("Attacco fallito: ", tot_1)
-    print("Transazioni speciali: ", tot_2)
-
+    inputs = pd.read_csv("../data_csv/inputs.csv.xz", sep=',', header=0, compression='xz')
     spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
-    sp = spent.groupby("spentTxId").count()
-    print("LEN: ", len(spent.groupby("spentTxId").count()))
-    print(len(sp[sp.addrId == 1]))
-    print(len(sp[sp.addrId > 1]))
+    file = open("../txDust.txt", 'r')
+    tx_sp = special_tx(file)
+    
+    #change timestamp to year to analyze every year what happens
+    spent["spentTimestamp"] = spent['spentTimestamp'].apply(lambda t : datetime.fromtimestamp(t))
+    spent["spentTimestamp"] = spent['spentTimestamp'].apply(lambda y : y.year)
+    inputs["timestamp"] = inputs['timestamp'].apply(lambda t : datetime.fromtimestamp(t))
+    inputs["timestamp"] = inputs['timestamp'].apply(lambda y : y.year)
 
+    txs = set(spent['spentTxId'].to_list())
+    df = inputs[inputs.TxId.isin(txs)].groupby("TxId").count()
+    print("Transazioni, con almeno 2 input, in cui viene speso il dust: ", len(df))
+    classification(inputs, spent, tx_sp)
+
+    for tx in tx_sp:
+        year = inputs[inputs.TxId == tx]['timestamp'].values[0]
+        categories[year][2] += 1
+
+    datafr = pd.DataFrame.from_dict(categories, orient='index')
+    datafr = datafr.rename(columns={0:'successo', 1:'fallimento', 2:'speciale'})
+    datafr.plot(use_index=True, y=["successo", "fallimento", "speciale"], kind="bar",figsize=(9,8), title="Uso del dust nel tempo", logy=True)
+    plt.show()
 
     return 0
 
