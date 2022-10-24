@@ -17,7 +17,7 @@ def isDust(in_out: str) -> bool:
 #infos := timestamp','blockId','txId','isCoinbase','fee','approxSize
 #inputs := 0 or more input semicolon';' separated where input := addrId','amount','prevTxSpending',' position_of_output_in_prevTxSpending
 #outputs := 1 or more output semicolon';' separated where output := addrId','amount',' scriptType
-def tx_category(infos, inputs, outputs):
+def tx_category(infos, inputs, sd_txs):
     addresses = set([])
     fee = int(infos[4]) #to check if tx is dust collecting
     tot_import = 0
@@ -25,11 +25,17 @@ def tx_category(infos, inputs, outputs):
     for input in inputs.split(";"):
         values = input.split(",")
         addr = int(values[0])
-        addresses.add(addr)
+        prevTxId = int(values[2])
+        if(prevTxId not in sd_txs): #i ignore dust from Satoshi Dice
+            addresses.add(addr)
         amount = int(values[1])
         tot_import += amount
 
-    #0->sucess; 1->failed; 2->special(dust collecting or other)    
+    #0->sucess; 1->failed; 2->special(dust collecting or other)  
+
+    if(len(addresses) == 0):
+        return -1
+
     if(fee == tot_import):
         return 2
     
@@ -38,7 +44,7 @@ def tx_category(infos, inputs, outputs):
 
     return 0
 
-def classification(file):
+def classification(file, sd_txs):
     for line in file:
         fields = line.split(":")
         infos = fields[0].split(",")
@@ -47,18 +53,31 @@ def classification(file):
         outputs = fields[2]
         inputs = fields[1]
         if(len(inputs.split(";")) > 1 and isDust(inputs)):
-            index = tx_category(infos, inputs, outputs)
-            classes[year][index] += 1
+            index = tx_category(infos, inputs, sd_txs)
+            if(index != -1):
+                classes[year][index] += 1
     
-
+def ID_SD(file_src) -> list:
+    id = []
+    for line in file_src:
+        fields = line.split(",")
+        id.append(int(fields[1]))
+    
+    return id 
 
 def main():
     #intialize dict for temporal statistics
     for i in range(2010, 2022):
         classes[i] = [0, 0, 0]
-
+    
+    fileMap = open("../SDtoID.txt", 'r')
+    identifiers_SD = ID_SD(fileMap)
+    sd = pd.read_csv("../data_csv/inputs_SD.csv.xz", sep=',', header=0, compression='xz')
+    sd = sd[sd.addrId.isin(identifiers_SD)]
+    sd_txs = set(sd['TxId'].to_list())#all TxId with SD as input
+    
     file = open("../dust_notSD.txt", 'r')
-    classification(file)
+    #classification(file, sd_txs)
     tot_0 = 0
     tot_1 = 0
     tot_2 = 0
@@ -72,6 +91,13 @@ def main():
     print("Attacco di successo: ", tot_0)
     print("Attacco fallito: ", tot_1)
     print("Transazioni speciali: ", tot_2)
+
+    spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
+    sp = spent.groupby("spentTxId").count()
+    print("LEN: ", len(spent.groupby("spentTxId").count()))
+    print(len(sp[sp.addrId == 1]))
+    print(len(sp[sp.addrId > 1]))
+
 
     return 0
 
