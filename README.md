@@ -9,4 +9,3 @@ TODO: \
         2- Attacco fallito(Output speso con stesso indirizzo)\
         3- Dust collector(anche questo fallito) perchè dust tutto in fee
   
-  c- Vedere il dust speso come viene speso, NOD o OD(Stile matteo Loporchio)
