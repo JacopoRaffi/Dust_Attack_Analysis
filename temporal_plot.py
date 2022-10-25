@@ -32,13 +32,13 @@ def main():
 
     fig = plt.figure()
     ax1 = fig.add_subplot()
-    ax1.set_title('Dust Creation')
-    ax1.set_xlabel('Year')
+    ax1.set_title('Creazione dust')
+    ax1.set_xlabel('Anno')
     ax1.set_ylabel('N. of outputs')
     ax1.set_yscale('log')
     ax1.xaxis.set_major_locator(mdates.YearLocator())
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-    ax1.hist(out, bins=hist_bins, color='green', label='Dust Generated', edgecolor='black', linewidth=0.1)
+    ax1.hist(out, bins=hist_bins, color='green', label='Dust Generato', edgecolor='black', linewidth=0.1)
     ax1.legend(loc='upper left')
     
     plt.show()
