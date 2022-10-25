@@ -34,3 +34,19 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+code to use with all dataset
+inputs_mod = inputs[['txId', 'blockId', 'timestamp', 'prevTxId', 'address', 'amount', 'prevTxOffset']]
+inputs_mod = inputs_mod.rename(columns = {'TxId':'spentTxId', 'blockId':'spentBlock', 'timestamp':'spentTimestamp', 'prevTxId':'TxId', 'prevTxOffset':'offset'})
+inputs_mod.head()
+result = pd.merge(outputs, inputs_mod, on=['TxId', 'addrId', 'amount', 'offset'], how='left', indicator=False)
+result['spentTxId']=result['spentTxId'].fillna(-1).astype(int)
+result['spentBlock']=result['spentBlock'].fillna(-1).astype(int)
+result['spentTimestamp']=result['spentTimestamp'].fillna(-1).astype(int)
+result.head()
+spent = result[result.spentTxId != -1]
+unspent = result[result.spentTxId == -1]
+unspent.to_csv('dust/unspent_dust.csv', index=False)
+unspent.head()
+"""
