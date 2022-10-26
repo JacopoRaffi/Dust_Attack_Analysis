@@ -25,13 +25,13 @@ def special_tx(file):
     return sp_tx 
 
 def classification(inputs, spent, tx_sp=[]):
-     #file_txs = open("../tx_spent_dust.txt", 'w+')
+    #file_txs = open("../tx_spent_dust.txt", 'w+')
+    txs = set(spent['spentTxId'].to_list()) #take all txs in a set(to avoid repetition)
+    inputs = inputs[inputs.TxId.isin(txs)] # all tx with at least one dust input not from Satoshi Dice
+    inputs = inputs[~inputs.TxId.isin(tx_sp)] #avoid special Tx checked before
+    
     for year in range(2010, 2022):
-        sp = spent[spent.spentTimestamp == year] #all data in one year 
-        txs = set(sp['spentTxId'].to_list()) #take all txs in a set(to avoid repetition)
-        
-        inp = inputs[inputs.TxId.isin(txs)] # all tx with at least one dust input not from Satoshi Dice
-        inp = inp[~inp.TxId.isin(tx_sp)] #avoid special Tx checked before
+        inp = inputs[inputs.timestamp == year] #all data in one year 
         inp = inp.groupby("TxId").agg({'addrId':'nunique'})
         
         categories[year][0] += len(inp[inp.addrId >= 2]) #success
@@ -65,7 +65,8 @@ def main():
     for tx in tx_sp:
         year = spent[spent.spentTxId == tx]['spentTimestamp'].values[0]
         categories[year][2] += 1
-
+    
+    print(categories)
     datafr = pd.DataFrame.from_dict(categories, orient='index')
     datafr = datafr.rename(columns={0:'Almeno due indirizzi', 1:'Un indirizzo', 2:'speciale'})
     datafr.plot(use_index=True, y=["Almeno due indirizzi", "Un indirizzo", "speciale"], kind="bar",figsize=(9,8), title="Uso del dust nel tempo", logy=True)

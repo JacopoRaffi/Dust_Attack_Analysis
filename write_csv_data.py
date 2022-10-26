@@ -27,10 +27,7 @@ def main():
     writerIn = csv.writer(csv_in)
     writerOut = csv.writer(csv_out)
 
-    #addrId','amount','prevTxSpending',' position_of_output_in_prevTxSpending
     headerIn = ['timestamp', 'blockId', 'TxId', 'addrId', 'amount', 'prevTxId', 'offset']
-
-    #outputs := 1 or more output semicolon';' separated where output := addrId','amount',' scriptType
     headerOut = ['timestamp', 'blockId', 'TxId', 'addrId', 'amount', 'script']
 
     writerIn.writerow(headerIn)
