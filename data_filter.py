@@ -8,8 +8,8 @@ counter_notSD = 0
 #outputs := 1 or more output semicolon';' separated where output := addrId','amount',' scriptType
 def isDust(in_out: str) -> bool:
     if (in_out != ''): #check if string is not empty
-        for input in in_out.split(';'):
-            values = input.split(',')
+        for fields in in_out.split(';'):
+            values = fields.split(',')
             amount = int(values[1])
             if(amount >= 1 and amount <= 545): #check if is dust
                 return True
@@ -18,8 +18,8 @@ def isDust(in_out: str) -> bool:
 
 def is_SD(in_out, ids:list) -> bool:
     if (in_out != ''): #check if string is not empty
-        for input in in_out.split(';'):
-            values = input.split(',')
+        for fields in in_out.split(';'):
+            values = fields.split(',')
             addrID = int(values[0])
             if(addrID in ids): #check if is SD
                 return True

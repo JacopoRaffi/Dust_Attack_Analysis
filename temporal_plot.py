@@ -3,24 +3,12 @@ import datetime
 import matplotlib.pyplot as plt  
 import matplotlib.dates as mdates
 
-
-#TODO fare istogramma(sovrapposto al primo istogramma) dei dust bruciati(non spesi)
-      # nel secondo pezzo mettici istogramma output spesi
 def main():
     outputs = pd.read_csv("../data_csv/outputs_dust.csv.xz", sep=',', header=0, compression='xz')
-    inputs = pd.read_csv("../data_csv/inputs_dust.csv.xz", sep=',', header=0, compression='xz')
-    spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
-    unspent = pd.read_csv("../data_csv/unspent_dust.csv.xz", sep=',', header=0, compression='xz')
-    
-    outputs = outputs[outputs['amount'] != 0]
-    outputs = outputs[outputs['script'] != 4]
-    inputs = inputs[inputs.amount != 0]
 
     #grafico dust generati nel tempo(dust spendibile)
     outputs['timestamp'] = outputs['timestamp'].apply(lambda t : datetime.datetime.fromtimestamp(t))
-    spent['timestamp'] = spent['timestamp'].apply(lambda t : datetime.datetime.fromtimestamp(t))
     out = mdates.date2num(outputs['timestamp'].values)
-    sp = mdates.date2num(spent['timestamp'].values)
 
     years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
     months = [i for i in range(1, 12+1, 3)]
