@@ -25,7 +25,7 @@ def special_tx(file):
     return sp_tx 
 
 def classification(inputs, spent, tx_sp=[]):
-    file_txs = open("../tx_spent_dust.txt", 'w+')
+     #file_txs = open("../tx_spent_dust.txt", 'w+')
     for year in range(2010, 2022):
         sp = spent[spent.spentTimestamp == year] #all data in one year 
         txs = set(sp['spentTxId'].to_list()) #take all txs in a set(to avoid repetition)
@@ -36,10 +36,10 @@ def classification(inputs, spent, tx_sp=[]):
         
         categories[year][0] += len(inp[inp.addrId >= 2]) #success
         categories[year][1] += len(inp[inp.addrId == 1]) #failed
-        for tx_spent in inp[inp.addrId >= 2].index.to_list(): #save in a file all tx with at least two inputs(for future analysis)
-            file_txs.write("%s\n" %tx_spent)
+        #for tx_spent in inp[inp.addrId >= 2].index.to_list(): #save in a file all tx with at least two inputs(for future analysis)
+         #   file_txs.write("%s\n" %tx_spent)
 
-    file_txs.close()
+    #file_txs.close()
 
 def main():
     #intialize dict for temporal statistics
@@ -63,7 +63,7 @@ def main():
     classification(inputs, spent, tx_sp)
 
     for tx in tx_sp:
-        year = inputs[inputs.TxId == tx]['timestamp'].values[0]
+        year = spent[spent.spentTxId == tx]['spentTimestamp'].values[0]
         categories[year][2] += 1
 
     datafr = pd.DataFrame.from_dict(categories, orient='index')
