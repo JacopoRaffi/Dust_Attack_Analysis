@@ -10,7 +10,7 @@ def collect_tx(filename):
             txs.append(tx)
     return txs
 
-def classify_failed(df):
+def classify(df):
     df_t = df[df.amount > 545]
     txs_nod = set(df_t['TxId'].to_list())
     tot = len(set(df['TxId'].to_list()))
@@ -19,6 +19,7 @@ def classify_failed(df):
     print("OD: ", len(set(df['TxId'].to_list())) - len(txs_nod)) #OD = TOTAL - NOD
 
 def classify_special(df):
+    classify(df)
     return 0
 
 
@@ -36,7 +37,7 @@ def main():
     inp_failed = inputs[inputs.TxId.isin(sp['spentTxId'].to_list())]
     inp_special = inputs[inputs.TxId.isin(tx_sp)]
 
-    classify_failed(inp_failed)
+    #classify(inp_failed)
     classify_special(inp_special)
 
     return 0
