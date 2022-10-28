@@ -11,11 +11,11 @@ def main():
     
     figure, axi = plt.subplots(1, 2)
 
-    ax = inputs.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, ax=axi[0], title='Distribuzione Numero di Input', edgecolor='black', linewidth=0.2)
-    ax1 = outputs.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, color='green', ax=axi[1], title='Distribuzione Numero di Output', edgecolor='black', linewidth=0.2)
+    ax = inputs.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, ax=axi[0], title='Distribuzione Numero di Input Dust', edgecolor='black', linewidth=0.2)
+    ax1 = outputs.groupby('TxId').count()['addrId'].plot.hist(bins=100, logy=True, color='green', ax=axi[1], title='Distribuzione Numero di Output Dust', edgecolor='black', linewidth=0.2)
 
-    ax.set_ylabel("N. of inputs")
-    ax1.set_ylabel("N. of outputs")
+    ax.set_ylabel("N. di Transazioni")
+    ax1.set_ylabel("N. di Transazioni")
 
     plt.show()
 
