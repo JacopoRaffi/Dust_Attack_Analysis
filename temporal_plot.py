@@ -26,7 +26,7 @@ def main():
     ax1.set_yscale('log')
     ax1.xaxis.set_major_locator(mdates.YearLocator())
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-    ax1.hist(out, bins=hist_bins, color='green', label='Dust Generato', edgecolor='black', linewidth=0.1)
+    ax1.hist(out, bins=hist_bins, color='green', edgecolor='black', linewidth=0.1)
     ax1.legend(loc='upper left')
     
     plt.show()
