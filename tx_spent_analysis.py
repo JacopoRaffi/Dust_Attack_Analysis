@@ -10,7 +10,7 @@ def collect_tx(filename):
             txs.append(tx)
     return txs
 
-def classify(df):
+def classify_failed(df):
     df_t = df[df.amount > 545]
     txs_nod = set(df_t['TxId'].to_list())
     tot = len(set(df['TxId'].to_list()))
@@ -18,10 +18,10 @@ def classify(df):
     print("NOD: ", len(txs_nod))
     print("OD: ", len(set(df['TxId'].to_list())) - len(txs_nod)) #OD = TOTAL - NOD
 
-def classify_special(df):
-    classify(df)
+def classify_success(df):
+    #guarda media indirizzi per tx
+    #analizza quanti input dust(media) quanti input non dust(media), quanti indirizzi diversi(media)
     return 0
-
 
 def main():
     #special TxId
@@ -35,10 +35,8 @@ def main():
     inputs = pd.read_csv("../data_csv/inputs.csv.xz", sep=',', header=0, compression='xz')
     inp_succ = inputs[inputs.TxId.isin(tx_success)] 
     inp_failed = inputs[inputs.TxId.isin(sp['spentTxId'].to_list())]
-    inp_special = inputs[inputs.TxId.isin(tx_sp)]
 
-    #classify(inp_failed)
-    classify_special(inp_special)
+    classify_failed(inp_failed)
 
     return 0
 
