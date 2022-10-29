@@ -3,8 +3,6 @@ import pandas as pd
 #TODO
 """
 - attacchi di successo: considera percentuale di address destinatari di dust che NON compaiono per la prima volta on chain per quella transazione
-- Nelle transazioni che generano output dust gurda, per ogni transazione, %speso e dello speso guarda %successo e %fallito 
-- Contare addresses totali, calcolare %vittime successo, %fallimento, %speciale
 """
 
 def collect_tx(filename):
@@ -16,18 +14,17 @@ def collect_tx(filename):
             txs.append(tx)
     return txs
 
-def analyze_spent(addresses):
+def analyze_spent(addresses, spent):
     print("TOT ADDR: ", len(addresses))
-    inputs = pd.read_csv("../data_csv/inputs.csv.xz", sep=',', header=0, compression='xz')
     tx_success = collect_tx("../tx_spent_dust.txt")
     tx_sp = collect_tx("../tx_special.txt")
     spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
     sp = spent[~spent.spentTxId.isin(tx_success)]
     sp = sp[~sp.spentTxId.isin(tx_sp)]
 
-    addr_failed = set(inputs[inputs.TxId.isin(sp['spentTxId'].to_list())]['addrId'].to_list())
-    addr_succ = set(inputs[inputs.TxId.isin(tx_success)]['addrId'].to_list())
-    addr_spec = set(inputs[inputs.TxId.isin(tx_sp)]['addrId'].to_list())
+    addr_failed = set(spent[~spent.spentTxId.isin(tx_success)]['addrId'].to_list())
+    addr_succ = set(spent[spent.spentTxId.isin(tx_success)]['addrId'].to_list())
+    addr_spec = set(spent[spent.spentTxId.isin(tx_sp)]['addrId'].to_list())
 
     only_succ = 0
     only_failed = 0
@@ -95,10 +92,10 @@ def categories(sp, unsp):
     print("BOTH CASES: ", both_set)
 
     print("ONLY SPENT ADDRESSES: ")
-    analyze_spent(addr_os)
+    analyze_spent(addr_os, sp)
 
     print("NOT ONLY SPENT ADDRESSES: ")
-    analyze_spent(addr_both)
+    analyze_spent(addr_both, sp)
 
 
 def main():
