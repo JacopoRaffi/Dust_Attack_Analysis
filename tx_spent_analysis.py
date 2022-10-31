@@ -19,14 +19,17 @@ def classify_failed(df):
     print("OD: ", len(set(df['TxId'].to_list())) - len(txs_nod)) #OD = TOTAL - NOD
 
 def analyze_success(df):
-    tot_addr_dust = 0
-    tot_addr_notDust = 0
-    tot_dust = len(df[df.amount <= 545]) #total input dust
-    tot_notDust = len(df[df.amount > 545]) #total input notDust
-    tot_tx = len(df.groupby("TxId").count()) #number of success transaction
+    df_dust = df[df.amount <= 545]
+    df_nonDust = df[df.amount > 545]
 
-    print("MEDIA INPUT DUST: ", float(tot_dust/tot_tx))
-    print("MEDIA INPUT NOT-DUST: ", float(tot_notDust/tot_tx))
+    print("MEDIA INPUT DUST: ", df_dust.groupby("TxId").count()['addrId'].mean())
+    print("MEDIA INPUT NOT-DUST: ", df_nonDust.groupby("TxId").count()['addrId'].mean())
+    print("MODA GENERALE INPUT: ", df.groupby("TxId").count().mode()['addrId'].iloc[0])
+
+    df_g = df_dust.groupby("TxId").agg({'addrId':'nunique'})
+    df_g_n = df_nonDust.groupby("TxId").agg({'addrId':'nunique'})
+    print("MODA INDIRIZZI NON DUST DIVERSI: ", df_g.mode()['addrId'].iloc[0])
+    print("MODA INDIRIZZI DUST DIVERSI", df_g_n.mode()['addrId'].iloc[0])
     
     return 0
 
@@ -43,7 +46,7 @@ def main():
     inp_succ = inputs[inputs.TxId.isin(tx_success)] 
     inp_failed = inputs[inputs.TxId.isin(sp['spentTxId'].to_list())]
 
-    #classify_failed(inp_failed)
+    classify_failed(inp_failed)
     analyze_success(inp_succ)
 
     return 0
