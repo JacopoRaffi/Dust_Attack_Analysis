@@ -1,9 +1,5 @@
 import pandas as pd
 import sys
-#TODO
-"""
-- attacchi di successo: considera percentuale di address destinatari di dust che NON compaiono per la prima volta on chain per quella transazione
-"""
 
 def collect_tx(filename):
     txs = []

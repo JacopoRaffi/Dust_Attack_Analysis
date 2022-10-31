@@ -10,7 +10,7 @@ def collect_tx(filename):
             txs.append(tx)
     return txs
 
-def classify_failed(df):
+def classify(df):
     df_t = df[df.amount > 545]
     txs_nod = set(df_t['TxId'].to_list())
     tot = len(set(df['TxId'].to_list()))
@@ -21,15 +21,13 @@ def classify_failed(df):
 def analyze_success(df):
     df_dust = df[df.amount <= 545]
     df_nonDust = df[df.amount > 545]
-
-    print("MEDIA INPUT DUST: ", df_dust.groupby("TxId").count()['addrId'].mean())
-    print("MEDIA INPUT NOT-DUST: ", df_nonDust.groupby("TxId").count()['addrId'].mean())
-    print("MODA GENERALE INPUT: ", df.groupby("TxId").count().mode()['addrId'].iloc[0])
-
-    df_g = df_dust.groupby("TxId").agg({'addrId':'nunique'})
-    df_g_n = df_nonDust.groupby("TxId").agg({'addrId':'nunique'})
-    print("MODA INDIRIZZI NON DUST DIVERSI: ", df_g.mode()['addrId'].iloc[0])
-    print("MODA INDIRIZZI DUST DIVERSI", df_g_n.mode()['addrId'].iloc[0])
+    print("MEDIA INPUT: ", df.groupby("TxId").count()['addrId'].mean())
+    print("MODA INPUT: ", df.groupby("TxId").count().mode()['addrId'].iloc[0])
+    dg = df.groupby("TxId").count()
+    dg['amount'] = df[df.amount <= 545].groupby("TxId").count()['amount'] / df.groupby("TxId").count()['amount']
+    print("PERCENTUALE DUST MEDIA: ", dg['amount'].mean()*100)
+    print("MEDIA INDIRIZZI DIVERSI: ", df.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mean())
+    print("MODA INDIRIZZI DIVERSI: ", df.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mode().iloc[0])
     
     return 0
 
@@ -46,7 +44,8 @@ def main():
     inp_succ = inputs[inputs.TxId.isin(tx_success)] 
     inp_failed = inputs[inputs.TxId.isin(sp['spentTxId'].to_list())]
 
-    classify_failed(inp_failed)
+    #classify(inp_failed)
+    #classify(inp_succ)
     analyze_success(inp_succ)
 
     return 0
