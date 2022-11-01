@@ -19,15 +19,19 @@ def classify(df):
     print("OD: ", len(set(df['TxId'].to_list())) - len(txs_nod)) #OD = TOTAL - NOD
 
 def analyze_success(df):
-    df_dust = df[df.amount <= 545]
-    df_nonDust = df[df.amount > 545]
-    print("MEDIA INPUT: ", df.groupby("TxId").count()['addrId'].mean())
-    print("MODA INPUT: ", df.groupby("TxId").count().mode()['addrId'].iloc[0])
-    dg = df.groupby("TxId").count()
-    dg['amount'] = df[df.amount <= 545].groupby("TxId").count()['amount'] / df.groupby("TxId").count()['amount']
-    print("PERCENTUALE DUST MEDIA: ", dg['amount'].mean()*100)
-    print("MEDIA INDIRIZZI DIVERSI: ", df.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mean())
-    print("MODA INDIRIZZI DIVERSI: ", df.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mode().iloc[0])
+    for year in range(2010, 2022):
+        dft = df.copy()
+        dft["timestamp"] = dft['timestamp'].apply(lambda t : datetime.fromtimestamp(t))
+        dft["timestamp"] = dft['timestamp'].apply(lambda y : y.year)
+        dft = dft[dft.timestamp == year]
+        print("ANNO: ", year)
+        print("MEDIA INPUT: ", dft.groupby("TxId").count()['addrId'].mean())
+        print("MODA INPUT: ", dft.groupby("TxId").count().mode()['addrId'].iloc[0])
+        dg = dft.groupby("TxId").count()
+        dg['amount'] = df[df.amount <= 545].groupby("TxId").count()['amount'] / dft.groupby("TxId").count()['amount']
+        print("PERCENTUALE DUST MEDIA: ", dg['amount'].mean()*100)
+        print("MEDIA INDIRIZZI DIVERSI: ", dft.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mean())
+        print("MODA INDIRIZZI DIVERSI: ", dft.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mode().iloc[0])
     
     return 0
 
