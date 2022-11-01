@@ -10,12 +10,10 @@ def main():
     
     dati_in = dust_in.groupby("TxId").count()
     dati_out = dust_out.groupby("TxId").count()
-    hist_bins = np.arange(0, 3100, 50)
+    hist_bins = np.arange(0, 3150, 50)
     
-    print(outputs.head())
-    print(inputs.head())
-
     fig = plt.figure(figsize=(10,10))
+
     ax1 = fig.add_subplot(1, 4, 1) #input dust histogram
     ax1.set_title('Distribuzione Input Dust') 
     ax1.set_xlabel('N. di Input Dust')
@@ -31,12 +29,15 @@ def main():
     
     ax3 = fig.add_subplot(1, 4, 3) #perc inputs
     ax3.margins(0, 0)
-    sd = inputs.groupby('count_tot').mean()['count_dust']
+    sd = inputs.copy()
+    sd['bins'] = pd.cut(sd['count_tot'], bins=hist_bins)
+    sd = sd.groupby('bins').count()['count_dust']
     print(sd)
+    """
     sn = (sd.index.to_series())-sd
     data = pd.DataFrame({'dust':sd,'not-dust':sn})
     data_perc = data.divide(data.sum(axis=1), axis=0)
-    
+    """
     plt.setp(ax2.get_yticklabels(), visible=False)
     #plt.show()
 
