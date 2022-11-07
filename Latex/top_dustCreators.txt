@@ -1,0 +1,78 @@
+TOP DUST CREATOR:
+Addr        Num of Dust Output created speso
+27441709    129579		       9918  
+27424307    122087		       9958
+1140755     119077		       0
+1142417     118907                     0
+10004487     59412                     25362
+11117825     39999		       15295
+10539917     37056		       13967	
+48402754     36031                     29151
+12156326     35881                     14815
+12089451     34402		       13926
+1MaZAHzEFfinRJ2dwK6YtNDfvWMBkiAxDr,1140755 
+18qr2srETSvQq4kP7yBYRqQ4LzmjhtRmcD,1142417
+1CSbBAvjMhscMfyQzVV24RSGffQabMhpK8,10004487
+1AZYFvZCyAuSjT5SWHeRxKMiMJ62tQZ8cS,10539917
+1GCAfZdNjU4ZjQuUKosZ1xcR2SZJK3uCBe,11117825
+1Hb1FsBAhdoLuLh6rgeyTjyRTV9kwyZD5B,12089451
+1EtARH7A3xae3xfTQscDR8afq683dBvYuZ,12156326
+1SochiWwFFySPjQoi2biVftXn8NRPCSQC,27424307 (anni 2014, 2015, 2017)
+1Enjoy1C4bYBr3tN4sMKxvvJDqG8NkdR4Z,27441709
+1BSmartoUnHz32AAdPKcc7cGGC3DiA4RSh,48402754
+
+TX COL MAGGIOR NUMERO DI DUST OUTPUT:(incluso indirizzo compromesso)
+TxId 	Dust Creator	NUm of DUst Output   Speso
+15724664    11732949        3073		
+15724665    11736023        3073                
+17866900    13403951        2936                
+17881715    13403971        2936		
+17881716    13403973        2936		
+17881717    13403981        2936		
+17881718    13403960        2936		
+17901628    13403966        2936		
+17920970    13403961        2936		
+17923787    13403963        2936		
+169q4UdHK9qsYwfR4hso4REX9MGLWTsWk6,11732949
+1JtLz3gXrSBf1wmaB2odewBoXvofsMWToV,11736023
+1LgqrceyBemZQHA8KZTfnVUdAfewyUiYun,13403951 (legato a battery horse staple)
+1BW9B4UxqHLHc7x663e8v9ATMQQr8NPCRN,13403960 (legato a battery horse staple)
+13cSPNzxxBJSNQHPMWQK8DnKWm2FYVhGiH,13403961 (legato a battery horse staple)
+13RDQ3SZ4mNdSD9nipQkExLbiwMt9vy3tW,13403963 (legato a battery horse staple)
+145guTPesDX56uMroQe1rV94g8ZZdGKMa7,13403966 (legato a battery horse staple)
+1L8tT4sYK6jGC2gmnZ2fUp1MXNeQXWEUc6,13403971 (legato a battery horse staple)
+1FhXqjXsQFBsA6uo3LXo3mDHTscH2d5UuQ,13403973 (legato a battery horse staple)
+1CBBUNj114qdqAbjftwmsSDQkXVbcu6ZgX,13403981 (legato a battery horse staple)
+
+TX COL MAGGIOR NUMERO DI DUST OUTPUT:(indirizzo compromesso escluso)
+TxId  dust_creator  num_of_dustOutput		
+15724664    11732949              3073			
+15724665    11736023              3073			
+16307229    12239646              2934			
+243016419   13014786              2892			
+15875476    11873979              2826			
+15734742    5383316               2769			
+15734743    11353827              2769			
+15734744    5383316               2769			
+15734864    11746638              2769			
+16163295    11744942              2769			
+1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG,5383316
+1CFqSRuVWgPJeuNC8FQR2GZF749Ey5WCuP,11353827
+1DzUPzc6mAaccsrLh57LGdtov6mP8K6ef9,11744942
+1CKFhvNUm233ot4KFXwDcoQ7bhbui8cQ2G,11746638
+1Pcm8uR8TG53P5rRhRTSPnHnLBxKYi2M6p,11873979
+19HTzhHeeXhV7j7eVgKKPdjGA1gPSGS6N1,12239646
+1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY,13014786
+
+                                    N. created dust  N. spent dust  Percentage        Id
+Addresses                                                                               
+1BSmartoUnHz32AAdPKcc7cGGC3DiA4RSh            36031          29151   80.905332  48402754
+1CSbBAvjMhscMfyQzVV24RSGffQabMhpK8            59412          25362   42.688346  10004487
+11ohjiVPjtBk3AxXYi6Hu1u1nDy46mnXY             28557          23734   83.110971  47996743
+1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm            25201          21217   84.191104  49087757
+15QwSkSFLGEaENDzRHBDAhQeTzjUT36ESL            22093          19063   86.285249  48983834
+1LaEZpke8tv18YrsrVbg1ZDxkwAogM7AdU            20467          17810   87.018127  48109291
+1GCAfZdNjU4ZjQuUKosZ1xcR2SZJK3uCBe            39999          15295   38.238456  11117825
+1EtARH7A3xae3xfTQscDR8afq683dBvYuZ            35881          14815   41.289262  12156326
+1AZYFvZCyAuSjT5SWHeRxKMiMJ62tQZ8cS            37056          13967   37.691602  10539917
+1Hb1FsBAhdoLuLh6rgeyTjyRTV9kwyZD5B            34402          13926   40.480205  12089451

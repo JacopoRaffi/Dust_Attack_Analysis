@@ -1,0 +1,99 @@
+\chapter{Implementazione}
+%Algoritmi e dati usati per l'analisi dei dati
+Prima di presentare i risultati delle analisi eseguite vorrei mostrare il formato dei dati usati e gli algoritmi utilizzati.\\
+Il codice è stato realizzato in python, versione 3.9.12, distribuzione Anaconda.\\
+Libreria per la realizzazione dei grafici: matplotlib versione 3.5.1\\
+Libreria per le statistiche: Pandas versione 1.5.0\\
+\section{Rappresentazione dei dati}
+Il dataset su cui sono state condotte le analisi è stato ottenuto tramite un filtraggio della blockchain originale, il peso del file testuale contenente il dataset filtrato si aggira intorno ai 40 GB.\\
+Ogni riga del file rappresenta una singola transazione che presenta il seguente formato:
+\textbf{infos:inputs:outputs}.\\ Il campo \textbf{infos} contiene i seguenti dati:
+\begin{itemize}
+    \item timestamp: valore intero, rappresenta il tempo in cui è avvenuta la transazione;
+    \item blockId: valore intero, l'ID del blocco dove è salvata la transazione;
+    \item TxId: valore intero, l'ID della transazione, garantito essere univoco in quanto è un contatore, che vale 1 per la prima transazione e viene incrementato a seguire per le altre;
+    \item fee: valore intero, indica il valore della fee pagata in quella transazione;
+    \item approxSize: valore intero, indica il peso, in byte, approssimato della transazione.
+\end{itemize}
+Il campo \textbf{inputs} contiente gli input della transazione separati da '\textbf{;}'; possono esserci zero o più input.\\
+Ogni input presenta la seguente struttura:
+\begin{itemize}
+    \item addrId: valore intero, rappresenta colui che sta pagando. Il valore numerico è stato assegnato in modo incrementale. L'addrId x è il primo che compare dopo l'addrId (x-1);
+    \item amount: importo, in satoshi, speso dal pagante. Un satoshi equivale a $10^{-8}$ bitcoin; 
+    \item prevTxId: l'ID della transazione in cui l’address pagante ha ricevuto l’importo che sta spendendo;
+    \item offset: intero relativo alla posizione dell’address che sta pagando all’interno degli output della transazione specificata nel punto precedente, in cui il pagante ha ricevuto ciò che sta spendendo.
+\end{itemize}
+L'ultimo campo presenta una struttura pressochè uguale a quella del campo precedente.
+Il campo \textbf{outputs} contiene gli output della transazione separati da '\textbf{;}'; deve esserci almeno un output.\\
+La forma dei singoli output è la seguente:
+\begin{itemize}
+    \item addrId: intero con funzione analoga a quello degli input ma relativo a chi riceve l'importo; 
+    \item amount: importo, in satoshi, che il ricevente incassa;
+    \item script: valore intero, indica il tipo di script utilizzato per quell'importo; sono presenti 5 possibili valori: \\UNKNOWN=0; P2PK=1; P2PKH=2; P2SH=3; RETURN=4;\\ EMPTY=5;
+\end{itemize}
+La figura seguente riassume, su due righe invece che una per motivi di spazio, il metodo, appena enunciato, in cui sono memorizzate le transazioni nel file testuale:
+\begin{mdframed}
+timestamp,blockId,TxId,fee,approxSize:\\addrId,amount,prevTxId,offset[;input]:addrId,amount,script[;output]
+\end{mdframed}
+In seguito un esempio di una transazione presente nel file testuale:
+\begin{mdframed}
+1285666089,82560,121385,0,1000000,258:\\118901,9988099000,121384,0:118890,99,2;118902,9987098901,2
+\end{mdframed}
+La transazione di esempio con TxId 121385, timestamp 1285666089(martedì 28 Settembre 2010) presenta un solo input e due output: un solo addrId pagante, 118901, sta inviando
+bitcoin a due address distinti: 118890 e 118902. L’address pagante
+ha ricevuto i bitcoin che sta spendendo (9988099000 satoshi) nella transazione identificata dall' ID 121384; in essa era il primo output(offset zero). In questo caso, l’addrId 118890 ha ricevuto 99 satoshi, mentre l’addrId 118902 ne ha ricevuti 9987098901, entrambi gli output presentano script 2(script P2PKH). La fee complessiva, differenza tra l'importo totale di input e l'importo totale di output, è pari a zero, vuol dire che tutto l'input viene trasformato in output.\\\\
+Gli input e gli output di ogni transazione, che presenta almeno un input o un output dust, sono stati successivamente salvati in due appositi file csv.\\
+I file presentano la seguente forma:\\
+Input:\\\\
+\begin{tabular}{|r|r|r|r|r|r|r|}
+\toprule
+ timestamp &  blockId &   TxId &  addrId &     amount &  prevTxId &  offset \\
+\bottomrule
+\end{tabular}\\\\
+Output:\\\\
+\begin{tabular}{|r|r|r|r|r|r|}
+\toprule
+ timestamp &  blockId &   TxId &  addrId &     amount &  script \\
+\bottomrule
+\end{tabular}\\\\
+Grazie a questa struttura è stato possibile classificare velocemente gli output in due gruppi distinti, tramite un'operazione stile SQL JOIN. Nel primo gruppo sono salvati gli output spesi, nel secondo quelli non spesi. Le due categorie presentano la medesima struttura:\\\\
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|}
+\toprule
+ tmp &  blockId &   TxId &  script &  addrId &  amount &  spentTxId &  spentBlock &  spentTmp\\
+\bottomrule
+\end{tabular}\\\\
+I primi tre campi sono relativi alla transazione in cui è stato generato l'output mentre gli ultimi tre sono relativi alla transazione dove questo output appare come input, ovvero quando viene speso. AddrId è l'indirizzo che riceve e spende l'importo contenuto nel campo amount.\\\\
+Un esempio di importo non speso è il seguente:\\
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|}
+\toprule
+1285666089 &    82560 & 121385 &  2 &      118890 &       99 &         -1 &          -1 &              -1 \\
+\bottomrule
+\end{tabular}\\\\
+L'indirizzo 118890 ha ricevuto 99 satoshi nella transazione identificata dall' ID 121385 con timestamp 1285666089. Gli ultimi tre campi contengono il valore -1 per indicare che l'ammontare ricevuto non è stato speso. \\
+L'esempio che segue mostra un caso di importo speso :\\
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|}
+\toprule
+1285666864 &    82561 & 121404 &  118890 &      99 &           2 &       124069 &       83232 &      1286048669\\
+\bottomrule
+\end{tabular}\\\\
+In questo caso l'indirizzo 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.\\
+\section{Algoritmi}
+Il primo passaggio è stato quello di filtrare le transazioni con almeno un importo dust, input o output. Le transazioni vengono poi salvate in un apposito file testuale  
+\lstinputlisting{Codici/filter_dust.py}
+Successivamente viene utilizzato ll seguente algoritmo per classificare le transazioni in due categorie e salvarle in due file distinti.
+Nel primo file vengono salvate le transazioni che non hanno Satoshi Dice come input, nel secondo invece le transazioni generate da Satoshi Dice.
+\lstinputlisting{Codici/filter_SD.py}
+Gli output dust, con script diverso da OP\_RETURN, creati sono stati classificati in quattro categorie: dust speso con almeno un input proveniente da un altro indirizzo, dust speso con input provenienti dal medesimo indirizzo, dust speso in transazioni speciali, dust non speso. Tramite questo algoritmo, viene calcolato quanto siano presenti queste categorie nel tempo. Il parametro "tx\_sp" contiene gli identificativi delle transazioni dove tutto l'input viene trasformato in fee.
+\lstinputlisting{Codici/temporal_dust.py}
+Le transazioni, presenti nel dataset filtrato, che hanno almeno un input dust sono state classificate in tre categorie: transazioni con almeno due indirizzi diversi, transazioni con un solo indirizzo e transazioni speciali; anche in questo caso viene mostrato quanto esse siano presenti nel tempo.
+\lstinputlisting{Codici/classification.py}
+Per ognuna delle tre categorie di transazioni ho calcolato quante fossero OD e quante NOD. OD indica transazioni con soli input dust, mentre NOD indica transazioni con almeno un input non-dust.
+\lstinputlisting{Codici/OD_NOD.py}
+Successivamente ho calcolato, anno per anno, media e moda del numero di input, media e moda del numero di indirizzi diversi e la percentuale media di dust presenti negli input.
+In seguito ho analizzato gli indirizzi che hanno ricevuto del dust per mostrare quale fosse il comportamento generale, concentrandomi in particolare su chi ha speso l'importo ricevuto.
+\lstinputlisting{Codici/analisi_tx_success.py}
+In seguito ho analizzato il comportamento degli indirizzi che hanno speso il dust. In particolare ho raggruppato gli indirizzi in sei insiemi disgiunti, in base alla presenza dell'indirizzo nelle tre cateogire di transazioni ottenute precedentemente.
+\lstinputlisting{Codici/addr_categories.py}
+Passo successivo è stato l'analisi delle transazioni che hanno generato dust di successo, ovvero dust che è stato speso insieme ad altri indirizzi diversi. Ho suddiviso le transazioni in due categorie, quante presentano almeno un indirizzo nuovo e quante presentano solo indirizzi non nuovi. Delle transazioni che presentano indirizzi nuovi, ovvero indirizzi che compaiono per la prima volta on-chain, ho calcolato la percentuale media di indirizzi non nuovi.
+\lstinputlisting{Codici/new_addresses_analisi.py}
+

@@ -1,0 +1,66 @@
+
+\documentclass[12 pt ,a4 paper, openright, oneside]{book}
+
+% Pacchetti %
+\usepackage[italian]{babel} % Italiano
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{hyphenat}
+\usepackage[hypcap=true]{caption}
+\usepackage{setspace}
+\usepackage[hang,flushmargin,bottom]{footmisc}
+\usepackage{todonotes} % Note Todo
+\usepackage{soul} % strikethrough 
+\usepackage{caption}
+\usepackage{placeins}
+\usepackage{amssymb,amsmath}
+\usepackage[official]{eurosym}
+\usepackage{frontespizio}
+\usepackage{booktabs}
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Codice}% Listing -> Codice
+\usepackage{mdframed}
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+\usepackage{eurosym}
+% Tabelle %
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+\usepackage{array,ragged2e}
+\usepackage{colortbl}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+
+% Immagini %
+\usepackage{graphicx, wrapfig, float, rotating}
+% \graphicspath{{images/}}
+
+% Bibliografia %
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
+\addbibresource{bibliografia.bib}
+
+\begin{document}
+
+% Qui ci andrà il frontespizio
+
+\include{frontespizio}
+
+% .. fine frontespizio
+
+
+\tableofcontents
+
+% il capitolo inizia a pagina nuova. Usare il comando \input{} per aggiungere senza andare a pagina nuova
+\input{lst_python}
+
+\include{1Capitolo1} 
+\include{2Capitolo2}
+\include{3Capitolo3}
+\include{4Capitolo4}
+\include{5Capitolo5}
+\include{6Capitolo6}
+
+% Mostra bibliografia
+\printbibliography[heading=bibintoc]
+
+
+\end{document}
