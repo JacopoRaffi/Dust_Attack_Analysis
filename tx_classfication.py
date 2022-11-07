@@ -32,7 +32,7 @@ def classification(inputs, spent, tx_sp):
     inputs = inputs[inputs.TxId.isin(txs)] # all tx with at least one dust input not from Satoshi Dice
     inputs = inputs[~inputs.TxId.isin(tx_sp)] #avoid special Tx checked before
     
-    for year in range(2010, 2022):
+    for year in range(2010, 2018):
         inp = inputs[inputs.timestamp == year] #all data in one year 
         inp = inp.groupby("TxId").agg({'addrId':'nunique'})
         
@@ -45,7 +45,7 @@ def classification(inputs, spent, tx_sp):
 
 def main():
     #intialize dict for temporal statistics
-    for i in range(2010, 2022):
+    for i in range(2010, 2018):
         categories[i] = [0, 0, 0]
     
     inputs = pd.read_csv("../data_csv/inputs.csv.xz", sep=',', header=0, compression='xz')
@@ -72,6 +72,8 @@ def main():
     datafr = pd.DataFrame.from_dict(categories, orient='index')
     datafr = datafr.rename(columns={0:'Almeno due indirizzi', 1:'Un indirizzo', 2:'speciale'})
     datafr.plot(use_index=True, y=["Almeno due indirizzi", "Un indirizzo", "speciale"], kind="bar",figsize=(9,8), title="Uso del dust nel tempo", logy=True, ylabel="N. di Transazioni")
+    
+    plt.savefig("../Grafici/Tx_classification.pdf", format='pdf', bbox_inches='tight')
     plt.show()
     
     return 0

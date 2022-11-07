@@ -10,7 +10,7 @@ def main():
     outputs['timestamp'] = outputs['timestamp'].apply(lambda t : datetime.datetime.fromtimestamp(t))
     out = mdates.date2num(outputs['timestamp'].values)
 
-    years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+    years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]
     months = [i for i in range(1, 12+1, 3)]
     bins = []
     for y in years:
@@ -29,6 +29,7 @@ def main():
     ax1.hist(out, bins=hist_bins, color='green', edgecolor='black', linewidth=0.1)
     ax1.legend(loc='upper left')
     
+    plt.savefig("../Grafici/dust_created.pdf", format='pdf', bbox_inches='tight')
     plt.show()
     return 0
 

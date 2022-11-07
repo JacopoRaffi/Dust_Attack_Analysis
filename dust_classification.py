@@ -14,9 +14,9 @@ def collect_tx(filename):
     return txs
 
 def classification(spent, unspent):
-    #special TxId
+    #all special TxId
     tx_sp = collect_tx("../tx_special.txt")
-    #spent success TxId
+    #all spent success TxId
     tx_success = collect_tx("../tx_spent_dust.txt")
 
     spent_succ = spent[spent.spentTxId.isin(tx_success)] 
@@ -25,7 +25,7 @@ def classification(spent, unspent):
     spent_special = spent[spent.spentTxId.isin(tx_sp)]
 
 
-    for year in range(2010, 2022):
+    for year in range(2010, 2018):
         unsp = unspent[unspent.timestamp == year]
         years[year][3] += len(unsp) #not-spent
 
@@ -42,7 +42,7 @@ def classification(spent, unspent):
 
 # year -> [success, fail, special, unspent]
 def main():
-    for y in range(2010, 2022):
+    for y in range(2010, 2018):
         years[y] = [0, 0, 0, 0]
 
     spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
@@ -55,10 +55,10 @@ def main():
     unspent["timestamp"] = unspent['timestamp'].apply(lambda y : y.year)
     
     classification(spent, unspent)
-
     df = pd.DataFrame.from_dict(years, orient='index')
     df = df.rename(columns={0:'Successo', 1:'Fallimento', 2:'Speciale', 3:'Non Speso'})
-    df.plot(use_index=True, y=["Successo", "Fallimento", "Speciale", "Non Speso"], kind="bar", figsize=(9,8), title="Uso del dust nel tempo", logy=True, ylabel="N. di Output")
+    df.plot(use_index=True, y=["Successo", "Fallimento", "Speciale", "Non Speso"], kind="bar", figsize=(9,8), title="Uso del dust nel tempo", logy=True, ylabel="N. di dust")
+    plt.savefig("../Grafici/uso_del_dust_new.pdf", format='pdf', bbox_inches='tight')
     plt.show()
 
 if __name__ == '__main__':

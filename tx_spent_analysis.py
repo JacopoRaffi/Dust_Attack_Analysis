@@ -10,9 +10,9 @@ def collect_tx(filename):
             txs.append(tx)
     return txs
 
-def classify(df):
+def classify(df): #df is dataframe with inputs(failed or success)
     df_t = df[df.amount > 545]
-    txs_nod = set(df_t['TxId'].to_list())
+    txs_nod = set(df_t['TxId'].to_list()) #all TxId with at least one input non-dust
     tot = len(set(df['TxId'].to_list()))
     print("TOT: ", tot)
     print("NOD: ", len(txs_nod))
@@ -32,8 +32,6 @@ def analyze_success(df):
         print("PERCENTUALE DUST MEDIA: ", dg['amount'].mean()*100)
         print("MEDIA INDIRIZZI DIVERSI: ", dft.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mean())
         print("MODA INDIRIZZI DIVERSI: ", dft.groupby("TxId").agg({'addrId':'nunique'})['addrId'].mode().iloc[0])
-    
-    return 0
 
 def main():
     #special TxId

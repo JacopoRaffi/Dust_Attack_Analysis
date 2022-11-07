@@ -15,8 +15,6 @@ def analyze_spent(addresses, spent):
     tx_success = collect_tx("../tx_spent_dust.txt")
     tx_sp = collect_tx("../tx_special.txt")
     spent = pd.read_csv("../data_csv/spent_dust.csv.xz", sep=',', header=0, compression='xz')
-    sp = spent[~spent.spentTxId.isin(tx_success)]
-    sp = sp[~sp.spentTxId.isin(tx_sp)]
 
     addr_failed = set(spent[~spent.spentTxId.isin(tx_success)]['addrId'].to_list())
     addr_succ = set(spent[spent.spentTxId.isin(tx_success)]['addrId'].to_list())
@@ -52,8 +50,6 @@ def analyze_spent(addresses, spent):
                 succ_special += 1
             else:
                 only_special += 1
-        else:
-            print(addr)
 
     print("TOTALE: ", len(set(addresses)))
     print("ONLY SUCCESS: ", only_succ)
@@ -67,8 +63,8 @@ def categories(sp, unsp):
     addr_sp = set(sp['addrId'].to_list())
     addr_unsp = set(unsp['addrId'].to_list())
     addr_both = set([])
-    addr_os = addr_sp.copy()
-    addr_ou = addr_unsp.copy()
+    addr_os = addr_sp.copy() #os only spent
+    addr_ou = addr_unsp.copy() #ou only unspent
     addr_tot = addr_sp.union(addr_unsp)
     print("INDIRIZZI TOTALI: ", len(addr_tot))
     only_sp = len(addr_sp)
@@ -107,10 +103,10 @@ def new_addresses(spent, unspent):
     i = 0
     tx_Id_notNew = []
     for tx in tx_dust:
-        maxId = tx_MaxId[tx_MaxId.TxId == tx]['prevMaxId'].iloc[0]
+        maxId = tx_MaxId[tx_MaxId.TxId == tx]['prevMaxId'].iloc[0] #prevMaxId
         out = outputs[outputs.TxId == tx]
         tot_addr = len(set(out['addrId'].to_list())) #tot addr in a tx
-        new_addr = len(set(out[out.addrId > maxId]['addrId'].to_list()))
+        new_addr = len(set(out[out.addrId > maxId]['addrId'].to_list())) #tot new addresses in a tx
         old_addr = tot_addr - new_addr
         if(new_addr == 0):
             tx_notNew_addr += 1
@@ -118,8 +114,6 @@ def new_addresses(spent, unspent):
         else:
             tx_newAddr += 1
             perc_sum += float(old_addr/tot_addr)*100
-        print(i)
-        i += 1
 
     print("PERCENTUALE MEDIA DI INDIRIZZI NON NUOVI PER TX: ", float(perc_sum/tot_tx))
     print("TOTALE TX: ", tot_tx)
