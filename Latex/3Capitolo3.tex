@@ -34,7 +34,7 @@ Nel secondo caso invece l'importo è stato speso in una transazione dove sono pr
     \centering
     \includegraphics[scale=0.35]{Images/fallimento.pdf}
     \caption{Schema Attacco Fallito}
-    \label{fig:Dust_attack}
+    \label{fig:fallito}
 \end{figure}
 \FloatBarrier
 Il \textit{dust attack} quindi risulta più efficace soprattutto contro gli indirizzo che hanno un bilancio complessivo pari a zero proprio perchè obbliga la vittima a spendere la cifra ottenuta con altri suoi indirizzi diversi.\\\\
@@ -44,7 +44,6 @@ Bisogna specficare che il \textit{dust attack} non permette di rubare fondi di a
 \section{Conseguenze}
 Come detto prima la de-anonimizzazione di per sé non costituisce un problema. Può diventarlo se viene usata come mezzo per altri tipi di attacchi. 
 \todo{spiegare conseguenze, tipo exchange e articolo prof di francesco}
-\legame indirizzo ip o indirizzo identità tramite exchange
 \section{Contromisure}
 Due metodi per contrastare il \textit{dust attack} sono:
     \begin{enumerate}
@@ -52,7 +51,7 @@ Due metodi per contrastare il \textit{dust attack} sono:
         \item spendere il $dust$ tramite servizi di "dust collecting". 
     \end{enumerate}
 La prima soluzione, semplice ed efficace, permette di troncare l'attacco sul nascere. Infatti se il $dust$ non viene speso l'attaccante non potrà mai collegare gli indirizzi. 
-Questo metodo può esserre effettuato in diversi software wallet; per esempio Samurai Wallet\cite{SamuraiWallet}, nel 2018, consigliò ai suoi utenti, possibili vittime di \textit{dust attack},  di contrassegnare come "do not spend" le UTXO in questione.\\\\
+Questo metodo può esserre effettuato in diversi software wallet; per esempio Samurai Wallet\footnote{fonte:\url{https://twitter.com/samouraiwallet/status/1055345822076936192?lang=en}}, nel 2018, consigliò ai suoi utenti, possibili vittime di \textit{dust attack},  di contrassegnare come "do not spend" le UTXO in questione.\\\\
 La seconda soluzione riguarda i servizi di "dust collecting", per esempio Dust-B-Gone\cite{Dbg}.
 L'obiettivo di questo meccanismo è di impedire la de-anonimizzazione tramite la generazione di una singola transazione dove gli input $dust$ provengono da utenti diversi. L'importo complessivo viene trasformato in $fee$ per i miners. \\Siccome gli indirizzi di input appartengono a persone differenti, l'attaccante fallisce nel tentativo di de-anonimizzazione.
 \textbf{mettere un immagine esempio di dust collecting}

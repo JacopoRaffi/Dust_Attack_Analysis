@@ -32,7 +32,7 @@ Il grafico seguente mostra la generazione del dust spendibile nel tempo.
     \centering
     \includegraphics[scale=0.9]{Grafici/dust_created_year.pdf}
     \caption{Creazione dust nel tempo}
-    \label{fig:dust_distribuzione}
+    \label{fig:dust_created}
 \end{figure}
 \FloatBarrier 
 Dall'istogramma notiamo che già dal 2010 sono comparsi i primi output dust, anche se in quantità molto ridotta. Possiamo osservare una rapida salita tra il 2010 e il 2011, solo nel mese di luglio infatti sono stati generati 27 376 output dust tramite transazioni legate "a catena"; nel paragrafo successivo approfondirò il concetto delle "catene". 
@@ -57,7 +57,7 @@ Gli output dust spesi sono stati suddivisi in tre categorie:
     \item Successo: dust speso in transazioni che presentano almeno due indirizzi di input;
     \item Fallimento: dust speso in transazioni con un solo indirizzo di input;
     \item Speciale: dust speso in transazioni di "dust collecting".
-\end{enumerate}\\
+\end{enumerate}
 I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli indirizzi di input una volta che il dust è stato speso. La terza categoria è stata separata dalla seconda prorpio per evidenziare l'uso del dust collecting.\\
 Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel corso degli anni.
 \begin{figure}[h!]
@@ -68,8 +68,8 @@ Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel cor
 \end{figure}
 \FloatBarrier
 Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. La prima riguarda l'uso del "dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. La seconda invece riguarda la tendenza a spendere il dust con almeno un altro indirizzo, in particolare notiamo un netto distacco nel 2015 dove la categoria "Successo" rientra nell'ordine di $10^4$ mentre "Fallimento" nell'ordine di $10^3$. Gli indirizzi che hanno generato il dust potrebbero aver avuto altre motivazioni diverse dal Dust Attack, in molti casi però sono riusciti a ottenere lo stesso risultato, ovvero collegare più indirizzi tra loro.\\\\
-Una volta constatata la presenza di transazioni con input dust e con almeno due indirizzi diversi, il passaggio successivo è l'analisi delle transazioni. Abbiamo tre categorie di transazioni: quelle con almeno due indirizzi diversi, quelle con un solo indirizzo e le transazioni speciali.\\
-In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_categories} mostra il numero totale di transazioni nelle tre categorie, la tabella \ref{tab:tx_categories_year} fornisce una visione annuale. 
+Una volta constatata la presenza di transazioni con input dust e con almeno due indirizzi diversi, la fase seguente è l'analisi delle transazioni. Abbiamo tre categorie di transazioni: almeno due indirizzi diversi, un solo indirizzo e dust collecting.\\
+In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_categories} mostra il numero totale di transazioni nelle tre categorie, la tabella \ref{tab:tx_categories_year} mostra una visione annuale.
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|}
@@ -81,7 +81,7 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
         dust collecting & 17\\
         \hline
     \end{tabular}
-    \caption{Transazioni nel tempo}
+    \caption{Transazioni nelle tre categorie}
     \label{tab:tx_categories}
 \end{table}
 \begin{table}[H]
@@ -97,8 +97,71 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
          dust collecting & 0 & 0 & 0 & 3 & 6 & 5 & 2 & 1 \\
          \hline
     \end{tabular}
-    \caption{Transazioni nel tempo(anno per anno)}
+    \caption{Transazioni nel tempo}
     \label{tab:tx_categories_year}
+\end{table}
+Dalle tabelle \ref{tab:tx_categories} \ref{tab:tx_categories_year} confermiamo quanto detto prima, la prevalenza a spendere il dust in transazioni con almeno due indirizzi diversi e lo scarso utilizzo di servizi come Dust-B-Gone; la seconda fase delle analisi si concentrerà sui primi due gruppi.\\
+La categoria "1 indirizzo" è stata ulteriormente suddivisa in due classi:
+\begin{itemize}
+    \item NOD: transazioni che presentanto input con importo $>$ 545  
+    \item OD: transazioni con soli input dust.
+\end{itemize}
+Dalla tabella \ref{tab:OD_NOD} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli indirizzi che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+            NOD  & 92 712 & 95,5\%\\
+        \hline 
+            OD  & 4328 & 4,5 \%\\
+        \hline
+    \end{tabular}
+    \caption{Classificazione OD e NOD}
+    \label{tab:OD_NOD_failed}
+\end{table}
+Interessante invece è il secondo gruppo, in particolare due indirizzi: 1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T e 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN. Il fatto interessante del primo indirizzo è che che la sua chiave privata è stata compromessa\footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena gli vengono inviati.\\\\
+Caso anomalo invece riguarda 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN, rinominato 1PED per semplicità. Questo indirizzo, come riportato in\cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri indirizzi che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{Images/1Ped.pdf}
+    \caption{Schema transazioni legate a 1PED}
+    \label{fig:1PED}
+\end{figure}
+\FloatBarrier
+Ogni indirizzo invia due output, 1 satoshi con destinatario 1PED e un secondo importo che viene inviato ad un altro indirizzo che seguirà il medesimo schema; in tutte queste transazioni la fee è di 50 000 satoshi. 1PED ha generato poi 1835 transazioni con 1 solo satoshi di input e 1 solo satoshi di output, la data è il 10 Marzo 2013 alle ore 16:20. Gli indirizzi destinatari però compaiono nella blockchain per la prima volta proprio grazie a queste transazioni, sicuramente non si tratta di un tentativo di Dust Attack.\\\\
+Molto più interessanti sono le transazioni della categoria "2+ indirizzi". Anche in questo caso vengono mostrati i gruppi OD e NOD. La tabella \ref{tab:OD_NOD_success} mostra come quasi sempre si riescano a collegare indirizzi vittima di dust con indirizzi più capienti.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+            NOD  & 166 778 & 99,9\%\\
+        \hline 
+            OD  & 128 & 0,1 \%\\
+        \hline
+    \end{tabular}
+    \caption{Classificazione OD e NOD}
+    \label{tab:OD_NOD_success}
+\end{table}
+È importante però capire quanto successo abbia avuto la de-anonimizzazione in generale e negli anni. La tabella \ref{tab:stat} mostra alcune statistiche generali mentre la tabella \ref{tab:stat_year} fornisce una visione annuale.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+            Media Numero Input & 27\\
+        \hline 
+            Moda numero di input & 4\\
+        \hline
+            Percentuale media numero input non-dust & 71 \%\\
+        \hline
+            ercentuale media numero input dust & 29 \%\\
+        \hline
+            Media numero indirizzi diversi & 13\\
+        \hline
+            Moda numero indirizzi diversi & 2\\
+        \hline
+    \end{tabular}
+    \caption{Statistiche generali}
+    \label{tab:stat}
 \end{table}
 \section{Pattern Particolari}
 \begin{itemize}

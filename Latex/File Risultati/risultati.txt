@@ -40,7 +40,7 @@ Punto 7: Filtraggio fatto
 
 Punto 8: File statistics_creators.csv.xz
 
-Punto 9: 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN
+Punto 9: 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN 2013-03-10 09:00
 	a: Dust generato = 1839/ Dust speso = 1837 (99.89%)
 	b: 1835 output generati da transazioni tutte con 1 satoshi come input(tutte con stesso timestamp=1362928835, 2013-03-10 16:20:35)(stesso blockId=225203)
 	c: Tutti i bersagli hanno speso il dust
