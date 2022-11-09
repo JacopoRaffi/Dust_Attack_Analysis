@@ -106,7 +106,7 @@ La categoria "1 indirizzo" è stata ulteriormente suddivisa in due classi:
     \item NOD: transazioni che presentanto input con importo $>$ 545  
     \item OD: transazioni con soli input dust.
 \end{itemize}
-Dalla tabella \ref{tab:OD_NOD} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli indirizzi che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. 
+Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli indirizzi che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|}
@@ -142,30 +142,48 @@ Molto più interessanti sono le transazioni della categoria "2+ indirizzi". Anch
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_success}
 \end{table}
-È importante però capire quanto successo abbia avuto la de-anonimizzazione in generale e negli anni. La tabella \ref{tab:stat} mostra alcune statistiche generali mentre la tabella \ref{tab:stat_year} fornisce una visione annuale.
+È importante però capire quanto successo abbia avuto la de-anonimizzazione, la tabella \ref{tab:stat} mostra alcune statistiche generali di questa categoria. 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|}
         \hline
-            Media Numero Input & 27\\
-        \hline 
-            Moda numero di input & 4\\
+            Percentuale media numero input dust & 29 \%\\
         \hline
-            Percentuale media numero input non-dust & 71 \%\\
-        \hline
-            ercentuale media numero input dust & 29 \%\\
+            Moda percentuale numero input dust & 50 \%\\ %18 187 tx così
         \hline
             Media numero indirizzi diversi & 13\\
         \hline
-            Moda numero indirizzi diversi & 2\\
+            Moda numero indirizzi diversi & 2\\ %35011
         \hline
     \end{tabular}
     \caption{Statistiche generali}
     \label{tab:stat}
 \end{table}
-\section{Pattern Particolari}
-\begin{itemize}
-    \item catena dust
-    \item tante Tx stesso timestamp stesso tutto
-    \item tante Tx breve tempo, tanti output ecc...
-\end{itemize}
+Possiamo subito osservare come moda e media tendano ad essere molto diverse tra loro, questo fatto permette di capire come le transazioni più frequenti non siano dominanti. In entrambe le situazioni infatti le transazioni che costituiscono la moda corrispondono a circa il 10\% nel primo caso(percentuale media numero di input dust) e al 20\% nell'ultimo(numero di indirizzi diversi). I grafici \ref{fig:distribuzioni_tx} mostrano, partendo da sinistra, la distribuzione della percentuale di input dust e la distribuzione degli indirizzi diversi. Nel primo istogramma le colonne rappresentano gruppi di 0,10, nel secondo invece gruppi di 50.
+ \begin{figure}[h!]
+     \centering
+     \includegraphics[scale=0.44]{Grafici/Distribuzioni_belle.pdf}
+     \caption{Distribuzione percentuale input dust(sinistra), distribuzione indirizzi diversi(destra)}
+    \label{fig:distribuzioni_tx}
+ \end{figure}
+\FloatBarrier
+Dal primo istogramma notiamo la prevalenza degli input non-dust rispetto a quelli dust, la maggior parte della transazioni infatti ha una percentuale di input dust inferiore al 40\%. Questo dato è molto importante perchè mostra come il dust permetta di collegare soprattutto indirizzi più capienti, che potrebbero essere di maggiore interesse per un possibile attaccante. Il secondo istogramma invece mostra come siano presenti molte transazioni con un elevato numero di indirizzi diversi, permettendo un'efficace de-anonimizzazione dei relativi wallet.\\\\
+È importante precisare che stessi indirizzi possano apparire in più transazioni, potrebbero quindi esserci dei collegamenti ripetuti. Infatti nonostante siano stati generati 2 893 877 output dust gli indirizzi a cui sono stati inviati sono 1 059 836 e solo il 29\%(312 114) lo ha speso. Di questo 29\% abbiamo che 259 252 hanno speso il dust in transazioni della categoria "2+ indirizzi" anche se 4 270 indirizzi hanno anche generato transazioni nella categoria "1 indirizzo". Una particolarità interessante delle transazioni che hanno generato il dust "Successo" è che in molti casi erano presenti tra gli output dust indirizzi nuovi, ovvero indirizzi che non erano mai comparsi sulla blockchain. Ci sono 98 198 transazioni che generano almeno un dust della categoria "Successo", circa il 59\%(58 146) non presenta indirizzi nuovi tra gli output. Nella fase finale delle analisi sono state prese queste transazioni così da trovare dei pattern interessanti di possibili Dust Attack di successo; nel paragrafo successivo verranno approfonditi due possibili schemi di Dust Attack.  
+\section{Pattern Interessanti}
+In generale è complicato affermare con certezza se un indirizzo stia compiendo un Dust Attack, però sono presenti due schemi, con certe proprietà, che potrebbero rappresentare un Dust Attack. La proprietà più importante riguarda l'assenza di indirizzi nuovi tra gli output dust, proprio perchè è alquanto improbabile tentare di de-anonimizzare un indirizzo mai visto fino a quel punto.\\
+Il primo pattern, sintetizzato in \ref{fig:schema1}, risulta molto simile al caso 1PED. Abbiamo diversi indirizzi legati a catena che generano transazioni bi-output. Il secondo output, inviato al solito indirizzo, viene speso dall'attaccante per generare transazioni contenenti solo output dust. Inoltre l'attaccante, nell'immagne l'ovale rosso, non compare mai nella catena dei finanziatori, rappresentata dai cerchi azzurri.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{Images/dust_attack1.pdf}
+    \caption{Primo schema}
+    \label{fig:schema1}
+\end{figure}
+\FloatBarrier
+Altre proprietà importanti di questo pattern sono: avere un unico finanziatore, generare sempre lo stesso numero di output dust, avere sempre il medesimo importo di input e infine l'attaccante esegue le transazioni in un breve intervallo di tempo. Questo schema è stato scoperto tramite l'indirizzo 1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm, finanziato da 1Nj3AsYfhHC4zVv1HHH4FzsYWeZSeVC8vj. Inoltre sono presenti altri indirizzi che seguono lo stesso schema, pagati sempre dallo stesso finanziatore di 1Diry. Questo significa che il pattern appena enunciato può essere eseguito in parallelo utilizzano diversi indirizzi attaccanti. Potrebbero esserci in aggiunta più finanziatori che inviano denaro a più attaccanti. Per esempio questo indirizzo 16JLbXYe5xmxGNX8hiqooyTUJnhitNNqTh ha ricevuto fondi da 1NPfnbqZAMUnGuNuYwVZdCN4qVzUq4ejG4, l'aspetto interessante però è che il numero di output dust, l'importo dust inviato, l'importo input speso sono esattamente uguali a quelli usati da 1Diry. Ovviamente possono esserci eccezioni a questi due esempi trovati, in riferimento alla figura \ref{fig:schema1} potrebbero esserci più indirizzi nella catena dei cerchi blu, così come potrebbero esserci più attaccanti legati ad una singola catena. Inoltre gli importi potrebbero variare così come il numero di output dust di una singola transazione.\\
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{Images/dust_attack2.pdf}
+    \caption{Secondo schema}
+    \label{fig:schema2}
+\end{figure}
+\FloatBarrier
