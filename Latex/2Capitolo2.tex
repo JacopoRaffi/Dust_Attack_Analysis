@@ -76,8 +76,11 @@ La perdita della chiave comporta la perdita della proprietà a causa dell’impo
     \label{fig:transaction}
 \end{figure}
 \FloatBarrier
-Una transazione in generale può essere multi-input e multi output: sono presenti quindi più address paganti e/o più address riceventi, generalmente l'importo totale di input non viene speso in output ma parte di esso viene dato ai miners come fee. La fee è semplicemente la differenza tra l'importo totale ricevuto e l'importo totale speso.\\
-In Bitcoin è possibile associare ad una transazione uno script.
+Una transazione in generale può essere multi-input e multi output: sono presenti quindi più address paganti e/o più address riceventi, generalmente l'importo totale di input non viene speso in output ma parte di esso viene dato ai miners come fee. Formalmente la fee, raccolta dai miners come ricompensa per includere la transazione in un blocco, è definita come:
+\begin{center}
+    $fee = \sum_{inputs} importo(input_i) - \sum_{outputs} importo(output_i)$
+\end{center}
+Le transazioni in realtà sono molto più complesse di come le ho descritte precedentemente, non contengono solo valori come address e importo ma includono anche del codice, in particolare ogni transazione comprende anche degli script. Bitcoin utilizza un sistema di script Forth-like, basato su stack e non Turing-completo; questa scelta di evitare i loop è intenzionale in quanto impedisce possibili cicli infiniti.
 \section{Anonimato in Bitcoin}
 
 
