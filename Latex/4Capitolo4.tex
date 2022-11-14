@@ -62,38 +62,38 @@ Grazie a questa struttura è stato possibile classificare velocemente gli output
  tmp &  blockId &   TxId &  script &  addrId &  amount &  spentTxId &  spentBlock &  spentTmp\\
 \bottomrule
 \end{tabular}\\\\
-I primi tre campi sono relativi alla transazione in cui è stato generato l'output mentre gli ultimi tre sono relativi alla transazione dove questo output appare come input, ovvero quando viene speso. AddrId è l'indirizzo che riceve e spende l'importo contenuto nel campo amount.\\\\
+I primi tre campi sono relativi alla transazione in cui è stato generato l'output mentre gli ultimi tre sono relativi alla transazione dove questo output appare come input, ovvero quando viene speso. AddrId è l'address che riceve e spende l'importo contenuto nel campo amount.\\\\
 Un esempio di importo non speso è il seguente:\\
 \begin{tabular}{|r|r|r|r|r|r|r|r|r|}
 \toprule
 1285666089 &    82560 & 121385 &  2 &      118890 &       99 &         -1 &          -1 &              -1 \\
 \bottomrule
 \end{tabular}\\\\
-L'indirizzo 118890 ha ricevuto 99 satoshi nella transazione identificata dall' ID 121385 con timestamp 1285666089. Gli ultimi tre campi contengono il valore -1 per indicare che l'ammontare ricevuto non è stato speso. \\
+L'address 118890 ha ricevuto 99 satoshi nella transazione identificata dall' ID 121385 con timestamp 1285666089. Gli ultimi tre campi contengono il valore -1 per indicare che l'ammontare ricevuto non è stato speso. \\
 L'esempio che segue mostra un caso di importo speso :\\
 \begin{tabular}{|r|r|r|r|r|r|r|r|r|}
 \toprule
 1285666864 &    82561 & 121404 &  118890 &      99 &           2 &       124069 &       83232 &      1286048669\\
 \bottomrule
 \end{tabular}\\\\
-In questo caso l'indirizzo 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.\\
+In questo caso l'address 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.\\
 \section{Algoritmi}
 Il primo passaggio è stato quello di filtrare le transazioni con almeno un importo dust, input o output. Le transazioni vengono poi salvate in un apposito file testuale  
 \lstinputlisting{Codici/filter_dust.py}
 Successivamente viene utilizzato ll seguente algoritmo per classificare le transazioni in due categorie e salvarle in due file distinti.
 Nel primo file vengono salvate le transazioni che non hanno Satoshi Dice come input, nel secondo invece le transazioni generate da Satoshi Dice.
 \lstinputlisting{Codici/filter_SD.py}
-Gli output dust, con script diverso da OP\_RETURN, creati sono stati classificati in quattro categorie: dust speso con almeno un input proveniente da un altro indirizzo, dust speso con input provenienti dal medesimo indirizzo, dust speso in transazioni speciali, dust non speso. Tramite questo algoritmo, viene calcolato quanto siano presenti queste categorie nel tempo. Il parametro "tx\_sp" contiene gli identificativi delle transazioni dove tutto l'input viene trasformato in fee.
+Gli output dust, con script diverso da OP\_RETURN, creati sono stati classificati in quattro categorie: dust speso con almeno un input proveniente da un altro address, dust speso con input provenienti dal medesimo address, dust speso in transazioni speciali, dust non speso. Tramite questo algoritmo, viene calcolato quanto siano presenti queste categorie nel tempo. Il parametro "tx\_sp" contiene gli identificativi delle transazioni dove tutto l'input viene trasformato in fee.
 \lstinputlisting{Codici/temporal_dust.py}
-Le transazioni, presenti nel dataset filtrato, che hanno almeno un input dust sono state classificate in tre categorie: transazioni con almeno due indirizzi diversi, transazioni con un solo indirizzo e transazioni speciali; anche in questo caso viene mostrato quanto esse siano presenti nel tempo.
+Le transazioni, presenti nel dataset filtrato, che hanno almeno un input dust sono state classificate in tre categorie: transazioni con almeno due address diversi, transazioni con un solo address e transazioni speciali; anche in questo caso viene mostrato quanto esse siano presenti nel tempo.
 \lstinputlisting{Codici/classification.py}
 Per ognuna delle tre categorie di transazioni ho calcolato quante fossero OD e quante NOD. OD indica transazioni con soli input dust, mentre NOD indica transazioni con almeno un input non-dust.
 \lstinputlisting{Codici/OD_NOD.py}
-Successivamente ho calcolato, anno per anno, media e moda del numero di input, media e moda del numero di indirizzi diversi e la percentuale media di dust presenti negli input.
-In seguito ho analizzato gli indirizzi che hanno ricevuto del dust per mostrare quale fosse il comportamento generale, concentrandomi in particolare su chi ha speso l'importo ricevuto.
+Successivamente ho calcolato, anno per anno, media e moda del numero di input, media e moda del numero di address diversi e la percentuale media di dust presenti negli input.
+In seguito ho analizzato gli address che hanno ricevuto del dust per mostrare quale fosse il comportamento generale, concentrandomi in particolare su chi ha speso l'importo ricevuto.
 \lstinputlisting{Codici/analisi_tx_success.py}
-In seguito ho analizzato il comportamento degli indirizzi che hanno speso il dust. In particolare ho raggruppato gli indirizzi in sei insiemi disgiunti, in base alla presenza dell'indirizzo nelle tre cateogire di transazioni ottenute precedentemente.
+In seguito ho analizzato il comportamento degli address che hanno speso il dust. In particolare ho raggruppato gli address in sei insiemi disgiunti, in base alla presenza dell'address nelle tre cateogire di transazioni ottenute precedentemente.
 \lstinputlisting{Codici/addr_categories.py}
-Passo successivo è stato l'analisi delle transazioni che hanno generato dust di successo, ovvero dust che è stato speso insieme ad altri indirizzi diversi. Ho suddiviso le transazioni in due categorie, quante presentano almeno un indirizzo nuovo e quante presentano solo indirizzi non nuovi. Delle transazioni che presentano indirizzi nuovi, ovvero indirizzi che compaiono per la prima volta on-chain, ho calcolato la percentuale media di indirizzi non nuovi.
+Passo successivo è stato l'analisi delle transazioni che hanno generato dust di successo, ovvero dust che è stato speso insieme ad altri address diversi. Ho suddiviso le transazioni in due categorie, quante presentano almeno un address nuovo e quante presentano solo address non nuovi. Delle transazioni che presentano address nuovi, ovvero address che compaiono per la prima volta on-chain, ho calcolato la percentuale media di address non nuovi.
 \lstinputlisting{Codici/new_addresses_analisi.py}
 
