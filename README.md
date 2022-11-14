@@ -1,5 +1,5 @@
 # Dust-Attack-Analysis
-Python scripts made to analyze "Dust attack" on Bitcoin network(from 2010 to 2017)
+The goal of this thesis is to show the de-anonimization caused by dust import and to show two patterns of possible Dust Attack.
 
 
   
