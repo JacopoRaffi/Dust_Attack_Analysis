@@ -1,15 +1,14 @@
 \chapter{Implementazione}
 %Algoritmi e dati usati per l'analisi dei dati
-Prima di presentare i risultati delle analisi eseguite vorrei mostrare il formato dei dati usati e gli algoritmi utilizzati.\\
-Il codice è stato realizzato in python, versione 3.9.12, distribuzione Anaconda.\\
-Libreria per la realizzazione dei grafici: matplotlib versione 3.5.1\\
-Libreria per le statistiche: Pandas versione 1.5.0\\
+In questo capitolo verranno mostrati il formato dei dati e gli algoritmi realizzati per le analisi.
+Il codice è stato scritto in python, versione 3.9.12, distribuzione Anaconda.\\
+La libreria per la realizzazione dei grafici è matplotlib versione 3.5.1 e la la libreria per le statistiche è Pandas versione 1.5.0\\
 \section{Rappresentazione dei dati}
 Il dataset su cui sono state condotte le analisi è stato ottenuto tramite un filtraggio della blockchain originale, il peso del file testuale contenente il dataset filtrato si aggira intorno ai 40 GB.\\
 Ogni riga del file rappresenta una singola transazione che presenta il seguente formato:
 \textbf{infos:inputs:outputs}.\\ Il campo \textbf{infos} contiene i seguenti dati:
 \begin{itemize}
-    \item timestamp: valore intero, rappresenta il tempo in cui è avvenuta la transazione;
+    \item timestamp: valore intero, rappresenta il tempo in cui è inserita la transazione;
     \item blockId: valore intero, l'ID del blocco dove è salvata la transazione;
     \item TxId: valore intero, l'ID della transazione, garantito essere univoco in quanto è un contatore, che vale 1 per la prima transazione e viene incrementato a seguire per le altre;
     \item fee: valore intero, indica il valore della fee pagata in quella transazione;
@@ -92,8 +91,6 @@ Per ognuna delle tre categorie di transazioni ho calcolato quante fossero OD e q
 Successivamente ho calcolato, anno per anno, media e moda del numero di input, media e moda del numero di address diversi e la percentuale media di dust presenti negli input.
 In seguito ho analizzato gli address che hanno ricevuto del dust per mostrare quale fosse il comportamento generale, concentrandomi in particolare su chi ha speso l'importo ricevuto.
 \lstinputlisting{Codici/analisi_tx_success.py}
-In seguito ho analizzato il comportamento degli address che hanno speso il dust. In particolare ho raggruppato gli address in sei insiemi disgiunti, in base alla presenza dell'address nelle tre cateogire di transazioni ottenute precedentemente.
-\lstinputlisting{Codici/addr_categories.py}
 Passo successivo è stato l'analisi delle transazioni che hanno generato dust di successo, ovvero dust che è stato speso insieme ad altri address diversi. Ho suddiviso le transazioni in due categorie, quante presentano almeno un address nuovo e quante presentano solo address non nuovi. Delle transazioni che presentano address nuovi, ovvero address che compaiono per la prima volta on-chain, ho calcolato la percentuale media di address non nuovi.
 \lstinputlisting{Codici/new_addresses_analisi.py}
 

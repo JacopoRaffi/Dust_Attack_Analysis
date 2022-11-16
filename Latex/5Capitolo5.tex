@@ -1,9 +1,4 @@
 \chapter{Analisi dati}
-Gli obiettivi principali di queste analisi sono:
-\begin{itemize}
-    \item Mostrare delle statistiche generali sul dust e sul comportamento degli address che lo ricevono;
-    \item Descrivere alcuni pattern interessanti che sono stati trovati e che potrebbero rappresentare casi di Dust Attack.
-\end{itemize}
 \section{Statistiche generali}
 I dati analizzati comprendono le transazioni dal \textbf{3 Gennaio 2009} al \textbf{10 Agosto 2017}.
 Come spiegato precedentemente il primo obiettivo è quello di presentare statistiche generali sull'uso del dust, per questo motivo il primo compito eseguito è stato il filtraggio di tutte le transazioni dust. Le transazioni dust sono quelle transazioni che contengono almeno un input dust o almeno un output dust.
@@ -13,13 +8,13 @@ Come spiegato precedentemente il primo obiettivo è quello di presentare statist
  infos:118925,9963398109,121409,0:118926,9962398010,2 \textbf{x}
 \end{mdframed}
 Le prime due transazioni sono considerate nelle analisi successive, l'ultima invece è stata ignorata perchè di poco interesse ai fini dello studio del Dust Attack.\\
-Le transazioni totali sono 245 410 083 mentre le transazioni dust sono 2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in\cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Da questi due ultimi risultati possiamo dedurre che ci sono transazioni in cui il dust è presente sia negli input che negli output.\\\\
-Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice\cite{SD} è un noto servizio di gambling, nato nell'Aprile 2012, che usa il dust per comunicare ai giocatori perdenti che hanno perso la loro scommessa. Data la notorietà del servizio, risulta molto poco probabile che l'intento sia quello di un Dust Attack.\\
+Le transazioni totali sono 245 410 083 mentre le transazioni dust sono 2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in \cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Da questi due ultimi risultati possiamo dedurre che ci sono transazioni in cui il dust è presente sia negli input che negli output.\\\\
+Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice \cite{SD} è un noto servizio di gambling, nato nell'Aprile 2012, che usa il dust per comunicare ai giocatori perdenti che hanno perso la loro scommessa. Data la notorietà del servizio, risulta molto poco probabile che l'intento sia quello di un Dust Attack.\\
 Le transazioni generate da Satoshi Dice sono 1 465 295, ovvero il 69\% delle transazioni dust. Questo significa che i possibili attaccanti sono presenti nel rimanente 31\%, ovvero nelle restanti 649 040 transazioni dust.\\\\
 Una volta ottenute tutte e sole le transazioni di interesse ho realizato i seguenti istogrammi che mostrano la distribuzione del numero di input dust e output dust. In entrambi i grafici le colonne rappresentano un gruppo di cinquanta valori.
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=1]{Grafici/distribuzione_dust.pdf}
+    \includegraphics[scale=0.9]{Grafici/distribuzione_dust.pdf}
     \caption{Distribuzione numero input dust(sinistra) e output dust(destra)}
     \label{fig:dust_distribuzione}
 \end{figure}
@@ -52,11 +47,12 @@ In generale sono stati generati 2 893 877 output dust con script diverso da OP\_
     \caption{Speso e Non-Speso negli anni}
     \label{tab:dust_spent_unspent}
 \end{table}
-Gli output dust spesi sono stati suddivisi in tre categorie:
+Gli output dust sono stati suddivisi in quattro categorie:
 \begin{enumerate}
-    \item Successo: dust speso in transazioni che presentano almeno due address di input;
+    \item Successo: dust speso in transazioni che presentano almeno due address di input la cui fee è diversa dall'importo totale di input;
     \item Fallimento: dust speso in transazioni con un solo address di input;
-    \item Speciale: dust speso in transazioni di "dust collecting".
+    \item Speciale: dust speso in transazioni di "dust collecting", transazioni la cui fee è uguale all'importo totale di input;
+    \item Non speso.
 \end{enumerate}
 I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. La terza categoria è stata separata dalla seconda prorpio per evidenziare l'uso del dust collecting.\\
 Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel corso degli anni.
@@ -119,8 +115,8 @@ Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella d
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_failed}
 \end{table}
-Interessante invece è il secondo gruppo, in particolare due address: 1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T e 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN. Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa\footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena gli vengono inviati.\\\\
-Caso anomalo invece riguarda 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN, rinominato 1PED per semplicità. Questo address, come riportato in\cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
+Interessante invece è il secondo gruppo, in particolare due address: 1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T e 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN. Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa \footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena gli vengono inviati.\\\\
+Caso anomalo invece riguarda 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN, rinominato 1PED per semplicità. Questo address, come riportato in \cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/1Ped.pdf}
