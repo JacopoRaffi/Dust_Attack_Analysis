@@ -8,7 +8,7 @@ def main():
     outputs['timestamp'] = outputs['timestamp'].apply(lambda t : datetime.datetime.fromtimestamp(t))
     out = mdates.date2num(outputs['timestamp'].values)
 
-    years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+    years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]
     months = [i for i in range(1, 12+1, 3)]
     bins = []
     for y in years:
