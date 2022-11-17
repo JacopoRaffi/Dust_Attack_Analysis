@@ -5,15 +5,32 @@ Gli obiettivi principali di questa tesi sono:
     \item Presentare delle statistiche generali su come venga speso il dust, in particolare mostrare se e quanto possa essere efficace un Dust Attack mostrando gli effetti del dust sulla de-anonimizzazione degli address e dei relativi wallet;
     \item Descrivere due pattern interessanti che sono stati trovati e che potrebbero rappresentare casi di Dust Attack.
 \end{itemize}
+
 Il Dust Attack è una nota tecnica che sfrutta gli importi dust. È importante quindi spiegare cosa sia il dust e in generale quali possano essere i suoi possibili impieghi.
 \section{Dust}
-%Una transazione in generale può essere multi-input e multi output: sono presenti quindi più address %paganti e/o più address riceventi, generalmente l'importo totale di input non viene speso in output %ma parte di esso viene dato ai miners come fee. Formalmente la fee, raccolta dai miners come %ricompensa per includere la transazione in un blocco, è definita come:
-%\begin{center}
- %   $fee = \sum_{inputs} importo(input_i) - \sum_{outputs} importo(output_i)$
-%\end{center}
+Nelle transazioni generalmente l'importo totale di input non viene speso completamente in output ma parte di esso viene dato ai miners come fee. Formalmente la fee di una transazione, raccolta dai miners come ricompensa per includere la transazione in un blocco, è definita come:
+\begin{center}
+    $fee = \sum_{inputs} importo(input) - \sum_{outputs} importo(output)$
+\end{center}
+La fee quindi non è altro che la differenza tra l'importo totale di input e l'importo totale di output, assume valori $\ge 0$. 
+
+Tuttavia per convenzione esiste una fee minima, denominata ``relay fee", che una transazione deve pagare affinchè un nodo inoltri quella transazione agli altri nodi della rete. Questo valore può variare nel tempo, non è prefissato. 
+
+Nel client ufficiale, Bitcoin Core \cite{btccore}, esiste una convenzione, definita ``dust limit", introdotto per le transazioni standard, cioè quelle transazioni che i miner sono suggeriti accettare e reinviare.
+
+Lo scopo è quello di scoraggiare i malintenzionati dall'inviare quantità infinitesimali di bitcoin che costerebbero di più per il destinatario da spendere rispetto al valore dell'output creato. Il limite attuale è di 546 satoshi \cite{BtcDev}. Quindi tutti gli importi $<$ 546 satoshi sono definiti \textbf{dust}.
 \section{Usi del dust}
+Gli sui del dust possono essere molteplici. In generale può essere utilizzato per effettuare degli stress test della rete Bitcoin, proprio perchè permette di generare tante transazioni con molti output ad un basso costo. In questo caso il costo è determinato principalmente dalla fee della transazione e non tanto dagli output. Se consideriamo che il valore di 1 satoshi, unitò minima di Bitcoin, vale meno di un centesimo, è possibile generare una transazione con 1000 output dust, 1 satoshi ciascusno, al costo di qualche centesimo.
+
+Esistono però alcuni casi interessanti di uso del dust, tra questi abbiamo la scrittura di dati tramite OP\_RETURN, Satoshi Dice e il Dust Attack.
 \subsection{Satoshi Dice}
-Satoshi Dice è un noto "gioco di scommesse basato su blockchain" nato nell'Aprile 2012 \cite{SD}. A differenza dei tradizionali software di gioco online, le scommesse con Satoshi Dice possono essere inviate senza accedere al sito Web né eseguire alcun software client. Per giocare, viene effettuata una transazione Bitcoin a uno degli address resi pubblici da Satoshi Dice, ciascuno con pagamenti diversi. Tutti gli address resi pubblici da Satoshi Dice sono vanity address, tutti gli address infatti presentano il prefisso \textbf{1dice}. Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è 1BoatSLRHtKNngkdXEeobR76b53LETtpyT, che contiene la parola Boat. Ogni address \textbf{1dice} presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio 1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale. Per determinare se una scommessa è vincente o perdente, Satoshi Dice utilizza genera un numero casuale, il quale viene assegnato al giocatore. Il servizio successivamente utilizza una combinazione dell'hash della transazione della scommessa ed esegue un hash SHA2 a 512 bit prendendo come input l'hash della transazione utilizzando un segreto sconosciuto al giocatore. I primi quattro byte dell'output diventano il numero che determina se il giocatore abbia vinto la scommessa.
+Satoshi Dice è un noto ``gioco di scommesse basato su blockchain" nato nell'Aprile 2012 \cite{SD}. A differenza dei tradizionali software di gioco online, le scommesse con Satoshi Dice possono essere inviate senza accedere al sito Web né eseguire alcun software client. Per giocare, viene effettuata una transazione Bitcoin a uno degli address resi pubblici da Satoshi Dice, ciascuno con pagamenti diversi. Tutti gli address resi pubblici da Satoshi Dice sono vanity address, tutti gli address infatti presentano il prefisso \textbf{1dice}.
+
+Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è 1BoatSLRHtKNngkdXEeobR76b53LETtpyT, che contiene la parola Boat. 
+
+Ogni address \textbf{1dice} presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio 1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale.
+
+Per determinare se una scommessa è vincente o perdente, Satoshi Dice utilizza genera un numero casuale, il quale viene assegnato al giocatore. Il servizio successivamente utilizza una combinazione dell'hash della transazione della scommessa ed esegue un hash SHA2 a 512 bit prendendo come input l'hash della transazione utilizzando un segreto sconosciuto al giocatore. I primi quattro byte dell'output diventano il numero che determina se il giocatore abbia vinto la scommessa.
 
 Il servizio, dopo aver determinato le scommesse vincenti e quelle perdenti, invia una transazione in risposta con il pagamento al vincitore e restituisce un sinoglo satoshi ai giocatori perdenti per comunicare loro la perdita.
 \subsection{OP RETURN}
@@ -39,14 +56,13 @@ Gli OP\_CODE in Bitcoin comprendono diverse categorie:
 
 Le transazioni Bitcoin non forniscono un campo dove si possono salvare dati arbitrari \cite{arbdata}. Tuttavia, gli utenti hanno ideato vari modi creativi per codificare i dati nelle transazioni. Questi metodi però modificavano il protocollo di transazione rendendo inspendibili gli output così generati. Il problema è che questi output non erano facilmente distinguibili dagli altri quindi in nodi della rete dovevano salvarli nei loro UTXO set.
 
-L'UTXO(Unspent Transaction Output) set è l'insieme degli output riscattabili di tutte le transazioni della blockchain. Per essere valida, una transazione deve
-utilizzare solo elementi dell'UTXO come input.
+L'UTXO(Unspent Transaction Output) set è l'insieme degli output riscattabili di tutte le transazioni della blockchain. Per essere valida, una transazione deve utilizzare solo elementi dell'UTXO come input.
 
 Poiché questo set, per motivi di efficienza, è solitamente memorizzato nella RAM \cite{utxo} questa pratica influiva negativamente sul consumo di memoria dei nodi \cite{stresstest}.
 
 Per risolvere tale problema nel 2014 è stato reso standard il codice OP\_RETURN \cite{opreturnstandard} . Questo OP\_CODE era presente fin dalla nascita di Bitcoin, però era considerato non-standard proprio perchè la scrittura di dati arbitrati sulla blockchain non viene considerata una buona pratica. Questo codice permette di segnare un output della transazione come non valido, quindi successivamente non potrà essere speso.
 
-Siccome gli output con questo OP\_CODE non possono essere spesi, possono essere rimossi dall'UTXO set. In questo modo OP\_RETURN risolve il problema del consumo di memoria spiegato precedentemente. Il limite iniziale per la memorizzazione dei dati con questo codice era pianficato per essere di 80 byte, ma inizialmente ne furono concessi 40(versione 0.9.0).  La versione 0.11.0 \cite{v11} ha esteso il limite di dati a 80 byte e la versione 0.12.0 \cite{v12} fino a un massimo di 83 byte. 
+Siccome gli output con questo OP\_CODE sono contrassegnati come non spendibili, possono essere rimossi dall'UTXO set. In questo modo OP\_RETURN risolve il problema del consumo di memoria spiegato precedentemente. Il limite iniziale per la memorizzazione dei dati con questo codice era pianficato per essere di 80 byte, ma inizialmente ne furono concessi 40(versione 0.9.0).  La versione 0.11.0 \cite{v11} ha esteso il limite di dati a 80 byte e la versione 0.12.0 \cite{v12} fino a un massimo di 83 byte. Inoltre una transazione standard non può contenere più di un output contenenti OP\_RETURN.
 
 Come riportato in \cite{OP_RETURN} esistono diversi protocolli che sfruttano OP\_RETURN. Di solito, un protocollo è identificato dai primi byte di metadati allegati all'OP RETURN, ma il numero esatto di byte può variare da protocollo a
 protocollo. 
@@ -57,7 +73,7 @@ Questi protocolli possono essere divisi in categorie tra le quali:
     \item Atti notarili: protocolli per la certificazione della proprietà di un documento. Un utente può pubblicare l'hash di un documento in una transazione, e in questo modo può provarne l'esistenza e l'integrità;
     \item Arte digitale: protocolli per la dichiarazione dei diritti di accesso e di copia di arti digitali, come ad es. foto o musica.
 \end{itemize}
-%``"
+
 In generale salvare dati sulla blockchain di Bitcoin non è una buona pratica, infatti anche la documentazione ufficiale di Bitcoin sconsiglia questo utilizzo \footnote{Le note di rilascio di  Bitcoin Core versione 0.9.0 affermano che: “Storing arbitrary data in the blockchain is still a bad idea; it is less costly and far more efficient to store non-currency data elsewhere.”}.
 \section{Dust Attack}
 Come visto nel capitolo precedente \ref{Anonimato} esistono delle euristiche che possono essere sfruttate per effettuare determinati attacchi in grado di violare l'anonimato di Bitcoin. L'attacco che verrà approfondito in questa tesi viene denominato \textbf{Dust Attack}. 
@@ -75,10 +91,10 @@ Il Dust Attack ad un primo sguardo potrebbe sembrare particolarmente costoso, pr
     1 satoshi = 0.00016 € (in data 16/11/2022) 
 \end{center}
 
-Questo significa che 1 singolo satoshi vale meno di 1 centesimo, quindi se un attaccante genera una transazione con 1000 output dust e manda a ciascun address 1 satoshi, in totale spende poco più di un euro, escludendo la fee.  
+Questo significa che 1 singolo satoshi vale meno di 1 centesimo, quindi se un attaccante genera una transazione con 1000 output dust e manda a ciascun address 1 satoshi, in totale spende 16 centesimi, escludendo la fee.   
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.5]{Images/dust_attack.pdf}
+    \includegraphics[scale=0.4]{Images/dust_attack.pdf}
     \caption{Schema Dust Attack}
     \label{fig:Dust_attack}
 \end{figure}
@@ -88,6 +104,7 @@ Una volta effettuato l'attacco possono esserci due possibili esiti:
         \item attacco di successo;
         \item attacco fallito;
     \end{enumerate}
+    
 Nel primo caso, mostrato in figura \ref{fig:success}, la vittima genera una transazione in cui spende l'importo dust ricevuto insieme ad almeno un altro dei suoi address. 
 
 Questi address quindi sono collegati tra loro ed è possibile capire che appartengano ad uno stesso utente. Se l'attaccante successivamente scopre le informazioni personali, come nome o email, del proprietario di uno di questi address automaticamente scopre che tutti gli altri address hanno lo stesso proprietario; inoltre è possibile tracciare l'attività di un singolo utente e non solo di un address singolo.\\
