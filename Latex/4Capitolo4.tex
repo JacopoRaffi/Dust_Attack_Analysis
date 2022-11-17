@@ -150,6 +150,12 @@ La variabile ``categories" è un dizionario dove la chiave è l'anno e il valore
 
 \lstinputlisting[label={failed_succ}, caption={Classificazione transazioni}]{Codici/classification.py}
 L'ultima analisi effettuata riguarda la presenza di address nuovi all'interno delle transazioni che generano almeno un dust speso con altri address, ovvero speso in una transazione della categoria ``Successo". La definizione ``address nuovo" indica un address che non era mai comparso nella blockchain fino a quel momento. 
-Nel programma \ref{addr_new} 
+Nel programma \ref{addr_new} vengono salvate in una lista, ``tx\_Id\_notNew" tutte le transazioni che non presentano address nuovi tra i destinatari del dust. L'obiettivo è stato quello di isolare queste transazioni, in cui potrebbero esserci possibili Dust Attack.
+
+Le transazioni che inviano del dust ad address nuovi  molto probabilmente non rappresentano un Dust Attack, proprio perchè risulterebbe strano de-anonimizzare un address mai visto fino a quel momento; molto probabilmente il proprietario di un address nuovo è lo stesso utente che genera quella determinata transazione. Per le altre transazioni invece viene calcolata la percentuale media di address nuovi, destinatari di dust, presenti in una transazione. 
+
+Per capire se un address sia nuovo è stata sfruttata la proprietà con i quali vengono assegnati gli identificativi agli address. Il valore numerico è stato assegnato in modo incrementale. Per esempio l’addrId 1 è il primo address che compare in assoluto sulla blockchan, mentre l’addrId 2 è il primo che compare subito dopo l’addrId 1, quindi per sapere quali address sono nuovi nella transazione X basta sapere l'id dell'ultimo address usato (cioè quello con id massimo) fino alla transazione precedente (X-1). 
+
+Per esempio se l'addrId massimo prima della transazione X è 5 tutti gli addrId, presenti nella transazione X, che hanno un addrId $>$ 5 sono nuovi.
 \lstinputlisting[label={addr_new}, caption={Analisi address nuovi}]{Codici/new_addresses_analisi.py}
 
