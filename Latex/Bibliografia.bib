@@ -1,9 +1,3 @@
-@book{antonopoulos2014mastering,
-  title={Mastering Bitcoin: unlocking digital cryptocurrencies},
-  author={Antonopoulos, Andreas M},
-  year={2014},
-  publisher={" O'Reilly Media, Inc."}
-}
 %dust
 @misc{BtcDev,
 title = {The Bitcoin Core developers: Bitcoin dust limit},
@@ -14,9 +8,9 @@ note = {\url{https://github.com/bitcoin/bitcoin/blob/c536dfbcb00fb15963bf5d507b7
 title = {Dust-B-Gone},
 note = {\url{https://github.com/petertodd/dust-b-gone}},
 }
-%bitcoin origine
+%bitcoin origine nakamoto2009bitcoin
 @article{nakamoto2009bitcoin,
-  author = {Nakamoto, Satoshi},
+  author = {Nakamoto Satoshi},
   title = {Bitcoin: A Peer-to-Peer Electronic Cash System},
   note = {\url{http://www.bitcoin.org/bitcoin.pdf}},
   year = {2009}
@@ -33,17 +27,36 @@ note = {\url{https://github.com/petertodd/dust-b-gone}},
 @inproceedings{OP_RETURN,
   author    = {Massimo Bartoletti and
                Livio Pompianu},
+  editor    = {Michael Brenner and
+               Kurt Rohloff and
+               Joseph Bonneau and
+               Andrew Miller and
+               Peter Y. A. Ryan and
+               Vanessa Teague and
+               Andrea Bracciali and
+               Massimiliano Sala and
+               Federico Pintore and
+               Markus Jakobsson},
   title     = {An Analysis of Bitcoin OP{\_}RETURN Metadata},
-  booktitle = {Financial Cryptography and Data Security},
+  booktitle = {Financial Cryptography and Data Security - {FC} 2017 International
+               Workshops, WAHC, BITCOIN, VOTING, WTSC, and TA, Sliema, Malta, April
+               7, 2017, Revised Selected Papers},
+  series    = {Lecture Notes in Computer Science},
   volume    = {10323},
   pages     = {218--230},
   publisher = {Springer},
-  year      = {2017}
+  year      = {2017},
+  url       = {https://doi.org/10.1007/978-3-319-70278-0\_14},
+  doi       = {10.1007/978-3-319-70278-0\_14},
+  timestamp = {Tue, 16 Aug 2022 23:04:23 +0200},
+  biburl    = {https://dblp.org/rec/conf/fc/BartolettiP17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 @misc{SD,
 title = {Satoshi Dice},
 note = {\url{https://en.bitcoin.it/wiki/Satoshi_Dice}},
 }
+%de-anonimizzazione
 @article{de-anonimizzazione,
   author    = {Sarah Meiklejohn and
                Marjori Pomarole and
@@ -61,7 +74,10 @@ note = {\url{https://en.bitcoin.it/wiki/Satoshi_Dice}},
   url       = {https://doi.org/10.1145/2896384},
   doi       = {10.1145/2896384},
   timestamp = {Tue, 06 Nov 2018 12:51:40 +0100},
+  biburl    = {https://dblp.org/rec/journals/cacm/MeiklejohnPJLMV16.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
+%script
 @article{script,
   author    = {Massimo Bartoletti and
                Bryn Bellomy and
@@ -73,7 +89,10 @@ note = {\url{https://en.bitcoin.it/wiki/Satoshi_Dice}},
   pages     = {3--22},
   year      = {2019},
   url       = {https://doi.org/10.1007/s10723-019-09473-3},
+  doi       = {10.1007/s10723-019-09473-3},
   timestamp = {Fri, 31 May 2019 09:51:19 +0200},
+  biburl    = {https://dblp.org/rec/journals/grid/BartolettiBP19.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 @book{curve, 
 title = {Elliptic Curves Number Theory and Cryptography},
@@ -82,6 +101,7 @@ year = {2008},
 edition = {II Edition},
 publisher = {Chapman & Hall}
 }
+%arbdata
 @article{arbdata,
   author    = {Ruben Recabarren and
                Bogdan Carbunar},
@@ -94,6 +114,8 @@ publisher = {Chapman & Hall}
   url       = {https://doi.org/10.2478/popets-2022-0011},
   doi       = {10.2478/popets-2022-0011},
   timestamp = {Mon, 06 Dec 2021 16:57:43 +0100},
+  biburl    = {https://dblp.org/rec/journals/popets/RecabarrenC22.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 @misc{opreturnstandard,
 title = {Bitcoin v0.9.0},
@@ -106,16 +128,6 @@ note = {\url{https://en.bitcoin.it/wiki/Script}},
 @misc{utxo,
 title = {Peter Todd delayed txo commitments},
 note = {\url{https://petertodd.org/2016/delayed-txo-commitments}},
-}
-@article{stresstest,
-title = {Stressing out: Bitcoin “stress testing”},
-journal = {Bitcoin Workshop},
-year = {2016},
-authors = {Baqer K and
-           Huang DY and
-           McCoy D and 
-           Weaver N},
-pages = {3--18}
 }
 @misc{v11,
 title = {Bitcoin v0.11.0},

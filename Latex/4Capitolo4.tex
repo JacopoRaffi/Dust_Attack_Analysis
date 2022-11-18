@@ -41,14 +41,25 @@ La forma dei singoli output è la seguente:
     
     EMPTY=5;
 \end{itemize}
-La figura seguente riassume, su due righe invece che una per motivi di spazio, il metodo, appena enunciato, in cui sono memorizzate le transazioni nel file testuale:
+La figura \ref{tx} riassume il metodo, appena enunciato, in cui sono memorizzate le transazioni nel file testuale:
+\begin{figure}[h]
 \begin{mdframed}
-timestamp,blockId,TxId,fee,approxSize:\\addrId,amount,prevTxId,offset[;input]:addrId,amount,script[;output]
+\textbf{infos:inputs:outputs}\\
+\textbf{infos} := timestamp,blockId,TxId,fee,approxSize\\\\
+\textbf{inputs} := $input_1;input_2;...input_i;...;input_n$\\
+$input_i$ := addrId,amount,prevTxId,offset\\\\
+\textbf{outputs} := $output_1;output_2;...output_i;...;output_n$\\
+$output_i$ := addrId,amount,script
 \end{mdframed}
+\caption{Schema formato transazioni}
+\label{tx}
+\end{figure}
+\FloatBarrier
 In seguito un esempio fittizio di una transazione:
 \begin{center}
 \textbf{1285666089,2,12,20,258:5,100,11,0:8,30,2;14,50,2}
 \end{center}
+
 La transazione di esempio con TxId 12, timestamp 1285666089(martedì 28 Settembre 2010) presenta un solo input e due output: un solo addrId pagante, 5, sta inviando bitcoin a due address distinti: 8 e 14.
 
 L’address pagante
@@ -69,7 +80,7 @@ I file presentano la seguente forma:
 \end{tabular}
 \caption{Input}
 \label{table: input}
-\end{table}\\
+\end{table}
 
 \begin{table}[h!]
 \centering
@@ -121,7 +132,7 @@ L'esempio che segue mostra un caso di importo speso :
 \end{tabular}
 \end{table}
 \FloatBarrier
-In questo caso l'address 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.\\
+In questo caso l'address 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.
 \section{Algoritmi}
 Prima di poter analizzare i dati è stato necessario un filtraggio del dataset iniziale, proprio per comprendere solo quelle transazioni di interesse. In particolare sono state considerate solo le transazioni contenenti almeno un input dust o almeno un output dust. 
 
@@ -145,7 +156,7 @@ Una volta salvate la transazioni speciali, nel codice \ref{failed_succ} viene ca
 
 Viene creato, dentro il ciclo for, la variabile ``inp" che contiene tutti gli input di quel determinato anno; il timestamp è stato opportunatamente convertito in anno. Una volta presi gli input di quel determinato anno è stata eseguita una \textbf{groupby} sugli identificativi delle transazioni per poi eseguire la funzione \textbf{agg({})} che, in questo caso, equivale ad una SELECT COUNT() DISTINCT di SQL.
 
-Una volta eseguita questa operazione è stato semplice capire quali transazioni appartenessero a quale categoria. Infatti se il numero di addrId è $\ge$ 2 vuol dire che sono presenti almeno due indirizzi diversi e quindi è una transazione di successo, mentre se il valore è = 1 vuol dire che rientra nella categoria ``Fallimento". 
+Una volta eseguita questa operazione è stato semplice capire quali transazioni appartenessero a quale categoria. Infatti se il numero di addrId è $\ge$ 2 vuol dire che sono presenti almeno due address diversi e quindi è una transazione di successo, mentre se il valore è = 1 vuol dire che rientra nella categoria ``Fallimento". 
 La variabile ``categories" è un dizionario dove la chiave è l'anno e il valore un array di tre interi: la prima posizione indica quante transazioni sono della prima categoria, la seconda posizione quante della seconda e la terza quante della terza categoria. 
 
 \lstinputlisting[label={failed_succ}, caption={Classificazione transazioni}]{Codici/classification.py}
@@ -156,6 +167,7 @@ Le transazioni che inviano del dust ad address nuovi  molto probabilmente non ra
 
 Per capire se un address sia nuovo è stata sfruttata la proprietà con i quali vengono assegnati gli identificativi agli address. Il valore numerico è stato assegnato in modo incrementale. Per esempio l’addrId 1 è il primo address che compare in assoluto sulla blockchan, mentre l’addrId 2 è il primo che compare subito dopo l’addrId 1, quindi per sapere quali address sono nuovi nella transazione X basta sapere l'id dell'ultimo address usato (cioè quello con id massimo) fino alla transazione precedente (X-1). 
 
-Per esempio se l'addrId massimo prima della transazione X è 5 tutti gli addrId, presenti nella transazione X, che hanno un addrId $>$ 5 sono nuovi.
+Per esempio se l'addrId massimo prima della transazione X è 5 tutti gli addrId, presenti nella transazione X, che hanno un valore $>$ 5 sono nuovi. Nell'algoritmo \ref{addr_new} si scorrono, tramite ciclo for, tutte le transazioni che generano almeno un output dust di successo. Si filtrano, dal dataframe ''outputs\_dust" tutto il dust generato in quella transazione. Prima vengono contati quanti address, senza ripetizioni, totali ci sono, successivamente si contanto quanti addrId sono nuovi, sfruttando la proprietà degli identificativi appena descritta. Se la transazione non presenta address nuovi, ovvero la variabile ``new\_addr" = 0, il suo TxId viene aggiunto ad una lista; questa lista verrà poi salvata in un opportuno file testuale. Per le transazioni che presentano address nuovi semplicemente la percentuale media di address non-nuovi.
 \lstinputlisting[label={addr_new}, caption={Analisi address nuovi}]{Codici/new_addresses_analisi.py}
 
+Una volta ottenute le transazioni che presentano address non-nuovi, ovvero address che erano già stati utilizzati in passato, è stato possibile trovare alcuni pattern interessanti che sono stati impiegati per generare grandi quantità di output dust. 

@@ -1,11 +1,11 @@
 for tx in tx_dust:
     maxId = tx_MaxId[TxId == tx]['prevMaxAddrId']
     out = outputs_dust[TxId == tx]
-    tot_addr = len(out['addrId'].to_set()) 
-    new_addr = len(out[addrId > maxId]['addrId'].to_set())
+    tot_addr = len(out['addrId'].to_list()) 
+    new_addr = len(out[addrId > maxId]['addrId'].to_list())
     old_addr = tot_addr - new_addr
     
-    if(new_addr == 0):
+    if(not new_addr):
         tx_notNew_addr += 1
         tx_Id_notNew.append(tx)
     else:
