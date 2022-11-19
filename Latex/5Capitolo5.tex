@@ -91,29 +91,31 @@ Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel cor
 \FloatBarrier
 Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. 
 
-La prima riguarda l'uso del ``dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. Il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. 
+La prima riguarda l'uso del ``dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. Il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. Se un utente decidesse di sua iniziativa di spendere tutto il dust in fee rientrerebbe comunque in questa categoria.
 
-In generale non è possibile distinguere una transazione di ``dust-collecting" da una transazione generata da un singolo utente, ma il numero di dust della categoria ''Speciale" costituisce un limite superiore al numero di dust spesi tramite Dust-B-Gone.
+In generale infatti non è possibile distinguere una transazione di ``dust-collecting" da una transazione generata da un singolo utente, ma il numero di dust della categoria ''Speciale" costituisce un limite superiore al numero di dust spesi tramite Dust-B-Gone.
 
-La seconda riflessione invece riguarda la tendenza a spendere il dust con almeno un altro address, in particolare notiamo un netto distacco nel 2015 dove la categoria ”Successo” rientra nell’ordine di 104 mentre ”Fallimento” nell’ordine di 103.   
+La seconda riflessione invece riguarda la tendenza a spendere il dust con almeno un altro address, in particolare notiamo un netto distacco nel 2015 dove la categoria ”Successo” rientra nell’ordine di $10^4$ mentre ”Fallimento” nell’ordine di $10^3$. In generale questa informazione è molto importante perchè dimostra come il dust possa essere efficace per la de-anonimizzazione di un wallet, ovvero capire che più address appartengano ad un medesimo utente.
 
-Una volta constatata la presenza di transazioni con input dust e con almeno due address diversi, la fase seguente è l'analisi delle transazioni. Abbiamo tre categorie di transazioni: 
+Una volta constatata la presenza di transazioni con input dust e con almeno due address diversi, la fase seguente è l'analisi delle transazioni. 
+
+Abbiamo tre categorie di transazioni: 
 \begin{itemize}
-    \item 2+ address:
-    \item 1 address:
-    \item speciale:
+    \item \textbf{2+ address}: transazioni che presentano almeno due address di input differenti, la fee però è diversa dall'importo totale di input;
+    \item \textbf{1 address}: transazioni con un singolo address di input;
+    \item \textbf{speciale}: transazioni dove l'importo totale di input è uguale alla fee.
 \end{itemize}
 
-In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_categories} mostra il numero totale di transazioni nelle tre categorie, la tabella \ref{tab:tx_categories_year} mostra una visione annuale.
+In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_categories} mostra la percentuale delle transazioni nelle tre categorie, la tabella \ref{tab:tx_categories_year} mostra una visione annuale.
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|}
         \hline
-        2+ address & 166 906\\
+        2+ address & 63,2\%\\
         \hline
-        1 address & 97 040\\
+        1 address & 36,7\%\\
         \hline
-        speciale & 17\\
+        speciale & 0.1\%\\
         \hline
     \end{tabular}
     \caption{Transazioni nelle tre categorie}
@@ -121,15 +123,15 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
 \end{table}
 \begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
         \hline
             categoria/anno  & 2010 & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 & 2017\\
         \hline 
-         2+ address &  3 & 206 & 6741 & 82 702 & 49 499 & 20 155 & 3476 & 4124 \\
+         2+ address(\%) & 100 & 93 & 55,6 & 68,4 & 55,9 & 64,5 & 62,7 & 75 \\
          \hline
-         1 address & 0 & 16 & 5390 & 38 199 & 38 919 & 11 095 & 2066 & 1355  \\
+         1 address(\%) & 0 & 7 & 44,4 & 31,5 & 44,09 & 35,4 & 37,2 & 24,7  \\
          \hline
-         speciali & 0 & 0 & 0 & 3 & 6 & 5 & 2 & 1 \\
+         speciali(\%) & 0 & 0 & 0 & 0,1 & 0,01 & 0,1 & 0,1 & 0,3 \\
          \hline
     \end{tabular}
     \caption{Transazioni nel tempo}
@@ -138,8 +140,8 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
 Dalle tabelle \ref{tab:tx_categories} \ref{tab:tx_categories_year} confermiamo quanto detto prima, la prevalenza a spendere il dust in transazioni con almeno due address diversi e lo scarso utilizzo di servizi come Dust-B-Gone; la seconda fase delle analisi si concentrerà sui primi due gruppi.\\
 La categoria "1 address" è stata ulteriormente suddivisa in due classi:
 \begin{itemize}
-    \item NOD: transazioni che presentanto input con importo $>$ 545  
-    \item OD: transazioni con soli input dust.
+    \item \textbf{NOD}: transazioni che presentanto input con importo $>$ 545  
+    \item \textbf{OD}: transazioni con soli input dust.
 \end{itemize}
 Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli address che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. 
 \begin{table}[H]
