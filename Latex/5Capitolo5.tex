@@ -1,28 +1,45 @@
 \chapter{Analisi dati}
 \section{Statistiche generali}
 I dati analizzati comprendono le transazioni dal \textbf{3 Gennaio 2009} al \textbf{10 Agosto 2017}.
-Come spiegato precedentemente il primo obiettivo è quello di presentare statistiche generali sull'uso del dust, per questo motivo il primo compito eseguito è stato il filtraggio di tutte le transazioni dust. Le transazioni dust sono quelle transazioni che contengono almeno un input dust o almeno un output dust.
+
+Come spiegato precedentemente il primo obiettivo è quello di presentare statistiche generali sull'uso del dust, mostrare gli effetti del dust sulla de-anonimizzazione di address e infine descrivere due pattern che potrebbero rappresentare dei Dust Attack.
+
+Per questo motivo il primo compito è stato il filtraggio di tutte le transazioni dust, ovvero tutte quelle transazioni che comprendono tra gli input e/o tra gli output un importo $<$ 546 satoshi.
+\begin{figure}[H]
 \begin{mdframed}
  infos:inputs:118890,\textbf{99},2;118902,9987098901,2 \checkmark\\
  infos:21482214,984902,114569039,1;21482868,\textbf{1},73028796,240:outputs \checkmark\\
  infos:118925,9963398109,121409,0:118926,9962398010,2 \textbf{x}
 \end{mdframed}
-Le prime due transazioni sono considerate nelle analisi successive, l'ultima invece è stata ignorata perchè di poco interesse ai fini dello studio del Dust Attack.\\
-Le transazioni totali sono 245 410 083 mentre le transazioni dust sono 2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in \cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Da questi due ultimi risultati possiamo dedurre che ci sono transazioni in cui il dust è presente sia negli input che negli output.\\\\
-Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice \cite{SD} è un noto servizio di gambling, nato nell'Aprile 2012, che usa il dust per comunicare ai giocatori perdenti che hanno perso la loro scommessa. Data la notorietà del servizio, risulta molto poco probabile che l'intento sia quello di un Dust Attack.\\
-Le transazioni generate da Satoshi Dice sono 1 465 295, ovvero il 69\% delle transazioni dust. Questo significa che i possibili attaccanti sono presenti nel rimanente 31\%, ovvero nelle restanti 649 040 transazioni dust.\\\\
-Una volta ottenute tutte e sole le transazioni di interesse ho realizato i seguenti istogrammi che mostrano la distribuzione del numero di input dust e output dust. In entrambi i grafici le colonne rappresentano un gruppo di cinquanta valori.
+\caption{Esempi di transazioni accettate o rifiutate}
+\label{tx_dust}
+\end{figure}
+\Floatbarrier
+La figura \ref{tx_dust} mostra due esempi di transazioni dust e un esempio di transazione non-dust, le prime due transazioni vengono considerate nelle analisi successive proprio perchè contengono importi dust. 
+
+La prima infatti contiene, tra gli output, un importo di 99 satoshi, la seconda invece contiene un importo di 1 satoshi tra gli input. L'ultima transazione invece è stata scartata proprio perchè tutti gli importi sono $\ge$ 546 satoshi. Le transazioni non-dust di qusto tipo sono state ignorate poichè le analisi vertono sulla generazione e sul consumo del dust e sulla de-anonimizzazione causata da questi importi.
+
+Le transazioni totali sono 245 410 083 mentre le transazioni che generano o consumano dust sono  2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in \cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Da questi due ultimi risultati possiamo dedurre che ci sono transazioni in cui il dust è presente sia negli input che negli output.
+
+Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice, come spiegato in precedenza, è un noto servizio di gambling nato nell'Aprile 2012; questo servizio utilizza il dust per comunicare ai giocatori perdenti che hanno perso la loro scommessa. Data la notorietà del servizio risulta molto poco probabile che l'intento sia quello di un Dust Attack, inoltre le analisi vogliono mostrare il comportamento degli utenti nei confonti del dust proveniente da address sconosciuti; gli address di Satoshi Dice sono noti proprio perchè il servizio stesso li ha resi pubblici.
+
+Le transazioni generate da Satoshi Dice sono 1 465 295, ovvero il 69\% delle transazioni dust. Questo risultato, oltre a dimostrare la popolarità del servizio, permette di concentrare le future analisi sul rimanente 31\%(649 040) delle transazioni.
+
+Una volta ottenute tutte e sole le transazioni di interesse sono stati realizzati gli istogrammi mostrati in figura \ref{fig:dust_distribuzione}. Il primo istogramma mostra la distribuzione del numero di input dust, il secondo invece la distribuzione del numero di output. In entrambi i grafici non sono state contate le transazioni con 0 importi dust. La prima colonna infatti rappresenta, in entrambi gli istogrammi, l'intervallo [1, 50].
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.9]{Grafici/distribuzione_dust.pdf}
     \caption{Distribuzione numero input dust(sinistra) e output dust(destra)}
     \label{fig:dust_distribuzione}
+    \subcaption{Intervalli di ampiezza 50}
+    \subcaption{Primo intervallo [1, 50]}
 \end{figure}
 \FloatBarrier 
-Dal primo istogramma possiamo notare come siano molto frequenti le transazioni con un numero di input dust nell'intervallo [1, 50), al contrario le transazioni con un elevato numero di input dust risultano poco usuali.\\
-Il secondo grafico mostra come anche in questo caso sia molto frequente avere un numero di output dust nell'intervallo [1, 50). Al contratio del primo istogramma però possiamo notare come siano presenti molte più transazioni con un elevato numero di output dust. Da questi due grafici inoltre possiamo già intuire che molto output dust generato non venga successivamente speso.\\\\ 
-Nelle analisi successive viene ignorato il dust generato con script OP\_RETURN. Questa scelta è motivata dal fatto che gli output con questo script non possono essere spesi; chi lo genera sicuramente non sta attuando un Dust Attack.\\
-Il grafico seguente mostra la generazione del dust spendibile nel tempo.
+Entrambi gli istogrammi mostrano come siano molto frequenti le transazioni presenti nel primo intervallo di ampiezza [1, 50]. Nel primo grafico però notiamo anche che le transazioni con un elevato numero di input dust risultino poco usuali. Al contrario del primo grafico il secondo mostra come siano presenti tante transazioni che generano un elevato numero di output dust. Da questi due grafici inoltre possiamo già intuire che diversi output dust generati non vengano successivamente spesi.
+
+Nelle analisi successive viene ignorato il dust generato con script OP\_RETURN. Questa scelta è motivata dal fatto che gli output con questo script non possono essere spesi, questa tipologia di dust quindi non può avere effetti sulla de-anonimizzazione; inoltre chi lo sta generando sicuramente non sta attuando un Dust Attack.
+
+Il grafico \ref{fig:dust_created} mostra la generazione nel tempo del dust spendibile.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.9]{Grafici/dust_created_year.pdf}
@@ -30,41 +47,63 @@ Il grafico seguente mostra la generazione del dust spendibile nel tempo.
     \label{fig:dust_created}
 \end{figure}
 \FloatBarrier 
-Dall'istogramma notiamo che già dal 2010 sono comparsi i primi output dust, anche se in quantità molto ridotta. Possiamo osservare una rapida salita tra il 2010 e il 2011, solo nel mese di luglio infatti sono stati generati 27 376 output dust.
-Il picco della generazione di dust lo abbiamo nel 2013, dove sono state trovate transazioni legate "a catena"; nel paragrafo successivo approfondirò questo schema. Dopo il picco del 2013 osserviamo una diminuzione negli anni fino al 2017 dove sembrerebbe esserci una ricrescita. Bisogna però specificare che la maggior parte del dust generato nel 2017 proviene da due address: 1Enjoy1C4bYBr3tN4sMKxvvJDqG8NkdR4Z e 1SochiWwFFySPjQoi2biVftXn8NRPCSQC.\\Questi due noti address sono comparsi per la prima volta nel 2014 generando transazioni con circa 750 output di 1 satoshi ciascuno. La cosa interessante è che, nonostante il caos causato in vari forum Bitcoin, la tempesta di spam del 2014 "Enjoy Sochi" ha lasciato una piccola impronta sulla blockchain; solo 65 transazioni sono state confermate in quell'anno. L'aspetto singolare di questo fenomeno è che abbiamo visto echi di esso tornare negli anni successivi. Nel 2015 infatti sono state confermate 23 transazioni mentre nel 2017 sono presenti 255 transazioni generate da 1Sochi e 1Enjoy. Sebbene sia possibile che vengano eseguite dalla stessa entità, che spendeva importi da quegli address anche nel 2018, è anche possibile che qualcun altro abbia salvato le transazioni originali non confermate e le stia estraendo per qualche motivo. In questi tre anni il fenomeno "Enjoy Sochi" ha generato 343 transazioni per un totale di output dust intorno ai 255 000.\\\\
-In generale sono stati generati 2 893 877 output dust con script diverso da OP\_RETURN; circa il 48.5\% è stato speso. Non è presente una grande differenza tra il dust non speso(51.5\%) e quello speso. Inoltre come possiamo osservare dalla tabella \ref{tab:dust_spent_unspent} la differenza è dovuta soprattutto agli anni 2011 e 2017; il dust del 2017 potrebbe essere stato speso successivamente. Dalla tabella inoltre notiamo la tendenza a spendere il dust nonostante possa provenire da address non noti come Satoshi Dice, quindi il prossimo obiettivo è capire come siano stati spesi questi importi.
+Dal grafico è possibile notare che già dal 2010 sono comparsi i primi output dust, anche se in quantità molto ridotta. Possiamo osservare una rapida salita tra il 2010 e il 2011, solo nel mese di luglio infatti sono stati generati 27 376 output dust.
+
+Il picco della generazione di dust lo abbiamo nel 2013, dove sono state trovate transazioni legate "a catena"; nel paragrafo successivo verrà approfondito questo schema. Dopo il picco del 2013 osserviamo una diminuzione negli anni fino al 2017 dove sembrerebbe esserci una ricrescita. Bisogna però specificare che la maggior parte del dust generato nel 2017 proviene da due address: 1Enjoy1C4bYBr3tN4sMKxvvJDqG8NkdR4Z e 1SochiWwFFySPjQoi2biVftXn8NRPCSQC.
+
+Questi due noti address sono comparsi per la prima volta nel 2014, in concomitanza con le olimpiadi di Sochi in Russia, generando transazioni con circa 750 output di 1 satoshi ciascuno. È importante notare che, nonostante il caos causato in vari forum Bitcoin, la tempesta di spam del 2014 "Enjoy Sochi" ha lasciato una piccola impronta sulla blockchain; solo 65 transazioni(48 750 output dust) sono state confermate in quell'anno.
+
+L'aspetto singolare di questo fenomeno è che abbiamo visto echi di esso tornare negli anni successivi. Nel 2015 infatti sono state confermate 23 transazioni(1 725 output dust) mentre nel 2017 sono presenti 255 transazioni(191 250 output dust) generate da 1Sochi e 1Enjoy. Sebbene sia possibile che vengano eseguite dalla stessa entità, che spendeva importi da quegli address anche nel 2018, è anche possibile che queste transazioni fossero state generate nel 2014 e confermate solo nel 2015 e nel 2017. In questi tre anni il fenomeno "Enjoy Sochi" ha generato 343 transazioni per un totale di output dust intorno ai 255 000.
+
+In generale sono stati generati 2 893 877 output dust con script diverso da OP\_RETURN; circa il 48.5\% è stato speso. Quindi non è presente una grande differenza tra la quantità di dust non speso(51.5\%) e la quantità di dust speso. 
+
+La tabella \ref{tab:dust_spent_unspent} mostra le percentuali negli anni del dust speso e non-speso; il 2009 non è stato considerato perchè non è stato generato alcun output dust in quell'anno. La superiorità del dust non-speso rispetto al dust speso deriva quindi soprattutto dagli anni 2011 e 2017, anche se parte del dust del 2017 potrebbe essere stato speso successivamente al 10 Agosto 2017, data dell'ultima transazione del dataset. Il 2010, nonostante il dust non-speso sia l'83\%, non è molto rilevante poichè sono stati generati solo 14 output dust in totale. 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
         \hline
            categoria/anno   & 2010 & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 & 2017\\
         \hline 
-         speso &  3 & 825 & 55 352 & 601 685 & 303 484 & 392 823 & 28 026 & 20 695 \\
+         speso &  17\% & 0,2\% & 54\% & 44\% & 76\% & 94,6\% & 95,6\% & 10\% \\
          \hline
-         non-speso & 14 & 359 849 & 47 197 & 772 298 & 96 858 & 22 223 & 1272 & 191 273  \\
+         non-speso & 83\% & 99,8\% & 46\% & 56\% & 24\% & 5,4\% & 4,4\% & 90\%  \\
          \hline
     \end{tabular}
-    \caption{Speso e Non-Speso negli anni}
+    \caption{Dust Speso e Non-Speso negli anni}
     \label{tab:dust_spent_unspent}
 \end{table}
 Gli output dust sono stati suddivisi in quattro categorie:
 \begin{enumerate}
-    \item Successo: dust speso in transazioni che presentano almeno due address di input la cui fee è diversa dall'importo totale di input;
-    \item Fallimento: dust speso in transazioni con un solo address di input;
-    \item Speciale: dust speso in transazioni di "dust collecting", transazioni la cui fee è uguale all'importo totale di input;
-    \item Non speso.
+    \item \textbf{Successo}: dust speso in transazioni che presentano almeno due address di input la cui fee è diversa dall'importo totale di input;
+    \item \textbf{Fallimento}: dust speso in transazioni con un solo address di input;
+    \item \textbf{Speciale}: dust speso in possibili transazioni di ``dust collecting", transazioni la cui fee è uguale all'importo totale di input;
+    \item \textbf{Non speso}.
 \end{enumerate}
-I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. La terza categoria è stata separata dalla seconda prorpio per evidenziare l'uso del dust collecting.\\
+I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. Nonostante il ``dust-collecting" rappresenti un caso di de-anonimizzazione fallita, gli address di input infatti potrebbero appartenere ad utenti diversi, viene separata dalla categoria ``Fallimento" per mostrare se e quanto sia stato utilizzato questo servizio.
+
 Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel corso degli anni.
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.7]{Grafici/uso_del_dust_new.pdf}
+    \includegraphics[scale=0.6]{Grafici/uso_del_dust_new.pdf}
     \caption{Uso del dust nel tempo}
     \label{fig:dust_year}
 \end{figure}
 \FloatBarrier
-Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. La prima riguarda l'uso del "dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. La seconda invece riguarda la tendenza a spendere il dust con almeno un altro address, in particolare notiamo un netto distacco nel 2015 dove la categoria "Successo" rientra nell'ordine di $10^4$ mentre "Fallimento" nell'ordine di $10^3$. Gli address che hanno generato il dust potrebbero aver avuto altre motivazioni diverse dal Dust Attack, in molti casi però sono riusciti a ottenere lo stesso risultato, ovvero collegare più address tra loro.\\\\
-Una volta constatata la presenza di transazioni con input dust e con almeno due address diversi, la fase seguente è l'analisi delle transazioni. Abbiamo tre categorie di transazioni: almeno due address diversi, un solo address e dust collecting.\\
+Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. 
+
+La prima riguarda l'uso del ``dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. Il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. 
+
+In generale non è possibile distinguere una transazione di ``dust-collecting" da una transazione generata da un singolo utente, ma il numero di dust della categoria ''Speciale" costituisce un limite superiore al numero di dust spesi tramite Dust-B-Gone.
+
+La seconda riflessione invece riguarda la tendenza a spendere il dust con almeno un altro address, in particolare notiamo un netto distacco nel 2015 dove la categoria ”Successo” rientra nell’ordine di 104 mentre ”Fallimento” nell’ordine di 103.   
+
+Una volta constatata la presenza di transazioni con input dust e con almeno due address diversi, la fase seguente è l'analisi delle transazioni. Abbiamo tre categorie di transazioni: 
+\begin{itemize}
+    \item 2+ address:
+    \item 1 address:
+    \item speciale:
+\end{itemize}
+
 In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_categories} mostra il numero totale di transazioni nelle tre categorie, la tabella \ref{tab:tx_categories_year} mostra una visione annuale.
 \begin{table}[H]
     \centering
@@ -74,7 +113,7 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
         \hline
         1 address & 97 040\\
         \hline
-        dust collecting & 17\\
+        speciale & 17\\
         \hline
     \end{tabular}
     \caption{Transazioni nelle tre categorie}
@@ -90,7 +129,7 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
          \hline
          1 address & 0 & 16 & 5390 & 38 199 & 38 919 & 11 095 & 2066 & 1355  \\
          \hline
-         dust collecting & 0 & 0 & 0 & 3 & 6 & 5 & 2 & 1 \\
+         speciali & 0 & 0 & 0 & 3 & 6 & 5 & 2 & 1 \\
          \hline
     \end{tabular}
     \caption{Transazioni nel tempo}
