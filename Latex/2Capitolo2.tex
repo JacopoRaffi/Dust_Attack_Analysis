@@ -106,15 +106,87 @@ Un address acquisisce valore in base a quanti bitcoin detiene; quando si usa un 
 
 Il change address può essere un address diverso da A, oppure A stesso, a discrezione dell’utente: per rafforzare l’anonimato è estremamente consigliabile da parte del pagante, al fine di ricevere i resti, utilizzare sempre address diversi da quelli usati per effettuare il pagamento.
 
-\textbf{spiegare utxo e fare riferimento figura}
+Quindi, come mostrato in \ref{fig:transaction}, gli input di una transazione sono precedenti output di un'altra transazione. Gli output di una transazione possono essere in due stati:
+\begin{enumerate}
+    \item \textbf{speso}: output che compare come input di una transazione successiva;
+    \item \textbf{non-speso}: output che non sono input di alcuna transazione.
+\end{enumerate}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4, trim = 1cm 2cm 0cm 3cm, clip]{Images/Transactions-input-and-output-in-blockchain.jpg.pdf}
-    \caption{Schema transazioni in Bitcoin}
+    \caption{Transazioni in Bitcoin}
     \label{fig:transaction}
 \end{figure}
 \FloatBarrier
+
+Tutti gli output non-spesi vengono salvati in un unico insieme denominato UTXO(Unspent Transaction Output) set \cite{utxo}.
+
+L'UTXO set è il sottoinsieme degli output delle transazioni Bitcoin che non sono stati spesi e che possono essere utilizzati come input di altre transazioni. Ogni volta che viene creata una nuova transazione, vengono eliminati output dall'UTXO set poichè passano dallo stato non-speso allo stato speso, inoltre vengono inseriti nuovi UTXO poichè ogni transazione genera almeno un output. Fondamentalmente, le transazioni consumano UTXO (nei loro input) e ne generano di nuovi (nei loro output). Poiché l'UTXO set contiene tutti gli output non spesi, memorizza tutte le informazioni richieste per convalidare una nuova transazione senza dover ispezionare l'intera blockchain. Come suggerisce già il nome, gli UTXO sono effettivamente output di Bitcoin e, come tali, sono costituiti da due parti: l'importo trasferito all'output e lo script che specifica le condizioni da soddisfare per spendere l'output. 
+
+Il vantaggio principale di utilizzare l'UTXO set è la dimensione molto più ridotta dell'intero database delle transazioni (la blockchain), può essere qundi conservato nella RAM, il che velocizza il controllo di validità delle transazioni. L'algoritmo \ref{alg:tx_btc} schematizza la politica di accettazione locale di una transazione. La transazione, accettata localmente eseguendo questo algoritmo può non essere globalmente validata; vengono aggiunte alla blockchain una quando vengono confermate a livello globale.
+\begin{algorithm}
+\begin{algorithmic}
+\State $tx \gets$ ricevi transazione
+\For{input $i$ in $tx$}
+    \If{($i$ not in local UTXO $or$ firma non valida)} 
+        \State scarta $tx$ e fermati
+    \EndIf
+\EndFor
+\If{sum(inputs) $<$ sum(outputs)}
+    \State scarta $tx$ e fermati
+\EndIf
+\For{input $i$ in $tx$}
+    \State rimuovi $i$ dall'UTXO set locale
+\EndFor
+\State inoltra $tx$
+\end{algorithmic}
+\caption{Gestione transazione Bitcoin}
+\label{alg:tx_btc}
+\end{algorithm}
+\FloatBarrier
+In Bitcoin quindi non esiste un saldo memorizzato, il bilancio di un address infatti è un costrutto derivato dai Software Wallet. Il wallet calcola il saldo di un address scansionando la blockchain e sommando gli importi di tutti gli UTXO relativi a quel singolo address. Infatti se un address riceve diversi importi, questi non vengono aggregati ma vengono tutti salvati all'interno dell'UTXO set. Il bilancio complessivo di un wallet invece non è altro che la somma dei bilanci dei singoli address appartenenti a quel wallet. 
+Gli utenti non conoscono il saldo complessivo di un utente proprio perchè non sanno quali address appartengano ad un determinato wallet, esistono tuttavia delle tecniche e delle euristiche che permettono non solo di conoscere gli address di un wallet ma consentono anche di conoscere le informazioni personali del proprietario.
 \section{Anonimato in Bitcoin}\label{Anonimato}
-\cite{de-anonimizzazione}
+L'anonimato in Bitcoin dovrebbe garantire che sia impossibile collegare address differenti, ovvero capire che appartengano ad uno stesso utente, e che non sia possibile scoprire l'identità di un proprietario di un wallet.
+
+Nel protocollo Bitcoin l'anonimato però è garantito solo attraverso lo pseudonimo, ogni utente invia e spende bitcoin tramite un numero arbitrario di address che non contengono informazioni reali sull'utente; per questo Bitcoin non viene definito anonimo ma pseudo-anonimo; esistono infatti diversi attacchi che permettono di violare l'anonimato di Bitcoin \cite{de-anonimizzazione} \cite{de-anon2}.
+
+Uno di questi attacchi si basa sull'analisi delle transazioni salvate sulla blockchain che, come ricordiamo, è pubblica e immutabile. Lo scopo di questo attacco è di aggregare address differenti in cluster, ciascuno rappresentante un singolo utente, utilizzando le informazioni memorizzate nella blockchain. Una volta ottenuti questi cluster è poi possibile utilizzare informazioni esterne per identificare il proprietario di un singolo cluster. 
+
+Per formare questi cluster vengono utilizzate delle euristiche basate sul comportamento degli utenti di Bitcoin, queste regole quindi dipendono dal tempo e non sono assolute. 
+
+Le due euristiche più utilizzate sono:
+\begin{enumerate}
+    \item \textbf{inputs multipli};
+    \item \textbf{change address}.
+\end{enumerate}
+
+La prima euristica dice:
+\begin{center}
+    ``\textit{In una transazione multi-input tutti gli address appartengono allo stesso utente}"
+\end{center}
+
+Ogni transazione deve essere firmata per ogni input, significa che per firmare la transazione la chiave privata di ciascun input dovrebbe essere nota. Ciò implica che il firmatario conosca tutte le chiavi private e quindi è il proprietario di tutti gli indirizzi di input. Questa prima semplice euristica è stata utilizzata con successo in passato ma non è più valida per tutte le transazioni. La prima contromisura proposta è stata CoinJoin \cite{coinjoin} nel 2013, l'idea principale è che un insieme di utenti si incontri e crei collettivamente una singola transazione utilizzando i loro address. Questa situazione quindi porterebbe ad un falso positivo della regola euristica appena enunciata, infatti gli address di input non appartengono ad un unico utente.
+
+La seconda euristica dice: 
+\begin{center}
+    ``\textit{il change address appartiene allo stesso proprietario degli address di input}"
+\end{center}
+
+Il problema principale di questa regola è capire quali degli address di output sia il change address, escludendo il caso di ''self change", ovvero quando il change address è uno degli address di input. 
+
+Un address $a$ viene definito change address sse:
+\begin{itemize}
+    \item la transazione non è coinbase;
+    \item è presente più di un output;
+    \item negli address di output non è presente alcun address di input(niente ''self change");
+    \item è la prima volta che $a$ appare nella blockchain e non ci sono altri address di output che soddisfano questa condizione.
+\end{itemize}
+
+L'attacco che verrà analizzato in questa tesi, denominato \textbf{Dust Attack}, basa la propria strategia sulla prima euristica, in particolare l'attaccante agisce in modo che le vittime generino transazioni multi-input così da poter formare un cluster di address appartenenti ad un unico utente.
+
+
+
+
 
 
