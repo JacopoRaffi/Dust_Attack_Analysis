@@ -89,7 +89,7 @@ L'euristica utilizzata da questo tipo di attacco è la regola degli input multip
 \end{center}
 L'obiettivo del Dust Attack è la de-anonimizzazione del proprietario di un wallet, in particolare l'attaccante vuole scoprire quali address appartengano allo stesso wallet, così da ottenere un'importante informazione che può essere utilizzata per effettuare altri attacchi più elaborati e molto più pericolosi.
 
-Il Dust Attack deriva il proprio nome dall'impiego del dust, infatti il dust, nelle transazioni standard, non è mai speso singolarmente ma viene sempre unito ad altri importi. L'attaccante quindi, come mostrato in figura \ref{fig:Dust_attack}, invia centinaia, o migliaia, di importi dust ad address diversi confidando che vengano spesi successivamente in una nuova transazione insieme ad altri address. Se ciò avviene l'attaccante riesce a collegare questi address e capire che appartengono, con una certa probabilità, allo stesso utente. 
+Il Dust Attack deriva il proprio nome dall'impiego del dust, infatti il dust, nelle transazioni standard, non è mai speso singolarmente ma viene sempre unito ad altri importi. L'attaccante quindi, come mostrato in figura \ref{fig:Dust_attack}, invia centinaia, o migliaia, di importi dust ad address diversi confidando che vengano spesi successivamente in una nuova transazione insieme ad altri address. Se ciò avviene l'attaccante riesce a collegare questi address e capire che appartengono, con una certa probabilità, allo stesso utente. Gli address a cui viene inviato il dust sono tutti non-nuovi, ovvero address già comparsi in precedenza sulla blockchain. Le transazioni che inviano del dust ad address nuovi  molto probabilmente non rappresentano un Dust Attack, proprio perchè risulterebbe alquanto inusuale de-anonimizzare un address mai visto fino a quel momento; molto probabilmente il proprietario di un address nuovo è lo stesso utente che genera quella determinata transazione poichè è l'unico a conoscenza di quel determinato address.
 
 Il Dust Attack ad un primo sguardo potrebbe sembrare particolarmente costoso, proprio perchè invia tanti importi ad address differenti, ma se analizziamo il valore in euro di un singolo satoshi, si può osservare che il costo è relativo; soprattutto se l'obiettivo finale è il furto dei bitcoin delle vittime. Infatti abbiamo che:
 \begin{center}
@@ -99,7 +99,7 @@ Il Dust Attack ad un primo sguardo potrebbe sembrare particolarmente costoso, pr
 Questo significa che 1 singolo satoshi vale meno di 1 centesimo, quindi se un attaccante genera una transazione con 1000 output dust e manda a ciascun address 1 satoshi, in totale spende 16 centesimi, escludendo la fee.   
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.45, trim = 1cm 5cm 0cm 0cm, clip]{Images/dust_attack.pdf}
+    \includegraphics[scale=0.5, trim = 1cm 5cm 0cm 0cm, clip]{Images/dust_attack.pdf}
     \caption{Schema Dust Attack}
     \label{fig:Dust_attack}
 \end{figure}
@@ -123,6 +123,9 @@ Questi address quindi sono collegati tra loro ed è possibile capire che apparte
 Esistono invece due possibili motivi per cui un Dust Attack può fallire. In figura \ref{fig:fallito} vengono schematizzati questi due possibili esiti.
 
 Nel primo schema la vittima spende il dust ricevuto, ma utilizza una transazione i cui input si riferiscono tutti all'address in cui è stato depositato il dust. In questo caso l'attaccante non ricava alcuna informazione utile perchè non riesce nell'intento di far unire address diversi di un utente nella medesima transazione. Nel secondo schema invece la vittima non spende il dust, troncando sul nascere l'attacco. 
+
+Il Dust Attack in generale risulta più efficace soprattutto se il dust è diretto verso gli address che hanno un bilancio complessivo pari a zero proprio perché obbliga la vittima a spendere la cifra ottenuta con altri suoi address diversi.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5, trim = 1cm 6cm 0cm 3cm, clip]{Images/fallito2.pdf}
@@ -135,7 +138,6 @@ Nel primo schema la vittima spende il dust ricevuto, ma utilizza una transazione
     \subcaption{La vittima non spende il dust}
 \end{figure}
 \FloatBarrier
-Il Dust Attack in generale risulta più efficace soprattutto se il dust è diretto verso gli address che hanno un bilancio complessivo pari a zero proprio perché obbliga la vittima a spendere la cifra ottenuta con altri suoi address diversi.
 
 È importante notare che lo scopo del Dust Attack non è quello di rubare fondi di altri utenti né quello di scoprire informazioni personali, per esempio nome e cognome, della vittima, ma permette di ricavare un'importante informazione, ovvero l'appartenenza di address differenti ad uno stesso utente, che può essere usata in seguito per effettuare attacchi elaborati e più pericolosi.
 

@@ -4,9 +4,9 @@ In questo capitolo verranno mostrati il formato dei dati e alcuni degli algoritm
 Il codice è stato scritto in python, versione 3.9.12, distribuzione Anaconda.
 
 La libreria per la realizzazione dei grafici è matplotlib versione 3.5.1 e la la libreria per le statistiche è Pandas versione 1.5.0
-
+\section{Strumenti utilizzati}
 \section{Rappresentazione dei dati}
-Il dataset su cui sono state condotte le analisi è stato ottenuto tramite un filtraggio della blockchain originale, il peso del file testuale contenente il dataset filtrato si aggira intorno ai 40 GB.
+Il dataset su cui sono state condotte le analisi è stato ottenuto tramite un filtraggio della blockchain originale, la dimensione del file testuale contenente il dataset filtrato si aggira intorno ai 40 GB.
 
 Ogni riga del file rappresenta una singola transazione che presenta il seguente formato:
 \textbf{infos:inputs:outputs}.
@@ -22,14 +22,13 @@ Il campo \textbf{inputs} contiente gli input della transazione separati da '\tex
 
 Ogni input presenta la seguente struttura:
 \begin{itemize}
-    \item \textbf{addrId}: valore intero, rappresenta colui che sta pagando. Il valore numerico è stato assegnato in modo incrementale.
+    \item \textbf{addrId}: valore intero, rappresenta l'address che sta pagando. Il valore numerico è stato assegnato in modo incrementale.
     Per esempio l'addrId 1 è il primo address che compare in assoluto sulla blockchan, mentre l'addrId 2 è il primo che compare subito dopo l'addrId 1;
     \item \textbf{amount}: importo, in satoshi, speso dal pagante. Un satoshi equivale a $10^{-8}$ bitcoin; 
-    \item \textbf{prevTxId}: l'ID della transazione in cui l’address pagante ha ricevuto l’importo che sta spendendo;
-    \item \textbf{offset}: intero relativo alla posizione dell’address che sta pagando all’interno degli output della transazione specificata nel punto precedente, in cui il pagante ha ricevuto ciò che sta spendendo.
+    \item \textbf{prevTxId}: l'ID della transazione da cui l’address pagante ha ricevuto l’importo che sta spendendo;
+    \item \textbf{offset}: intero relativo alla posizione dell’address che sta pagando all’interno degli output della transazione specificata nel punto precedente.
 \end{itemize}
-L'ultimo campo presenta una struttura pressoché uguale a quella del campo precedente.
-Il campo \textbf{outputs} contiene gli output della transazione separati da '\textbf{;}'; in questo caso deve esserci almeno un output.
+Il campo \textbf{outputs} contiene gli output della transazione separati da '\textbf{;}'; in questo caso deve essere presente almeno un output.
 
 La forma dei singoli output è la seguente:
 \begin{itemize}
@@ -41,7 +40,7 @@ La forma dei singoli output è la seguente:
     
     EMPTY=5;
 \end{itemize}
-La figura \ref{tx} riassume il metodo, appena enunciato, in cui sono memorizzate le transazioni nel file testuale:
+La figura \ref{tx} riassume il formato con cui sono memorizzate le transazioni nel file testuale:
 \begin{figure}[h]
 \begin{mdframed}
 \textbf{infos:inputs:outputs}\\
@@ -106,7 +105,6 @@ Le due categorie presentano la medesima struttura a tabella con i seguenti campi
     \item \textbf{spentBlock}: l'identificativo del blocco in cui è salvata la transazione con identificativo spentTxId, assume valore -1 se l'importo non è stato speso;
     \item \textbf{spentTimestamp}: l'istante in cui è stata validata la transazione con identificativo spentTxId, anche in questo caso assume valore -1 se non è stato speso l'output.
 \end{itemize}
-%tmp &  blockId &   TxId &  script &  addrId &  amount &  spentTxId &  spentBlock &  spentTmp\\
 
 I primi tre campi sono relativi alla transazione in cui viene generato l'output mentre gli ultimi tre sono relativi alla transazione dove questo output appare come input, ovvero se e quando viene speso.
 
@@ -134,21 +132,21 @@ L'esempio che segue mostra un caso di importo speso :
 \FloatBarrier
 In questo caso l'address 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.
 \section{Algoritmi}
-Prima di poter analizzare i dati è stato necessario un filtraggio del dataset iniziale, proprio per comprendere solo quelle transazioni di interesse. In particolare sono state considerate solo le transazioni contenenti almeno un input dust o almeno un output dust. 
+Prima di poter analizzare i dati è stato necessario un filtraggio del dataset iniziale, proprio per ottenere solo quelle transazioni di interesse. In particolare sono state considerate solo le transazioni contenenti almeno un input dust o almeno un output dust. 
 
-L'algoritmo realizzato per il filtraggio di queste transazioni è molto semplice \ref{Filtraggio dust}. Si tratta di leggere riga per riga il file testuale, prelevare i campi inputs e outputs tramite una tokenizzazione della stringa e controllare che sia presente un importo dust tramite la funzione \textbf{isDust()}. Questa funzione semplicemente scorre gli input(e gli output) e controlla che ci sia un importo nell'intervallo [1, 545]. Se presente la funzione restituisce $True$ e la transazione viene scritta in un apposito file.
+L'algoritmo realizzato per il filtraggio di queste transazioni è molto semplice ed è mostrato in \ref{Filtraggio dust}. Si tratta di leggere riga per riga il file testuale, prelevare i campi inputs e outputs tramite una tokenizzazione della stringa, guidata dal separatore ':', e controllare che sia presente un importo dust tramite la funzione \textbf{isDust()}. Questa funzione semplicemente scorre gli input(e gli output) e controlla che esista un importo nell'intervallo [1, 545]. Se presente la funzione restituisce $True$ e la transazione viene scritta in un apposito file.
 
-Il dataset iniziale(nel codice ``source") ha un peso di 40 GB, il dataset filtrato(nel codice ``destination") ha un peso di 497 MB. 
+Il dataset iniziale(nel codice ``source") ha un peso di 40 GB, il dataset filtrato(nel codice ``destination") ha un peso di 497 MB. La dimensione del dataset di output indica come gli importi dust siano una minoranza rispetto al totale degli importi.
 \lstinputlisting[label={Filtraggio dust}, caption={Filtraggio transazioni dust}]{Codici/filter_dust.py}
-Una volta ottenutte tutti e soli i dati di interesse è stato necessario eliminare le transazioni generate da Satoshi Dice. Il motivo di questa scelta è stato perchè l'obiettivo era di esaminare il comportamento degli address nei confronti del dust proveniente da address non noti. Inoltre un altro obiettivo era di restringere il campo di ricerca dei creatori di dust, così da poter trovare possibili pattern di Dust Attack.
+Una volta ottenutte tutti e soli i dati di interesse è stato necessario eliminare le transazioni generate da Satoshi Dice. Il motivo di questa scelta è stato perchè l'obiettivo era di esaminare il comportamento del dust proveniente da address non noti, in modo da restringere il campo di ricerca dei creatori di dust, così da poter trovare possibili pattern di Dust Attack.
 
-Il codice \ref{Filtraggio SD} è molto simile al filtraggio delle transazioni dust. Viene letto il file riga per riga, viene prelevato il campo inputs e si controlla che non sia presente un identificativo associato ad uno degli address resi pubblici da Satoshi Dice. È stato necessario quindi convertire gli address pubblici nei corrispettivi identificativi.
+Il codice \ref{Filtraggio SD} è molto simile a quello mostrato per il filtraggio delle transazioni dust. Viene letto il file riga per riga, viene prelevato il campo inputs e si controlla che non sia presente un identificativo associato ad uno degli address resi pubblici da Satoshi Dice. 
 
-Ciò è stato abbastanza semplice perchè la corrispondenza \textbf{address-addrId} era salvata all'interno di un file. Quindi è bastato utilizzare da shell il comando \textbf{grep} per ottenere gli identificativi degli address di Satoshi Dice. Una volta ottenuti, questi identificativi sono stati salvati in una lista(SD\_ids nel codice), la funzione \textbf{is\_SD()}, applicata solo al campo inputs, restituisce $True$ se è presente un identificativo appartenente alla lista ``SD\_ids". La transazione viene scritta in un ulteriore file quando \textbf{is\_SD()} restituisce $False$; ovvero quando la transazione non è stata generata da Satoshi Dice.
+È stato necessario quindi convertire gli address pubblici di Satoshi Dice nei corrispettivi identificativi. Ciò è stato abbastanza semplice perchè avevamo a disposizione un file che memorizzava la corrispondenza \textbf{address-addrId}. Una volta ottenuti, questi identificativi sono stati salvati in una lista(SD\_ids). La funzione \textbf{is\_SD()}, applicata solo al campo inputs, restituisce $True$ se è presente un identificativo appartenente alla lista ``SD\_ids". La transazione viene scritta in un ulteriore file quando \textbf{is\_SD()} restituisce $False$, ovvero quando la transazione non è stata generata da Satoshi Dice.
 \lstinputlisting[label={Filtraggio SD}, caption={Filtraggio transazioni generate da Satoshi Dice}]{Codici/filter_SD.py}
-Dopo aver applicato i vari filtraggi, gli input e gli output delle varie transazioni sono stati salvati in appositi file csv, con la struttura seguente \ref{table: input} \ref{table: output}. Grazie a questa forma è stato possibile ottenere quali output dust siano stati spesi e quali invece no. Questa operazione è stata realizzata grazie ad una funzione della libreria Pandas, \textbf{merge()}, che permette di realizzare operazioni di JOIN stile SQL.
+Dopo aver applicato questi filtraggi, gli input e gli output delle varie transazioni sono stati salvati in appositi file csv, con la struttura spiegata precedentemente \ref{table: input} \ref{table: output}. Una volta eliminati gli output dust con script OP\_RETURN, è stato possibile ottenere quali output dust siano stati spesi e quali invece no. Questa operazione è stata realizzata grazie ad una funzione della libreria Pandas, \textbf{merge()}, che permette di realizzare operazioni di JOIN, in stile SQL.
 
-Dopo aver ottenuto gli importi dust spesi è stato possibile classificare le transazioni in tre categorie: Successo, Fallimento e Speciali. Le prime sono le transazioni dove il dust viene speso insieme ad un altro address ma la fee è diversa dall'importo totale di input, la seconda categoria invece comprende quelle transazioni dove è presente un unico address di input e infine la categoria ``Speciali" contiene le transazioni dove l'importo totale di input viene trasformato in fee. 
+Dopo aver ottenuto gli importi dust spesi è stato possibile classificare le transazioni in tre categorie: Successo, Fallimento e Speciali. Le prime sono le transazioni dove il dust viene speso insieme ad un altro address, ma la fee è diversa dall'importo totale di input, la seconda categoria invece comprende quelle transazioni dove è presente un unico address di input e infine la categoria ``Speciali" contiene le transazioni dove l'importo totale di input viene trasformato in fee, in quest'ultima categoria rientrano anche le transazioni di ''dust-collectng". 
 
 Gli identificativi di quest'ultima categoria sono stati salvati in un file testuale così da poter essere riutilizzati in seguito per altre analisi. Per riconoscere una transazione speciale semplicemente è stato controllato il valore della fee e la somma degli importi di input, se risultano uguali allora il suo identificativo viene salvato in questo file, altrimenti no.
 
@@ -160,14 +158,11 @@ Una volta eseguita questa operazione è stato semplice capire quali transazioni 
 La variabile ``categories" è un dizionario dove la chiave è l'anno e il valore un array di tre interi: la prima posizione indica quante transazioni sono della prima categoria, la seconda posizione quante della seconda e la terza quante della terza categoria. 
 
 \lstinputlisting[label={failed_succ}, caption={Classificazione transazioni}]{Codici/classification.py}
-L'ultima analisi effettuata riguarda la presenza di address nuovi all'interno delle transazioni che generano almeno un dust speso con altri address, ovvero speso in una transazione della categoria ``Successo". La definizione ``address nuovo" indica un address che non era mai comparso nella blockchain fino a quel momento. 
-Nel programma \ref{addr_new} vengono salvate in una lista, ``tx\_Id\_notNew" tutte le transazioni che non presentano address nuovi tra i destinatari del dust. L'obiettivo è stato quello di isolare queste transazioni, in cui potrebbero esserci possibili Dust Attack.
-
-Le transazioni che inviano del dust ad address nuovi  molto probabilmente non rappresentano un Dust Attack, proprio perchè risulterebbe strano de-anonimizzare un address mai visto fino a quel momento; molto probabilmente il proprietario di un address nuovo è lo stesso utente che genera quella determinata transazione. Per le altre transazioni invece viene calcolata la percentuale media di address nuovi, destinatari di dust, presenti in una transazione. 
+L'ultima analisi effettuata riguarda la presenza di address nuovi all'interno delle transazioni che generano almeno un dust speso con altri address, ovvero speso in una transazione della categoria ``Successo". La definizione ``address nuovo" indica un address che non era mai comparso nella blockchain fino a quel momento. Come spiegato precedentemente il proprietario di un address nuovo probabilmente è lo stesso utente che genera quella determinata transazione poichè è l’unico a conoscenza di quel determinato address. Quindi de-anonimizzare un proprio address risulta alquanto improbabile
 
 Per capire se un address sia nuovo è stata sfruttata la proprietà con i quali vengono assegnati gli identificativi agli address. Il valore numerico è stato assegnato in modo incrementale. Per esempio l’addrId 1 è il primo address che compare in assoluto sulla blockchan, mentre l’addrId 2 è il primo che compare subito dopo l’addrId 1, quindi per sapere quali address sono nuovi nella transazione X basta sapere l'id dell'ultimo address usato (cioè quello con id massimo) fino alla transazione precedente (X-1). 
 
-Per esempio se l'addrId massimo prima della transazione X è 5 tutti gli addrId, presenti nella transazione X, che hanno un valore $>$ 5 sono nuovi. Nell'algoritmo \ref{addr_new} si scorrono, tramite ciclo for, tutte le transazioni che generano almeno un output dust di successo. Si filtrano, dal dataframe ''outputs\_dust" tutto il dust generato in quella transazione. Prima vengono contati quanti address, senza ripetizioni, totali ci sono, successivamente si contanto quanti addrId sono nuovi, sfruttando la proprietà degli identificativi appena descritta. Se la transazione non presenta address nuovi, ovvero la variabile ``new\_addr" = 0, il suo TxId viene aggiunto ad una lista; questa lista verrà poi salvata in un opportuno file testuale. Per le transazioni che presentano address nuovi semplicemente la percentuale media di address non-nuovi.
+Per esempio se l'addrId massimo prima della transazione X è 5 tutti gli addrId, presenti nella transazione X, che hanno un valore $>$ 5 sono nuovi. Nell'algoritmo \ref{addr_new} si scorrono, tramite ciclo for, tutte le transazioni che generano almeno un output dust di successo. Si filtrano, dal dataframe ''outputs\_dust" tutto il dust generato in quella transazione. Prima vengono contati quanti address, senza ripetizioni, totali ci sono, successivamente si contano quanti addrId sono nuovi, sfruttando la proprietà degli identificativi appena descritta. Se la transazione non presenta address nuovi, ovvero la variabile ``new\_addr" = 0, il suo TxId viene aggiunto ad una lista; questa lista verrà poi salvata in un opportuno file testuale. Per le transazioni che presentano address nuovi semplicemente la percentuale media di address non-nuovi.
 \lstinputlisting[label={addr_new}, caption={Analisi address nuovi}]{Codici/new_addresses_analisi.py}
 
 Una volta ottenute le transazioni che presentano address non-nuovi, ovvero address che erano già stati utilizzati in passato, è stato possibile trovare alcuni pattern interessanti che sono stati impiegati per generare grandi quantità di output dust. 
