@@ -190,50 +190,24 @@ Una volta esaminate le transazioni ``1 address" il prossimo passaggio è l'anali
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_success}
 \end{table}
-È importante però capire quanto successo abbia avuto la de-anonimizzazione causata dal dust, anallizzando soprattutto gli address di input. La tabella \ref{tab:stat} mostra media e moda sia della percentuale di input dust sia del numero di address diversi presenti in una singola transazione. 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|c|c|}
-        \hline
-            Percentuale media numero input dust & 29 \%\\
-        \hline
-            Moda percentuale numero input dust & 50 \%\\ 
-        \hline
-            Media numero address diversi & 13\\
-        \hline
-            Moda numero address diversi & 2\\ 
-        \hline
-    \end{tabular}
-    \caption{Statistiche generali}
-    \label{tab:stat}
-\end{table}
+È importante però capire quanto successo abbia avuto la deanonimizzazione causata dal dust, anallizzando soprattutto gli address di input. In particolare è importante capire quanti address diversi ci siano all'interno di una singola transazione, in modo da capire il livello di de-anonimizzazione che il dust permette. Generalmente più address riesco ad unire in un singolo cluster maggiore è la de-anonimizzazione ottenuta, infatti più address associo ad un singolo utente maggiore è la tracciabilità dell'attività di quell'utente.
 
-Possiamo subito osservare come moda e media tendano ad essere molto diverse tra loro, questo fatto permette di capire come le transazioni più frequenti non siano dominanti. In entrambe le situazioni infatti le transazioni che costituiscono la moda corrispondono a circa il 10\% nel primo caso(percentuale media numero di input dust) e al 20\% nel secondo(numero di address diversi). 
+Il grafico \ref{fig:diff_addr} mostra la distribuzione del numero di address diversi, un notevole numero di transazioni tende ad avere un numero di address nel primo intervallo, ovvero nell'intervallo [2, 50]. È possibile notare come sia presente un elevato numero di transazioni con centinaia address di input, in queste transazioni quindi è stato possibile collegare centinaia di address diversi appartenenti ad un unico utente. Ad esempio la transazione con il maggior numero di address differenti contiene ben 1750 address diversi, in questo caso è stato possibile collegare più di mille address ad un unico utente. In generale la media è di 13 address diversi in una singola transazione. 
 
-Il grafico \ref{fig:perc} mostra la distribuzione della percentuale di input dust mentre il grafico \ref{fig:diff_addr} mostra  la distribuzione del numero di address diversi.
  \begin{figure}[h!]
      \centering
-     \includegraphics[scale=0.32]{Grafici/perc_dust.pdf}
-     \caption{Distribuzione percentuale input dust}
-     \label{fig:perc}
-     \subcaption{Colonne di ampiezza 0.10}
-     \subcaption{La prima colonna rappresenta l'intervallo [0, 0.10]}
- \end{figure}
-\FloatBarrier
- \begin{figure}[h!]
-     \centering
-     \includegraphics[scale=0.32]{Grafici/num_addr.pdf}
+     \includegraphics[scale=0.3]{Grafici/num_addr.pdf}
      \caption{Distribuzione numero address differenti}
      \label{fig:diff_addr}
      \subcaption{Colonne di ampiezza 50}
-     \subcaption{La prima colonna rappresenta l'intervallo [2, 50]}
+     \subcaption{La prima colonna rappresenta l'intervallo (1, 50]}
  \end{figure}
 \FloatBarrier
-Dall'istogramma \ref{fig:perc} è possibile osservare come le transazioni tendano ad avere un numero maggiore di input non-dust rispetto agli input dust, infatti la maggior parte delle transazioni ha una percentuale di input dust $<$ 40\%. Questo significa che quando
+Il dust quindi sembrerebbe essere abbatsanza utile per ottenere un cluster di address, tuttavia è importante precisare che stessi address possano apparire in più transazioni, quindi diverse transazioni potrebbero avere i medesimi address di input, portando ad una de-anonimizzazione ripetuta. 
 
-È importante precisare che stessi address possano apparire in più transazioni, potrebbero quindi esserci delle de-anonimizzazioni ripetute. Infatti nonostante siano stati generati 2 893 877 output dust gli address a cui sono stati inviati sono 1 059 836 e solo il 29\%(312 114) lo ha speso. Di questo 29\% abbiamo che 259 252 hanno speso il dust in transazioni della categoria "2+ address" anche se 4 270 address hanno anche generato transazioni nella categoria "1 address". Una particolarità interessante delle transazioni che hanno generato il dust "Successo" è che in molti casi erano presenti tra gli output dust address nuovi, ovvero address che non erano mai comparsi sulla blockchain. 
+Nonostante siano stati generati 2 893 877 output dust gli address a cui sono stati inviati sono 1 059 836 e solo il 29\%(312 114) lo ha speso. Di questo 29\% abbiamo che 259 252 hanno speso il dust in transazioni della categoria "2+ address" anche se 4 270 address hanno generato anche transazioni nella categoria "1 address". Una particolarità interessante delle transazioni che hanno generato il dust "Successo" è che in molti casi erano presenti tra gli output dust address nuovi, ovvero address che non erano mai comparsi sulla blockchain. 
 
-Ci sono 98 198 transazioni che generano almeno un dust della categoria "Successo", circa il 59\%(58 146) non presenta address nuovi tra gli output. Nella fase finale delle analisi sono state prese queste transazioni così da trovare dei pattern interessanti di possibili Dust Attack di successo; nel paragrafo successivo verranno approfonditi due possibili schemi di Dust Attack.  
+Ci sono 98 198 transazioni che generano almeno un dust della categoria "Successo", circa il 59\%(58 146) non presenta address nuovi tra gli output. Come spiegato nella sezione \ref{dstatt} è molto improbabile che un attaccante invii del dust ad un address nuovo, proprio perchè risulterebbe strano de-anonimizzare un address mai visto. Nella fase finale delle analisi quindi sono state considerate queste transazioni così da trovare dei pattern interessanti di possibili Dust Attack di successo; nel paragrafo successivo verranno approfonditi due possibili schemi di Dust Attack.  
 \section{Pattern Interessanti}
 In generale è complicato affermare con certezza se un address stia compiendo un Dust Attack, però abbiamo individuato due schemi, con certe proprietà, che rappresentano probabilmente un Dust Attack e sono caratterizzati da alcune proprietà. La proprietà più importante riguarda l'assenza di address nuovi tra gli output dust, proprio perchè è alquanto improbabile tentare di de-anonimizzare un address mai visto fino a quel punto.
 
@@ -245,11 +219,9 @@ Il primo pattern, sintetizzato in \ref{fig:schema1}, risulta molto simile al cas
     \label{fig:schema1}
 \end{figure}
 \FloatBarrier
-Altre proprietà importanti di questo pattern sono: fare riferimento ad un unico finanziatore, generare sempre lo stesso numero di output dust, avere sempre il medesimo importo di input e infine tutte esegue le transazioni sono eseguite in un breve intervallo di tempo. Questo schema è stato scoperto tramite l'address 1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm, finanziato da 1Nj3AsYfhHC4zVv1HHH4FzsYWeZSeVC8vj. 
+Altre proprietà importanti di questo pattern sono: fare riferimento ad un unico finanziatore, generare sempre lo stesso numero di output dust, avere sempre il medesimo importo di input e infine tutte esegue le transazioni sono eseguite in un breve intervallo di tempo. Questo schema è stato scoperto tramite l'address $1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm$, finanziato da $1Nj3AsYfhHC4zVv1HHH4FzsYWeZSeVC8vj$. Inoltre sono presenti altri address che seguono lo stesso schema, pagati sempre dallo stesso finanziatore di 1DiRy. Questo significa che il pattern appena enunciato può essere eseguito in parallelo utilizzano diversi address attaccanti. Potrebbero esserci in aggiunta più finanziatori che inviano denaro a più attaccanti. Per esempio questo address $16JLbXYe5xmxGNX8hiqooyTUJnhitNNqTh$ ha ricevuto fondi da $1NPfnbqZAMUnGuNuYwVZdCN4qVzUq4ejG4$, l'aspetto interessante però è che il numero di output dust, l'importo dust inviato, l'importo input speso sono esattamente uguali a quelli usati da 1Diry; questo fatto fa ipotizzare che probabilmente questi address appartengano allo stesso utente. Ovviamente possono esserci eccezioni a questi due esempi trovati, per esempio avere più finanziatori o più attaccanti in una stessa catena, inoltre gli importi e il numero di output dust potrebbero avere una natura più casuale. In generale si potrebbero ipotizzare diverse variazioni di questo pattern, anche se non ne abbiamo verificato la presenza.
 
-Inoltre sono presenti altri address che seguono lo stesso schema, pagati sempre dallo stesso finanziatore di 1DiRy. Questo significa che il pattern appena enunciato può essere eseguito in parallelo utilizzano diversi address attaccanti. Potrebbero esserci in aggiunta più finanziatori che inviano denaro a più attaccanti. Per esempio questo address 16JLbXYe5xmxGNX8hiqooyTUJnhitNNqTh ha ricevuto fondi da 1NPfnbqZAMUnGuNuYwVZdCN4qVzUq4ejG4, l'aspetto interessante però è che il numero di output dust, l'importo dust inviato, l'importo input speso sono esattamente uguali a quelli usati da 1Diry; questo fatto fa ipotizzare che probabilmente questi address appartengano allo stesso utente. Ovviamente possono esserci eccezioni a questi due esempi trovati, per esempio avere più finanziatori o più attaccanti in una stessa catena, inoltre gli importi e il numero di output dust potrebbero avere una natura più casuale. In generale si potrebbero ipotizzare diverse variazioni di questo pattern, anche se non ne abbiamo verificato la presenza.
-
-Il secondo pattern, scoperto tramite 1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG (rinominato 1JYvv), riguarda le transazioni "a catena" del 2013 citate nel paragrafo precedente. Ogni address della catena invia centinaia o migliaia di output dust e il resto dell'importo viene inviato al prossimo address che seguirà lo stesso schema. La singolarità di questo modello è che gli address della catena, ad eccezione del primo, vengono utilizzati solo per eseguire quell'unica transazione, non verranno mai più riutilizzati.
+Il secondo pattern riguarda le transazioni "a catena" del 2013 citate nel paragrafo precedente; questo schema è stato scoperto tramite l'address $1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG$ (rinominato 1JYvv), Ogni address della catena invia centinaia o migliaia di output dust e il resto dell'importo viene inviato al prossimo address che seguirà lo stesso schema. La singolarità di questo modello è che gli address della catena, ad eccezione del primo, vengono utilizzati solo per eseguire quell'unica transazione, non verranno mai più riutilizzati.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/dust_attack2.pdf}
@@ -257,6 +229,6 @@ Il secondo pattern, scoperto tramite 1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG (rinomin
     \label{fig:schema2}
 \end{figure}
 \FloatBarrier
-Consideriamo ad esempio l'address A3 della figura \ref{fig:schema2}. A3 compare in sole due transazioni. Nella prima, generata da A2, appare come destinatario di un importo non-dust, nella seconda invece spende questo importo inviando centinaia o migliaia di output dust e un importo non-dust con destinatario A4. Questo discorso però non si applica a colui che inizia questo pattern(A1), per esempio l'address 1Jyvv ha cominciato una serie di catene con questo modello.
+Consideriamo ad esempio l'address A3 della figura \ref{fig:schema2}. A3 riceve un importo da A2 e utilizza parte di questo importo per inviare centinaia o migliaia di output dust, il resto dell'importo, esclusa la fee, viene inviato ad A4 che seguirà il medesimo schema. Questo discorso però non si applica a colui che inizia questo pattern(A1), per esempio l'address 1JYvv ha cominciato una serie di catene con questo modello.
 
 Potrebbe essere interessante in futuro capire quanti address abbiano seguito schemi di questi tipo e se ci siano altri fini oltre a quello di un possibile Dust Attack.

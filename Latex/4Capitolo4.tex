@@ -6,9 +6,12 @@ Il codice è stato scritto in python, versione 3.9.12, distribuzione Anaconda.
 
 La libreria per la realizzazione dei grafici è matplotlib versione 3.5.1 e la la libreria per le statistiche è Pandas versione 1.5.0
 \section{Strumenti utilizzati}
-Lo strumento principale utilizzato per le analisi è la libreria Pandas (versione 1.5.0)
-\todo{dopo cena} completa mini descrizione pandas
-\cite{pandas}. 
+Gli input e gli output delle transazioni sono stati salvati in appositi file csv con una struttura a tabella, quindi è stato necessario utilizzare uno strumento che permettesse di manipolare tabelle di grandi dimensioni; la scelta è ricaduta sulla libreria \textbf{Pandas}. 
+
+Pandas \cite{pandas} è una libreria, scritta per il linguaggio python, realizzata per la manipolazione e l'analisi dei dati. In particolare il software permette di salvare i dati in Dataframe, una struttura dati bidimensionale, simile a una tabella contenente righe e colonne. Una volta ottenuto un Dataframe è possibile eseguire operazioni in stile SQL, come per esempio GROUPBY e JOIN. 
+
+Il codice \ref{pandas_code} mostra un semplice esempio di uso della libreria Pandas:
+\lstinputlisting[label={pandas_code}, caption={Semplice uso di Pandas}]{Codici/pandas.py}
 \section{Rappresentazione dei dati}
 Il dataset su cui sono state condotte le analisi è stato ottenuto tramite un filtraggio della blockchain originale, la dimensione del file testuale contenente il dataset filtrato si aggira intorno ai 40 GB.
 
