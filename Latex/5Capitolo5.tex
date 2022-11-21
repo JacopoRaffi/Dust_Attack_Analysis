@@ -79,6 +79,7 @@ Gli output dust sono stati suddivisi in quattro categorie:
     \item \textbf{Speciale}: dust speso in possibili transazioni di ``dust collecting", transazioni la cui fee è uguale all'importo totale di input;
     \item \textbf{Non speso}.
 \end{enumerate}
+
 I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. Nonostante il ``dust-collecting" rappresenti un caso di de-anonimizzazione fallita, gli address di input infatti potrebbero appartenere ad utenti diversi, viene separata dalla categoria ``Fallimento" per mostrare se e quanto sia stato utilizzato questo servizio.
 
 Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel corso degli anni.
@@ -89,6 +90,7 @@ Il grafico \ref{fig:dust_year} mostra quanto siano presenti le categorie nel cor
     \label{fig:dust_year}
 \end{figure}
 \FloatBarrier
+
 Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. 
 
 La prima riguarda l'uso del ``dust collecting", risulta evidente quanto poco sia stato utilizzato questo servizio. Il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. Se un utente decidesse di sua iniziativa di spendere tutto il dust in fee rientrerebbe comunque in questa categoria.
@@ -137,14 +139,15 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
     \caption{Transazioni nel tempo}
     \label{tab:tx_categories_year}
 \end{table}
-Dalle tabelle \ref{tab:tx_categories} \ref{tab:tx_categories_year} confermiamo quanto detto prima, la prevalenza a spendere il dust in transazioni con almeno due address diversi e lo scarso utilizzo di servizi come Dust-B-Gone; la seconda fase delle analisi si concentrerà sui primi due gruppi.
+Dalle tabelle \ref{tab:tx_categories} \ref{tab:tx_categories_year} confermiamo quanto detto prima, la prevalenza a spendere il dust in transazioni con almeno due address diversi e lo scarso utilizzo di servizi come Dust-B-Gone. Siccome sono presenti solo 17 transazioni della terza categoria 
 
 La categoria "1 address" è stata ulteriormente suddivisa in due classi:
 \begin{itemize}
     \item \textbf{NOD}: transazioni che presentanto input con importo $>$ 545  
     \item \textbf{OD}: transazioni con soli input dust.
 \end{itemize}
-Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli address che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. 
+
+Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella de-anonimizzazione sia dovuto principalmente a quegli address che non sono vuoti, ovvero hanno ricevuto importi non-dust da altre fonti. Quindi questo permette di capire che il Dust Attack possa risultare più efficace contro gli address vuoti, con un bilancio complessivo tendente a zero.
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|}
@@ -157,9 +160,9 @@ Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella d
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_failed}
 \end{table}
-Interessante invece è il secondo gruppo, in particolare due address: 1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T e 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN. Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa \footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena gli vengono inviati.
+Interessante invece è il secondo gruppo, in particolare due address appartenenti ad esso: 1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T e 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN. Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa \footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena gli vengono inviati.
 
-Caso anomalo invece riguarda 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN, rinominato 1PED per semplicità. Questo address, come riportato in \cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
+Caso anomalo invece riguarda il secondo address, rinominato 1PED per semplicità. Questo address, come riportato in \cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/1Ped.pdf}
@@ -167,9 +170,9 @@ Caso anomalo invece riguarda 1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN, rinominato 1PED
     \label{fig:1PED}
 \end{figure}
 \FloatBarrier
-Ogni address invia due output, 1 satoshi con destinatario 1PED e un secondo importo che viene inviato ad un altro address che seguirà il medesimo schema; in tutte queste transazioni la fee è di 50 000 satoshi. 1PED ha generato poi 1835 transazioni con 1 solo satoshi di input e 1 solo satoshi di output, la data è il 10 Marzo 2013 alle ore 16:20. Gli address destinatari però compaiono nella blockchain per la prima volta proprio grazie a queste transazioni, sicuramente non si tratta di un tentativo di Dust Attack.
+Ogni address invia due output, 1 satoshi con destinatario 1PED e un secondo importo che viene inviato ad un altro address che seguirà il medesimo schema; in tutte queste transazioni la fee è sempre di 50 000 satoshi. 1PED ha generato poi 1835 transazioni con 1 solo satoshi di input e 1 solo satoshi di output, la data è il 10 Marzo 2013 alle ore 16:20. È interessante sottolineare come 1PED sia riuscito a spendere un singolo satoshi senza la necessità di aggregare il dust con altri input. Questo significa che, nonostante queste transazioni fossero non-standard, il mineri ha comunque deciso di validarle, però sebbene questo comportamento sia anomalo risulta alquanto improbabile che si tratti di Dust Attack. Questa considerazione deriva dal fatto che tutti gli address di output delle transazioni generate da 1PED sono address nuovi.
 
-Molto più interessanti sono le transazioni della categoria "2+ address". Anche in questo caso vengono mostrati i gruppi OD e NOD. La tabella \ref{tab:OD_NOD_success} mostra come quasi sempre si riescano a collegare address vittima di dust con address più capienti.
+Una volta esaminate le transazioni ``1 address" il prossimo passaggio è l'analisi delle transazioni della categoria "2+ address". Anche in questo caso vengono mostrati i gruppi OD e NOD. La tabella \ref{tab:OD_NOD_success} mostra come quasi sempre si riescano a collegare address vittima di dust con address più capienti.
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|}
@@ -182,7 +185,7 @@ Molto più interessanti sono le transazioni della categoria "2+ address". Anche 
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_success}
 \end{table}
-È importante però capire quanto successo abbia avuto la de-anonimizzazione, la tabella \ref{tab:stat} mostra alcune statistiche generali di questa categoria. 
+È importante però capire quanto successo abbia avuto la de-anonimizzazione causata dal dust, la tabella \ref{tab:stat} mostra alcune statistiche generali di questa categoria. 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|}
@@ -199,12 +202,26 @@ Molto più interessanti sono le transazioni della categoria "2+ address". Anche 
     \caption{Statistiche generali}
     \label{tab:stat}
 \end{table}
-Possiamo subito osservare come moda e media tendano ad essere molto diverse tra loro, questo fatto permette di capire come le transazioni più frequenti non siano dominanti. In entrambe le situazioni infatti le transazioni che costituiscono la moda corrispondono a circa il 10\% nel primo caso(percentuale media numero di input dust) e al 20\% nell'ultimo(numero di address diversi). I grafici \ref{fig:distribuzioni_tx} mostrano, partendo da sinistra, la distribuzione della percentuale di input dust e la distribuzione degli address diversi. Nel primo istogramma le colonne rappresentano gruppi di 0,10, nel secondo invece gruppi di 50.
+
+Possiamo subito osservare come moda e media tendano ad essere molto diverse tra loro, questo fatto permette di capire come le transazioni più frequenti non siano dominanti. In entrambe le situazioni infatti le transazioni che costituiscono la moda corrispondono a circa il 10\% nel primo caso(percentuale media numero di input dust) e al 20\% nell'ultimo(numero di address diversi). 
+
+Il grafico \ref{fig:perc} mostra la distribuzione della percentuale di input dust mentre il grafico \ref{fig:diff_addr} mostra  la distribuzione del numero di address diversi.
  \begin{figure}[h!]
      \centering
-     \includegraphics[scale=0.44]{Grafici/Distribuzioni_belle.pdf}
-     \caption{Devo ancora modificarlo}
-    \label{fig:distribuzioni_tx}
+     \includegraphics[scale=0.32]{Grafici/perc_dust.pdf}
+     \caption{Distribuzione percentuale input dust}
+     \label{fig:perc}
+     \subcaption{Colonne di ampiezza 0.10}
+     \subcaption{La prima colonna rappresenta l'intervallo [0, 0.10]}
+ \end{figure}
+\FloatBarrier
+ \begin{figure}[h!]
+     \centering
+     \includegraphics[scale=0.32]{Grafici/num_addr.pdf}
+     \caption{Distribuzione numero address differenti}
+     \label{fig:diff_addr}
+     \subcaption{Colonne di ampiezza 50}
+     \subcaption{La prima colonna rappresenta l'intervallo [0, 50]}
  \end{figure}
 \FloatBarrier
 Dal primo istogramma notiamo la prevalenza degli input non-dust rispetto a quelli dust, la maggior parte della transazioni infatti ha una percentuale di input dust inferiore al 40\%. Questo dato è molto importante perchè mostra come il dust permetta di collegare soprattutto address più capienti, che potrebbero essere di maggiore interesse per un possibile attaccante. Il secondo istogramma invece mostra come siano presenti molte transazioni con un elevato numero di address diversi, permettendo un'efficace de-anonimizzazione dei relativi wallet.
