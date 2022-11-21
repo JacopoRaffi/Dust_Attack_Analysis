@@ -7,6 +7,7 @@
 \usepackage{csquotes}
 \usepackage{hyperref}
 \usepackage{subcaption}
+\usepackage[dvipsnames,table,xcdraw]{xcolor}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{hyphenat}
@@ -24,7 +25,9 @@
 \usepackage{listings}
 \renewcommand{\lstlistingname}{Codice}% Listing -> Codice
 \usepackage{mdframed}
-\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+\def\checkmark{\tikz\fill[scale=0.4, color=ForestGreen](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\green}[1]{\textcolor{ForestGreen}{#1}}
 \usepackage{eurosym}
 % Tabelle %
 \usepackage[normalem]{ulem}

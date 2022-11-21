@@ -1,4 +1,5 @@
 \chapter{Implementazione}
+\captionsetup[table]{name=Struttura}
 %Algoritmi e dati usati per l'analisi dei dati
 In questo capitolo verranno mostrati il formato dei dati e alcuni degli algoritmi realizzati per le analisi.
 Il codice è stato scritto in python, versione 3.9.12, distribuzione Anaconda.
@@ -72,7 +73,6 @@ In questo caso, l’addrId 8 ha ricevuto 30 satoshi, mentre l’addrId 14 ne ha 
 Gli input e gli output di ogni transazione, che presenta almeno un input o un output dust, sono stati successivamente salvati in due appositi file csv.
 
 I file presentano la seguente forma:
-
 \begin{table}[h!]
 \centering
 \begin{tabular}{|r|r|r|r|r|r|r|}
@@ -134,7 +134,7 @@ L'esempio che segue mostra un caso di importo speso :
 \end{table}
 \FloatBarrier
 In questo caso l'address 118890 ha ricevuto 99 satoshi nella transazione con ID 121404 e timestamp 1285666864, successivamente li ha spesi nella transazione con ID 124069 e timestamp 1286048669.
-\section{Algoritmi}
+\section{Algoritmi}\label{algoritmii}
 Prima di poter analizzare i dati è stato necessario un filtraggio del dataset iniziale, proprio per ottenere solo quelle transazioni di interesse. In particolare sono state considerate solo le transazioni contenenti almeno un input dust o almeno un output dust. 
 
 L'algoritmo realizzato per il filtraggio di queste transazioni è molto semplice ed è mostrato in \ref{Filtraggio dust}. Si tratta di leggere riga per riga il file testuale, prelevare i campi inputs e outputs tramite una tokenizzazione della stringa, guidata dal separatore ':', e controllare che sia presente un importo dust tramite la funzione \textbf{isDust()}. Questa funzione semplicemente scorre gli input(e gli output) e controlla che esista un importo nell'intervallo [1, 545]. Se presente la funzione restituisce $True$ e la transazione viene scritta in un apposito file.
