@@ -4,7 +4,7 @@ I dati analizzati comprendono le transazioni dal \textbf{3 Gennaio 2009} al \tex
 
 Come spiegato precedentemente il primo obiettivo è quello di presentare statistiche generali sull'uso del dust, mostrare gli effetti del dust sulla de-anonimizzazione di address e infine descrivere due pattern che potrebbero rappresentare dei Dust Attack.
 \section{Filtraggio transazioni}
-Il primo compito è stato il filtraggio di tutte le transazioni dust, ovvero tutte quelle transazioni che comprendono tra gli input e/o tra gli output un importo $<$ 546 satoshi.
+Il primo compito è stato il filtraggio di tutte le transazioni dust, ovvero tutte quelle transazioni che comprendono tra gli input e/o tra gli output un importo $<$ 546 satoshi, valore di riferimento del dust.
 \begin{figure}[H]
 \begin{mdframed}
  infos:inputs:118890,\green{99},2;118902,9987098901,2 \checkmark\\
@@ -19,25 +19,23 @@ La figura \ref{tx_dust} mostra due esempi di transazioni dust e uno di transazio
 
 La prima infatti contiene, tra gli output, un importo di 99 satoshi, la seconda invece contiene un importo di 1 satoshi tra gli input. L'ultima transazione invece è stata scartata proprio perchè tutti gli importi sono $\ge$ 546 satoshi. Le transazioni non-dust di questo tipo sono state ignorate poichè le analisi vertono sulla generazione e sul consumo del dust e sulla de-anonimizzazione causata da questi importi.
 
-Le transazioni totali sono 245 410 083 mentre le transazioni che generano o consumano dust sono  2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in \cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Da questi due ultimi risultati possiamo dedurre che ci sono transazioni in cui il dust è presente sia negli input che negli output.
+Le transazioni totali sono 245 410 083 mentre le transazioni che generano o consumano dust sono  2 114 335, questo significa che il dust è presente solo nello 0.8\% delle transazioni totali; inoltre come riportato in \cite{dustAnalisi} 1 705 560 creano dust mentre solo 429 544 lo consumano. Siccome la somma delle transazioni che consumano dust e delle transazioni che generano il dust è superiore al totale delle transazioni possiamo dedurre che ci siano transazioni in cui il dust è presente sia negli input che negli output.
 
-Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice, come spiegato in precedenza, è un noto servizio di gambling nato nell'Aprile 2012; questo servizio utilizza il dust per comunicare ai giocatori che hanno perso la loro scommessa. Data la notorietà del servizio risulta molto poco probabile che l'intento sia quello di un Dust Attack, inoltre le analisi vogliono mostrare il comportamento degli utenti nei confonti del dust proveniente da address sconosciuti; gli address di Satoshi Dice sono noti proprio perchè il servizio stesso li ha resi pubblici.
+Il passaggio successivo è stato il filtraggio delle transazioni generate da Satoshi Dice. Satoshi Dice, come spiegato in precedenza, è un noto servizio di gambling nato nell'Aprile 2012; questo servizio utilizza il dust per comunicare ai giocatori la perdita della loro scommessa. Data la notorietà del servizio risulta molto poco probabile che l'intento sia quello di un Dust Attack, inoltre le analisi vogliono mostrare il comportamento degli utenti nei confonti del dust proveniente da address sconosciuti; gli address di Satoshi Dice sono noti proprio perchè il servizio stesso li ha resi pubblici.
 
 Le transazioni generate da Satoshi Dice sono 1 465 295, ovvero il 69\% delle transazioni dust. Questo risultato, oltre a dimostrare la popolarità del servizio, permette di concentrare le future analisi sul rimanente 31\%(649 040) delle transazioni.
 \section{Analisi del dust}
-Una volta ottenute tutte e sole le transazioni di interesse sono stati realizzati gli istogrammi mostrati in figura \ref{fig:dust_distribuzione}. Il primo istogramma, in \ref{fig:dust_distribuzione}, mostra la distribuzione del numero di input dust, il secondo invece la distribuzione del numero di output dust. In entrambi i grafici non sono state contate le transazioni con 0 importi dust. La prima colonna infatti rappresenta, in entrambi gli istogrammi, l'intervallo [1, 50].
+Una volta ottenute tutte e sole le transazioni di interesse sono stati realizzati gli istogrammi mostrati in figura \ref{fig:dust_distribuzione}. L'istogramma, mostrato nella parte sinistra della figura \ref{fig:dust_distribuzione}, mostra la distribuzione del numero di input dust, quello a destra invece la distribuzione del numero di output dust. In entrambi i grafici non sono state contate le transazioni con 0 importi dust. La prima colonna infatti rappresenta, in entrambi gli istogrammi, l'intervallo [1, 50].
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.9]{Grafici/distribuzione_dust.pdf}
-    \caption{Distribuzione numero input dust(sinistra) e output dust(destra)}
+    \caption{Distribuzione numero input dust(sinistra) e output dust(destra). Intervalli di ampiezza 50, primo intervallo [1, 50]}
     \label{fig:dust_distribuzione}
-    \subcaption{Intervalli di ampiezza 50}
-    \subcaption{Primo intervallo [1, 50]}
 \end{figure}
 \FloatBarrier 
-Entrambi gli istogrammi mostrano come siano molto frequenti le transazioni presenti nel primo intervallo di ampiezza [1, 50]. Nel primo grafico notiamo anche che le transazioni con un elevato numero di input dust risultino poco usuali. Al contrario del primo grafico, il secondo mostra come siano presenti tante transazioni che generano un elevato numero di output dust. Dall'analisi di questi due grafici inoltre possiamo già intuire che diversi output dust generati non vengano successivamente spesi.
+Entrambi gli istogrammi mostrano come siano molto frequenti le transazioni presenti nel primo intervallo di ampiezza [1, 50]. Nel primo grafico notiamo anche che le transazioni con un elevato numero di input dust risultino poco frequenti. Al contrario del primo grafico, il secondo mostra come siano presenti tante transazioni che generano un elevato numero di output dust. Dall'analisi di questi due grafici inoltre possiamo già intuire che diversi output dust generati non vengano successivamente spesi.
 
-Nelle analisi successive viene considerato solo il dust generato con script diverso da OP\_RETURN. Questa scelta è motivata dal fatto che gli output con questo script non possono essere spesi, questa tipologia di dust quindi non può avere effetti sulla de-anonimizzazione; inoltre chi lo sta generando sicuramente non sta attuando un Dust Attack.
+In tutte le analisi successive viene considerato solo il dust generato con script diverso da OP\_RETURN. Questa scelta è motivata dal fatto che gli output con questo script non possono essere spesi, questa tipologia di dust quindi non può avere effetti sulla de-anonimizzazione; inoltre chi lo sta generando sicuramente non sta attuando un Dust Attack.
 
 Il grafico \ref{fig:dust_created} mostra la distribuzione nel tempo del dust spendibile.
 \begin{figure}[h!]
@@ -47,13 +45,13 @@ Il grafico \ref{fig:dust_created} mostra la distribuzione nel tempo del dust spe
     \label{fig:dust_created}
 \end{figure}
 \FloatBarrier 
-Dal grafico è possibile notare che già dal 2010 sono comparsi i primi output dust, anche se in quantità molto ridotta. Possiamo osservare una rapida salita tra il 2010 e il 2011, solo nel mese di luglio dell'anno 2011 infatti sono stati generati più di 27 000 output dust.
+Dal grafico è possibile notare che già dal 2010 sono comparsi i primi output dust, anche se in quantità molto ridotta. Possiamo osservare un rapido aumento tra il 2010 e il 2011, solo nel mese di luglio dell'anno 2011 infatti sono stati generati più di 27 000 output dust.
 
-Il picco della generazione di dust è presente nel 2013, dove sono stati trovati pattern interessanti di transazioni legate "a catena"; nel paragrafo successivo verrà approfondito questo schema. Dopo il picco del 2013 osserviamo una diminuzione negli anni fino al 2017 dove si assiste ad una ricrescita. Bisogna però specificare che la maggior parte del dust generato nel 2017 proviene da due address: $1Enjoy1C4bYBr3tN4sMKxvvJDqG8NkdR4Z$ e $1SochiWwFFySPjQoi2biVftXn8NRPCSQC$.
+Il picco della generazione di dust è presente nel 2013, dove sono stati trovati pattern interessanti di transazioni legate "a catena"; nel paragrafo successivo verranno approfonditi questi schemi. Dopo il picco del 2013 osserviamo una diminuzione negli anni fino al 2017 dove si assiste ad una ricrescita. Bisogna però specificare che la maggior parte del dust generato nel 2017 proviene da due address: $1Enjoy1C4bYBr3tN4sMKxvvJDqG8NkdR4Z$ e $1SochiWwFFySPjQoi2biVftXn8NRPCSQC$.
 
 Questi due noti address sono comparsi per la prima volta nel 2014, in concomitanza con le olimpiadi di Sochi in Russia, generando transazioni con circa 750 output di 1 satoshi ciascuno. È importante notare come, nonostante il caos causato in vari forum Bitcoin, la tempesta di spam del 2014 "Enjoy Sochi" abbia lasciato una piccola impronta sulla blockchain; solo 65 transazioni(48 750 output dust) sono state confermate in quell'anno.
 
-L'aspetto singolare di questo fenomeno è che abbiamo visto echi di esso tornare negli anni successivi. Nel 2015 infatti sono state confermate 23 transazioni(1 725 output dust) mentre nel 2017 sono presenti 255 transazioni(191 250 output dust) generate da vanity address. Sebbene sia possibile che siano state eseguite dalla stessa entità, che spendeva importi da quegli address anche nel 2018, è anche possibile che queste transazioni fossero state generate nel 2014 e confermate solo nel 2015 e nel 2017. In questi tre anni il fenomeno "Enjoy Sochi" ha generato 343 transazioni per un totale di output dust intorno ai 255 000.
+L'aspetto singolare di questo fenomeno è che abbiamo visto echi di esso tornare negli anni successivi. Nel 2015 infatti sono state confermate 23 transazioni(1 725 output dust) mentre nel 2017 sono presenti 255 transazioni(191 250 output dust) generate da questi vanity address. Sebbene sia possibile che siano state eseguite dalla stessa entità, che spendeva importi da quegli address anche nel 2018, è anche possibile che queste transazioni fossero state generate nel 2014 e confermate solo nel 2015 e nel 2017. In questi tre anni il fenomeno "Enjoy Sochi" ha generato 343 transazioni per un totale di output dust intorno ai 255 000.
 
 In generale sono stati generati 2 893 877 output dust con script diverso da OP\_RETURN; circa il 48.5\% è stato speso. Quindi la quantità di dust non speso(51.5\%) è paragonabile a quello speso. 
 
@@ -75,15 +73,15 @@ La tabella \ref{tab:dust_spent_unspent} mostra le percentuali negli anni del dus
 \section{Classificazione del dust}
 Come descritto nella sezione \ref{algoritmii} gli output dust sono stati suddivisi in quattro categorie:
 \begin{enumerate}
-    \item \textbf{Successo}: dust speso in transazioni che presentano almeno due address di input, in queste transazioni la fee è diversa dall'importo totale di input;
-    \item \textbf{Fallimento}: dust speso in transazioni con un solo address di input;
+    \item \textbf{Successo}: dust speso in transazioni che presentano almeno due address diversi di input, in queste transazioni la fee è diversa dall'importo totale di input;
+    \item \textbf{Fallimento}: dust speso in transazioni con un solo address di input, anche se ripetuto più volte;
     \item \textbf{Speciale}: dust speso in possibili transazioni di ``dust collecting", transazioni la cui fee è uguale all'importo totale di input;
     \item \textbf{Non speso}.
 \end{enumerate}
 
-I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. Nonostante il ``dust-collecting" rappresenti un caso di de-anonimizzazione fallita, gli address di input infatti potrebbero appartenere ad utenti diversi, questa situazione viene separata dalla categoria ``Fallimento" per mostrare se e quanto sia stato utilizzato questo servizio.
+I termini "Successo" e "Fallimento" si riferiscono alla possibilità di collegare gli address di input una volta che il dust è stato speso. Nonostante il ``dust-collecting" rappresenti un caso di de-anonimizzazione fallita, poichè gli address di input potrebbero appartenere ad utenti diversi, questa situazione viene separata dalla categoria ``Fallimento" per mostrare se e quanto sia stato utilizzato questo servizio.
 
-Il grafico \ref{fig:dust_year} mostra quanto la distribuzione delle categorie nel corso degli anni.
+Il grafico \ref{fig:dust_year} mostra la distribuzione delle categorie nel corso degli anni.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.6]{Grafici/uso_del_dust_new.pdf}
@@ -92,9 +90,9 @@ Il grafico \ref{fig:dust_year} mostra quanto la distribuzione delle categorie ne
 \end{figure}
 \FloatBarrier
 
-Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche trarre due importanti riflessioni. 
+Non solo possiamo constatare graficamente quanto detto prima sulla differenza tra dust speso e non speso, ma possiamo anche fare due importanti riflessioni. 
 
-La prima riflessione riguarda l'uso del servizio di ``dust collecting", risulta evidente quanto poco esso sia stato utilizzato. È importante notare che il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. Infatti rientrano anche gli utenti che decidono di propria iniziativa di spendere tutto il dust in fee. In generale infatti non è possibile distinguere una transazione di ``dust-collecting" da una transazione generata da un singolo utente, ma il numero di dust della categoria ''Speciale" costituisce un limite superiore al numero di dust spesi tramite Dust-B-Gone.
+La prima riflessione riguarda l'uso del servizio di ``dust collecting", risulta evidente quanto poco esso sia stato utilizzato. È importante notare che il dust della categoria ``Speciale" non necessariamente è legato a Dust-B-Gone, questa categoria infatti è presente anche nel 2017 nonostante il servizio sia stato ufficialmente chiuso nel 2016. Infatti rientrano in questa categoria anche gli utenti che decidono di propria iniziativa di spendere tutto il dust in fee. In generale infatti non è possibile distinguere una transazione di ``dust-collecting" da una transazione generata da un singolo utente, tuttavia il numero di dust della categoria ``Speciale" permette di capire quanto sia stato utilizzato questo servizio, infatti il numero di dust spesi in transazioni di ``dust-collecting" può essere al massimo uguale al numero totale di dust della categoria ``Speciale".  
 
 La seconda riflessione invece riguarda la tendenza a spendere il dust con almeno un altro address, in particolare notiamo un netto distacco nel 2015 dove la categoria ”Successo” è dell’ordine di $10^4$ mentre ”Fallimento” dell’ordine di $10^3$. In generale questa informazione è molto importante perchè dimostra come il dust possa essere efficace per la de-anonimizzazione di un wallet, ovvero capire che più address appartengano ad un medesimo utente.
 
@@ -119,7 +117,7 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
         speciale & 0.1\%\\
         \hline
     \end{tabular}
-    \caption{Transazioni nelle tre categorie}
+    \caption{Transazioni delle tre categorie}
     \label{tab:tx_categories}
 \end{table}
 \begin{table}[H]
@@ -135,7 +133,7 @@ In totale il dust è stato speso in 263 963 transazioni, la tabella \ref{tab:tx_
          speciali(\%) & 0 & 0 & 0 & 0,1 & 0,01 & 0,1 & 0,1 & 0,3 \\
          \hline
     \end{tabular}
-    \caption{Transazioni nel tempo}
+    \caption{Transazioni delle tre categorie nel tempo}
     \label{tab:tx_categories_year}
 \end{table}
 Dalle tabelle \ref{tab:tx_categories} \ref{tab:tx_categories_year} confermiamo quanto detto prima, la prevalenza a spendere il dust in transazioni con almeno due address diversi e lo scarso utilizzo di servizi come Dust-B-Gone. Siccome sono presenti solo 17 transazioni della terza categoria 
@@ -161,21 +159,21 @@ Dalla tabella \ref{tab:OD_NOD_failed} possiamo dedurre che il fallimento nella d
 \end{table}
 Interessante invece è il secondo gruppo, in particolare due address appartenenti ad esso:
 \begin{itemize}
-    \item $1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T$
-    \item $1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN$
+    \item \textit{1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}
+    \item \textit{1PEDJAibfNetJzM289oXsW1qLAgjYDjLgN}
 \end{itemize}
 
-Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa \footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena vengono inviati a questo address. Questo address è tipicamente destinatario di transazioni di 2936 output dust, tutti gli importi sono destinati ad esso. È un metodo di scrivere dati arbitrari sulla blockchain minimizzando i costi.
+Il fatto interessante del primo address è che che la sua chiave privata è stata compromessa \footnote{fonte:\url{https://privatekeys.pw/address/bitcoin/1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T}}, questo consente a chiunque di riscattare bitcoin non appena vengono inviati a questo address. Questo address è tipicamente destinatario di transazioni di 2936 output dust, tutti gli importi sono destinati ad esso. Questo address fornisce quindi un metodo di scrivere dati arbitrari sulla blockchain minimizzando i costi.
 
-Caso anomalo invece riguarda il secondo address, rinominato 1PED per semplicità. Questo address, come riportato in \cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
+Caso anomalo invece riguarda il secondo address, rinominato \textit{1PED} per semplicità. Questo address, come riportato in \cite{dustAnalisi} è un noto gambler di Satoshi Dice, la singolarità però deriva da alcune transazioni che ha generato. In queste transazioni infatti è presente un solo input di 1 satoshi e un solo output, ovviamente sempre di 1 satoshi. Questi singoli satoshi però non provengono da Satoshi Dice ma da altri address che seguono un pattern ben preciso, schematizzato nella figura \ref{fig:1PED}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/1Ped.pdf}
-    \caption{Schema transazioni legate a 1PED}
+    \caption{Schema transazioni legate a \textit{1PED}}
     \label{fig:1PED}
 \end{figure}
 \FloatBarrier
-Ogni address, appartenente al pattern, invia due output, 1 satoshi con destinatario 1PED e un secondo importo che viene inviato ad un altro address che seguirà il medesimo schema; in tutte queste transazioni la fee è sempre di 50 000 satoshi. 1PED ha generato poi 1835 transazioni con 1 solo satoshi di input e 1 solo satoshi di output, la data è il 10 Marzo 2013 alle ore 16:20. È interessante sottolineare come 1PED sia riuscito a spendere un singolo satoshi senza la necessità di aggregare il dust con altri input. Questo significa che, nonostante queste transazioni fossero non-standard, il mineri ha comunque deciso di validarle, però sebbene questo comportamento sia anomalo risulta alquanto improbabile che si tratti di Dust Attack. Questa considerazione deriva dal fatto che tutti gli address di output delle transazioni generate da 1PED sono address nuovi.
+Ogni address, appartenente al pattern, invia due output, 1 satoshi con destinatario \textit{1PED} e un secondo importo che viene inviato ad un altro address che seguirà il medesimo schema; in tutte queste transazioni la fee è sempre di 50 000 satoshi. \textit{1PED} ha generato poi 1835 transazioni con 1 solo satoshi di input e 1 solo satoshi di output, la data è il 10 Marzo 2013 alle ore 16:20. È interessante sottolineare come \textit{1PED} sia riuscito a spendere un singolo satoshi senza la necessità di aggregare il dust con altri input. Questo significa che, nonostante queste transazioni fossero non-standard, il mineri ha comunque deciso di validarle, però sebbene questo comportamento sia anomalo risulta alquanto improbabile che si tratti di Dust Attack. Questa considerazione deriva dal fatto che tutti gli address di output delle transazioni generate da \textit{1PED} sono address nuovi.
 \subsection{Categoria 2+ Address}
 Una volta esaminate le transazioni ``1 address" il prossimo passaggio è l'analisi delle transazioni della categoria "2+ address". Anche in questo caso vengono mostrati i gruppi OD e NOD. La tabella \ref{tab:OD_NOD_success} mostra come quasi sempre gli importi dust vengano aggregati ad altri importi non-dust.
 \begin{table}[H]
@@ -190,45 +188,43 @@ Una volta esaminate le transazioni ``1 address" il prossimo passaggio è l'anali
     \caption{Classificazione OD e NOD}
     \label{tab:OD_NOD_success}
 \end{table}
-È importante però capire quanto successo abbia avuto la deanonimizzazione causata dal dust, anallizzando soprattutto gli address di input. In particolare è importante capire quanti address diversi ci siano all'interno di una singola transazione, in modo da capire il livello di de-anonimizzazione che il dust permette. Generalmente più address riesco ad unire in un singolo cluster maggiore è la de-anonimizzazione ottenuta, infatti più address associo ad un singolo utente maggiore è la tracciabilità dell'attività di quell'utente.
+È importante però capire quanto successo abbia avuto la deanonimizzazione causata dal dust, anallizzando soprattutto gli address di input. In particolare è importante capire quanti address diversi ci siano all'interno di una singola transazione, in modo da capire il livello di de-anonimizzazione che il dust permette. Generalmente più address riesco ad unire in un singolo cluster maggiore è il livello di de-anonimizzazione ottenuta, infatti più address associo ad un singolo utente maggiore è la tracciabilità dell'attività di quell'utente.
 
 Il grafico \ref{fig:diff_addr} mostra la distribuzione del numero di address diversi, un notevole numero di transazioni tende ad avere un numero di address nel primo intervallo, ovvero nell'intervallo [2, 50]. È possibile notare come sia presente un elevato numero di transazioni con centinaia address di input, in queste transazioni quindi è stato possibile collegare centinaia di address diversi appartenenti ad un unico utente. Ad esempio la transazione con il maggior numero di address differenti contiene ben 1750 address diversi, in questo caso è stato possibile collegare più di mille address ad un unico utente. In generale la media è di 13 address diversi in una singola transazione. 
 
  \begin{figure}[h!]
      \centering
      \includegraphics[scale=0.3]{Grafici/num_addr.pdf}
-     \caption{Distribuzione numero address differenti}
+     \caption{Distribuzione numero address differenti. Colonne di ampiezza 50, la prima colonna rappresenta l'intervallo (1, 50]}
      \label{fig:diff_addr}
-     \subcaption{Colonne di ampiezza 50}
-     \subcaption{La prima colonna rappresenta l'intervallo (1, 50]}
  \end{figure}
 \FloatBarrier
-Il dust quindi sembrerebbe essere abbatsanza utile per ottenere un cluster di address, tuttavia è importante precisare che stessi address possano apparire in più transazioni, quindi diverse transazioni potrebbero avere i medesimi address di input, portando ad una de-anonimizzazione ripetuta. 
+Questi dati sembrerebbero confermare l'utilità del Dust Attack, tuttavia è importante precisare che stessi address possano apparire in più transazioni, quindi diverse transazioni potrebbero riferire i medesimi address di input, portando ad una de-anonimizzazione ripetuta. 
 
 Nonostante siano stati generati 2 893 877 output dust gli address a cui sono stati inviati sono 1 059 836 e solo il 29\%(312 114) lo ha speso. Di questo 29\% abbiamo che 259 252 hanno speso il dust in transazioni della categoria "2+ address" anche se 4 270 address hanno generato anche transazioni nella categoria "1 address". Una particolarità interessante delle transazioni che hanno generato il dust "Successo" è che in molti casi erano presenti tra gli output dust address nuovi, ovvero address che non erano mai comparsi sulla blockchain. 
 
-Ci sono 98 198 transazioni che generano almeno un dust della categoria "Successo", circa il 59\%(58 146) non presenta address nuovi tra gli output. Come spiegato nella sezione \ref{dstatt} è molto improbabile che un attaccante invii del dust ad un address nuovo, proprio perchè risulterebbe strano de-anonimizzare un address mai visto. Nella fase finale delle analisi quindi sono state considerate queste transazioni così da trovare dei pattern interessanti di possibili Dust Attack di successo; nel paragrafo successivo verranno approfonditi due possibili schemi di Dust Attack.  
-\section{Pattern Interessanti}
+Ci sono 98 198 transazioni che generano almeno un dust della categoria "Successo", circa il 59\%(58 146) non presenta address nuovi tra gli output. Come spiegato nella sezione \ref{dstatt} è molto improbabile che un attaccante invii del dust ad un address nuovo, proprio perchè risulterebbe strano de-anonimizzare un address mai visto. Nella fase finale della procedura di analisi quindi sono state considerate queste transazioni così da trovare dei pattern interessanti di possibili Dust Attack di successo; nel paragrafo successivo verranno approfonditi due possibili schemi di Dust Attack.  
+\section{Analisi di Pattern Interessanti}
 In generale è complicato affermare con certezza se un address stia compiendo un Dust Attack, però abbiamo individuato due schemi, con certe proprietà, che rappresentano probabilmente un Dust Attack e sono caratterizzati da alcune proprietà. La proprietà più importante riguarda l'assenza di address nuovi tra gli output dust, proprio perchè è alquanto improbabile tentare di de-anonimizzare un address mai visto fino a quel punto.
 
-Il primo pattern, sintetizzato in \ref{fig:schema1}, risulta molto simile al caso 1PED. Esistono diversi address legati a catena che generano transazioni bi-output. Il secondo output, inviato sempre al solito address, viene speso dall'attaccante per generare transazioni contenenti solo output dust. Inoltre l'attaccante, nell'immagine l'ovale rosso, non compare mai nella catena dei finanziatori, rappresentata dai cerchi azzurri.
+Il primo pattern, sintetizzato in \ref{fig:schema1}, risulta molto simile al caso 1PED. Esistono diversi address legati a catena che generano transazioni bi-output. Il secondo output, inviato sempre al solito address probabilmente l'address di un attaccante, viene speso dall'attaccante per generare transazioni contenenti solo output dust. Inoltre l'attaccante, nell'immagine l'ovale rosso, non compare mai nella catena dei finanziatori, rappresentata dai cerchi azzurri.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/dust_attack1.pdf}
-    \caption{Primo Pattern}
+    \caption{Pattern ``Un finaziatore un attaccante"}
     \label{fig:schema1}
 \end{figure}
 \FloatBarrier
-Altre proprietà importanti di questo pattern sono: fare riferimento ad un unico finanziatore, generare sempre lo stesso numero di output dust, avere sempre il medesimo importo di input e infine tutte esegue le transazioni sono eseguite in un breve intervallo di tempo. Questo schema è stato scoperto tramite l'address $1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm$, finanziato da $1Nj3AsYfhHC4zVv1HHH4FzsYWeZSeVC8vj$. Inoltre sono presenti altri address che seguono lo stesso schema, pagati sempre dallo stesso finanziatore di 1DiRy. Questo significa che il pattern appena enunciato può essere eseguito in parallelo utilizzano diversi address attaccanti. Potrebbero esserci in aggiunta più finanziatori che inviano denaro a più attaccanti. Per esempio questo address $16JLbXYe5xmxGNX8hiqooyTUJnhitNNqTh$ ha ricevuto fondi da $1NPfnbqZAMUnGuNuYwVZdCN4qVzUq4ejG4$, l'aspetto interessante però è che il numero di output dust, l'importo dust inviato, l'importo input speso sono esattamente uguali a quelli usati da 1Diry; questo fatto fa ipotizzare che probabilmente questi address appartengano allo stesso utente. Ovviamente possono esserci eccezioni a questi due esempi trovati, per esempio avere più finanziatori o più attaccanti in una stessa catena, inoltre gli importi e il numero di output dust potrebbero avere una natura più casuale. In generale si potrebbero ipotizzare diverse variazioni di questo pattern, anche se non ne abbiamo verificato la presenza.
+Altre proprietà importanti di questo pattern sono: fare riferimento ad un unico finanziatore, generare sempre lo stesso numero di output dust, avere sempre il medesimo importo di input e infine tutte esegue le transazioni sono eseguite in un breve intervallo di tempo. Questo schema è stato scoperto tramite l'address \textit{1DiRy9Giiq1GCkAD7VMSrXoKVe2dimnovm}, finanziato da \textit{1Nj3AsYfhHC4zVv1HHH4FzsYWeZSeVC8vj}. Inoltre sono presenti altri address che seguono lo stesso schema, pagati sempre dallo stesso finanziatore di $1DiRy$. Questo significa che il pattern appena enunciato può essere eseguito in parallelo utilizzano diversi address attaccanti. Potrebbero esserci in aggiunta più finanziatori che inviano denaro a più attaccanti. Per esempio questo address \textit{16JLbXYe5xmxGNX8hiqooyTUJnhitNNqTh} ha ricevuto fondi da \textit{1NPfnbqZAMUnGuNuYwVZdCN4qVzUq4ejG4}, l'aspetto interessante però è che il numero di output dust, l'importo dust inviato, l'importo input speso sono esattamente uguali a quelli usati da \textit{1Diry}; questo fatto fa ipotizzare che probabilmente questi address appartengano allo stesso utente. Ovviamente possono esserci eccezioni a questi due esempi trovati, per esempio avere più finanziatori o più attaccanti in una stessa catena, inoltre gli importi e il numero di output dust potrebbero avere una natura più casuale. In generale si potrebbero ipotizzare diverse variazioni di questo pattern, anche se non ne abbiamo verificato la presenza.
 
-Il secondo pattern riguarda le transazioni "a catena" del 2013 citate nel paragrafo precedente; questo schema è stato scoperto tramite l'address $1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG$ (rinominato 1JYvv), Ogni address della catena invia centinaia o migliaia di output dust e il resto dell'importo viene inviato al prossimo address che seguirà lo stesso schema. La singolarità di questo modello è che gli address della catena, ad eccezione del primo, vengono utilizzati solo per eseguire quell'unica transazione, non verranno mai più riutilizzati.
+Il secondo pattern riguarda le transazioni "a catena" del 2013 citate nel paragrafo precedente; questo schema è stato scoperto tramite l'address \textit{1JYvvL67LrSGCG77cy4rmpUXCFfSub4JkG} (rinominato \textit{1JYvv}), Ogni address della catena invia centinaia o migliaia di output dust e il resto dell'importo viene inviato al prossimo address che seguirà lo stesso schema. La singolarità di questo modello è che gli address della catena, ad eccezione del primo, vengono utilizzati solo per eseguire quell'unica transazione; non verranno mai più riutilizzati.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{Images/dust_attack2.pdf}
-    \caption{Secondo Pattern}
+    \caption{Pattern ``Un finanziatore più attaccanti"}
     \label{fig:schema2}
 \end{figure}
 \FloatBarrier
-Consideriamo ad esempio l'address A3 della figura \ref{fig:schema2}. A3 riceve un importo da A2 e utilizza parte di questo importo per inviare centinaia o migliaia di output dust, il resto dell'importo, esclusa la fee, viene inviato ad A4 che seguirà il medesimo schema. Questo discorso però non si applica a colui che inizia questo pattern(A1), per esempio l'address 1JYvv ha cominciato una serie di catene con questo modello.
+Consideriamo ad esempio l'address A3 della figura \ref{fig:schema2}. A3 riceve un importo da A2 e utilizza parte di questo importo per inviare centinaia o migliaia di output dust, il resto dell'importo, esclusa la fee, viene inviato ad A4 che seguirà il medesimo schema. Questo discorso però non si applica all'address che inizia questo pattern(A1), per esempio l'address 1JYvv ha cominciato una serie di catene con questo modello.
 
 Potrebbe essere interessante in futuro capire quanti address abbiano seguito schemi di questi tipo e se ci siano altri fini oltre a quello di un possibile Dust Attack.

@@ -32,13 +32,13 @@ Esistono però alcuni casi interessanti di uso del dust, tra questi consideriamo
 \subsection{Satoshi Dice}
 Satoshi Dice è un noto ``gioco di scommesse basato su blockchain" nato nell'Aprile 2012 \cite{SD}. A differenza dei tradizionali software di gioco online, le scommesse con Satoshi Dice possono essere inviate senza accedere al sito Web né eseguire alcun software client. Per giocare, viene effettuata una transazione Bitcoin a uno degli address resi pubblici da Satoshi Dice, caratterizzato da probabilità di vincita e quindi di pagamenti diversi. Tutti gli address resi pubblici da Satoshi Dice sono vanity address.
 
-Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è $1SochiWwFFySPjQoi2biVftXn8NRPCSQC$, che contiene la parola Sochi, città in cui si sono svolte le olimpiadi invernali nel 2014. 
+Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è \textit{1SochiWwFFySPjQoi2biVftXn8NRPCSQC}, che contiene la parola Sochi, città in cui si sono svolte le olimpiadi invernali nel 2014. 
 
-Tutti gli address di Satoshi Dice presentano il prefisso \textbf{1dice}, ogni address presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio l'address $1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY$ offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale.
+Tutti gli address di Satoshi Dice presentano il prefisso \textbf{1dice}, ogni address presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio l'address \textit{1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY} offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale.
 
 Per determinare se una scommessa è vincente o perdente, Satoshi Dice genera un numero casuale, il quale viene assegnato al giocatore. Il servizio successivamente utilizza una combinazione dell'hash della transazione della scommessa ed esegue un hash SHA2 a 512 bit prendendo come input l'hash della transazione e un altro parametro sconosciuto al giocatore. I primi quattro byte dell'output diventano il numero che determina se il giocatore abbia vinto la scommessa.
 
-Il servizio, dopo aver determinato le scommesse vincenti e quelle perdenti, invia una transazione in risposta con il pagamento al vincitore e restituisce un singolo satoshi ai giocatori perdenti per comunicare loro la perdita. Questo significa che Satoshi Dice utilizza il dust, 1 satoshi, per comunicare la perdita di una scommessa.
+Il servizio, dopo aver determinato le scommesse vincenti e quelle perdenti, invia una transazione in risposta con il pagamento al vincitore e restituisce un singolo satoshi ai giocatori perdenti per comunicare loro la perdita. Questo significa che Satoshi Dice utilizza il dust, 1 satoshi, per comunicare la perdita di una scommessa. Nel periodo tra l'Aprile 2012 e Agosto 2017 Satoshi Dice ha generato più di un milione di transazioni in cui invia questi importi dust, questo dimostra la popolarità che ha avuto il servizio.
 \subsection{Dust in OP RETURN}
 Le transazioni in Bitcoin sono molto più complesse \cite{script} di come descritte nel capitolo precedente \ref{Transazioni}, non contengono solo valori come address e importo ma includono anche del codice, in particolare ogni transazione comprende anche degli script che descrivono quali siano le condizioni che devono essere verificate affinchè il destinatario dei bitcoin possa spenderli. 
 
@@ -46,8 +46,8 @@ Bitcoin utilizza un sistema di script Forth-like, basato su stack e non Turing-c
 
 Gli script \cite{opcode} in Bitcoin sono:
 \begin{itemize}
-    \item Senza stato: non esiste uno stato prima dell'esecuzione di uno script né viene salvato dopo l'esecuzione.
-    \item Deterministici: uno script viene eseguito alla stessa maniera in ogni sistema.
+    \item Senza stato: non esiste uno stato prima dell'esecuzione di uno script né lo stato viene salvato dopo l'esecuzione.
+    \item Deterministici: uno script viene eseguito alla stessa maniera in ogni nodo.
     \item Semplici e compatti: le istruzioni, gli OP\_CODE, sono codificate in un singolo byte. In totale ci sono 75 istruzioni funzionanti e 15 disabilitate.
 \end{itemize}
 Gli OP\_CODE in Bitcoin comprendono diverse categorie:
@@ -60,17 +60,15 @@ Gli OP\_CODE in Bitcoin comprendono diverse categorie:
     \item verifica firma o multifirma: OP\_CHECKMULTISIG.
 \end{itemize}
 
-Le transazioni Bitcoin non forniscono un campo dove si possono salvare dati arbitrari \cite{arbdata}. Tuttavia, gli utenti hanno ideato diversi modi creativi per codificare dati arbtrari nelle transazioni, in particolare memorizzando valori arbitrari negli output delle transazioni. Questi metodi però modificavano il protocollo rendendo inspendibili gli output così generati. Il problema è che questi output non erano facilmente distinguibili dagli altri quindi in nodi della rete dovevano salvarli nei loro UTXO.
-
-L'UTXO(Unspent Transaction Output) è l'insieme degli output riscattabili di tutte le transazioni della blockchain. Per essere valida, una transazione deve utilizzare solo elementi dell'UTXO come input.
+Le transazioni Bitcoin non forniscono un campo dove si possono salvare dati arbitrari \cite{arbdata}. Tuttavia, gli utenti hanno ideato diversi modi creativi per codificare dati arbitrari nelle transazioni, in particolare memorizzando valori arbitrari negli output delle transazioni. Questi metodi però modificavano il protocollo rendendo inspendibili gli output così generati. Il problema è che questi output non erano facilmente distinguibili dagli altri quindi in nodi della rete dovevano salvarli nei loro UTXO.
 
 Poiché questo set, per motivi di efficienza, è solitamente memorizzato nella RAM \cite{utxo} questa pratica influiva negativamente sul consumo di memoria dei nodi \cite{stresstest}.
 
-Per risolvere tale problema nel 2014 è stato reso standard il codice OP\_RETURN \cite{opreturnstandard} . Questo OP\_CODE era presente fin dalla nascita di Bitcoin, però era considerato uno script non-standard proprio perchè la scrittura di dati arbitrari sulla blockchain non è stata considerata fin dall'inizio una buona pratica. Questo codice permette di segnare un output della transazione come non valido, quindi successivamente non potrà essere speso.
+Per risolvere tale problema nel 2014 è stato reso standard il codice OP\_RETURN \cite{opreturnstandard} . Questo OP\_CODE era presente fin dalla nascita di Bitcoin e permette di segnare un output della transazione come non valido, quindi successivamente non potrà essere speso. Questo però era considerato uno script non-standard proprio perchè la scrittura di dati arbitrari sulla blockchain non è stata considerata fin dall'inizio una buona pratica.
 
 Poichè gli output con questo OP\_CODE sono contrassegnati come non spendibili, possono essere rimossi dall'UTXO set. In questo modo OP\_RETURN risolve il problema del consumo di memoria spiegato precedentemente. Il limite iniziale per la memorizzazione dei dati con questo codice era pianficato per essere di 80 byte, ma inizialmente ne furono concessi 40 (versione 0.9.0).  La versione 0.11.0 \cite{v11} ha esteso il limite di dati a 80 byte e la versione 0.12.0 \cite{v12} fino a un massimo di 83 byte. Inoltre una transazione standard non può contenere più di un output contenenti OP\_RETURN.
 
-Siccome per scrivere dati arbitrari sulla blockchain è comunque necessario generare una transazione con almeno un output risulta quindi molto più conveniente generare output con importi dust proprio per ridurre al minimo i costi della transazione.
+Poichè per scrivere dati arbitrari sulla blockchain è comunque necessario generare una transazione con almeno un output risulta quindi molto più conveniente generare output con importi dust proprio per ridurre al minimo i costi della transazione.
 
 Come riportato in \cite{OP_RETURN} esistono diversi protocolli che sfruttano OP\_RETURN. Di solito, un protocollo è identificato dai primi byte di metadati allegati all'OP RETURN, ma il numero esatto di byte può variare da protocollo a protocollo. 
 
@@ -81,7 +79,6 @@ Questi protocolli possono essere divisi in categorie tra le quali:
     \item \textbf{Arte digitale}: protocolli per la dichiarazione dei diritti di accesso e di copia di arti digitali, come ad es. foto o musica.
 \end{itemize}
 
-In generale salvare dati sulla blockchain di Bitcoin non è una buona pratica, infatti anche la documentazione ufficiale di Bitcoin sconsiglia questo utilizzo \footnote{Le note di rilascio di  Bitcoin Core versione 0.9.0 affermano che: “Storing arbitrary data in the blockchain is still a bad idea; it is less costly and far more efficient to store non-currency data elsewhere.”}.
 \section{Il Dust Attack}\label{dstatt}
 Come analizzato nel capitolo precedente \ref{Anonimato} esistono delle euristiche che possono essere sfruttate per effettuare determinati attacchi in grado di violare l'anonimato di Bitcoin. L'attacco che verrà approfondito in questa tesi viene denominato \textbf{Dust Attack}. 
 
@@ -91,7 +88,7 @@ L'euristica utilizzata da questo tipo di attacco è la regola degli input multip
 \end{center}
 L'obiettivo del Dust Attack è la de-anonimizzazione del proprietario di un wallet, in particolare l'attaccante vuole scoprire quali address appartengano allo stesso wallet, così da ottenere un'importante informazione che può essere utilizzata per effettuare altri attacchi più elaborati e molto più pericolosi.
 
-Il Dust Attack deriva il proprio nome dall'impiego del dust, infatti il dust, nelle transazioni standard, non è mai speso singolarmente ma viene sempre unito ad altri importi. L'attaccante quindi, come mostrato in figura \ref{fig:Dust_attack}, invia centinaia, o migliaia, di importi dust ad address diversi confidando che vengano spesi successivamente in una nuova transazione insieme ad altri address. Se ciò avviene l'attaccante riesce a collegare questi address e capire che appartengono, con una certa probabilità, allo stesso utente. Gli address a cui viene inviato il dust sono tutti non-nuovi, ovvero address già comparsi in precedenza sulla blockchain. Le transazioni che inviano del dust ad address nuovi  molto probabilmente non rappresentano un Dust Attack, proprio perchè risulterebbe alquanto inusuale de-anonimizzare un address mai visto fino a quel momento; molto probabilmente il proprietario di un address nuovo è lo stesso utente che genera quella determinata transazione poichè è l'unico a conoscenza di quel determinato address.
+Il Dust Attack deriva il proprio nome dall'impiego del dust, infatti il dust, nelle transazioni standard, non è mai speso singolarmente ma viene sempre unito ad altri importi. L'attaccante quindi, come mostrato in figura \ref{fig:Dust_attack}, invia centinaia, o migliaia, di importi dust ad address diversi confidando che vengano spesi successivamente in una nuova transazione insieme ad altri address. Se ciò avviene l'attaccante riesce a collegare questi address e capire che appartengono, con una certa probabilità, allo stesso utente. Gli address a cui viene inviato il dust sono tutti address già comparsi in precedenza sulla blockchain. Le transazioni che inviano del dust ad address nuovi  molto probabilmente non rappresentano un Dust Attack, proprio perchè risulterebbe alquanto inusuale de-anonimizzare un address mai visto fino a quel momento; molto probabilmente il proprietario di un address nuovo è lo stesso utente che genera quella determinata transazione poichè è l'unico a conoscenza di quel determinato address, quindi, nel nostro caso, l'attaccante stesso.
 
 Il Dust Attack ad un primo sguardo potrebbe sembrare particolarmente costoso, proprio perchè invia tanti importi ad address differenti, ma se analizziamo il valore in euro di un singolo satoshi, si può osservare che il costo è relativo; soprattutto se l'obiettivo finale è il furto dei bitcoin delle vittime. Infatti abbiamo che:
 \begin{center}
@@ -106,7 +103,7 @@ Questo significa che 1 singolo satoshi vale meno di 1 centesimo, quindi se un at
     \label{fig:Dust_attack}
 \end{figure}
 \FloatBarrier
-Una volta effettuato l'attacco possono esserci due possibili esiti: 
+Possono esserci due possibili esiti del Dust Attack: 
     \begin{enumerate}
         \item attacco di successo;
         \item attacco fallito;
@@ -124,7 +121,7 @@ Questi address quindi sono collegati tra loro ed è possibile capire che apparte
 \FloatBarrier
 Esistono invece due possibili motivi per cui un Dust Attack può fallire. In figura \ref{fig:fallito} vengono schematizzati questi due possibili esiti.
 
-Nel primo schema la vittima spende il dust ricevuto, ma utilizza una transazione i cui input si riferiscono tutti all'address in cui è stato depositato il dust. In questo caso l'attaccante non ricava alcuna informazione utile perchè non riesce nell'intento di far unire address diversi di un utente nella medesima transazione. Nel secondo schema invece la vittima non spende il dust, troncando sul nascere l'attacco. 
+Nel primo schema la vittima spende il dust ricevuto, ma utilizza una transazione i cui input si riferiscono ad UXTO relativi all'address in cui è stato depositato il dust. In questo caso l'attaccante non ricava alcuna informazione perchè non riesce nell'intento di provocare l'unione di address diversi di un utente nella medesima transazione. Nel secondo schema invece la vittima non spende il dust, troncando sul nascere l'attacco. 
 
 Il Dust Attack in generale risulta più efficace soprattutto se il dust è diretto verso gli address che hanno un bilancio complessivo pari a zero proprio perché obbliga la vittima a spendere la cifra ottenuta con altri suoi address diversi.
 
@@ -134,10 +131,8 @@ Il Dust Attack in generale risulta più efficace soprattutto se il dust è diret
     (a)
     \includegraphics[scale=0.5, trim = 1cm 7cm 0cm 2cm, clip]{Images/fallito1.pdf}
     (b)
-    \caption{Schema di Dust Attack Fallito}
+    \caption{Schema di Dust Attack Fallito. La vittima spende il dust con un solo address(a), la vittima non spende il dust(b)}
     \label{fig:fallito}
-    \subcaption{La vittima spende il dust con un solo address}
-    \subcaption{La vittima non spende il dust}
 \end{figure}
 \FloatBarrier
 
@@ -145,11 +140,13 @@ Il Dust Attack in generale risulta più efficace soprattutto se il dust è diret
 
 In generale il Dust Attack non necessariamente è legato a phishing o estorsioni ma potrebbe essere usato dalle autorità per tenere traccia degli utenti ed eventualmente rilevare attività illegali.
 
-Infatti una volta otteuto un cluster di address riesco a tracciare l'attività di un singolo utente e non più di un singolo address. Le autorità potrebbero notare che certi utenti interagiscono con address legati a mercati neri, e quindi indagare ulteriormente per scoprire l'identità di queste persone. Uno dei punti fondamentali è legare informazioni personali, come e-mail, nome ed altro, ad un address Bitcoin. In molti casi sono gli utenti stessi che pubblicano sui forum i loro address, in altre situazioni invece è possibile sfruttare gli exchange come Coinbase.
+Infatti una volta ottenuto un cluster di address è possibile tracciare l'attività di un singolo utente e non più di un singolo address. Le autorità potrebbero notare che certi utenti interagiscono con address legati a mercati neri, e quindi indagare ulteriormente per scoprire l'identità di queste persone.
+
+Uno dei punti fondamentali è legare informazioni personali, come e-mail, nome ed altro, ad un address Bitcoin. In molti casi sono gli utenti stessi che pubblicano sui forum i loro address, in altre situazioni invece è possibile sfruttare gli exchange come Coinbase.
 
 Gli exchange sono servizi che permettono lo scambio tra criptovalute e valute tradizionali basandosi sul valore di mercato della criptovaluta. In exchange come Coinbase è necessario creare un account fornendo informazioni personali come nome, cognome, email ed altro e, una volta registrati, viene creato un wallet associato a quel particolare account. Poichè gli exchange sono esposti ad attacchi hacker molti utenti trasferiscono i loro bitcoin su address appartenenti a software wallet, per esempio Wasabi Wallet.
 
-Una volta che un utente effettua un deposito dal wallet, vittima di Dust Attack, ad un account exchange ecco che l'attaccante collega gli address al proprietario. Una volta ottenuta l'identità del proprietario l'attaccante può eseguire elaborati attacchi di phishing oppure può estorcere denaro minacciandolo di rivelare a tutti l'informazione ottenuta. 
+Una volta che un utente effettua un deposito dal wallet, vittima di Dust Attack, ad un account exchange l'attaccante può collegare gli address al proprietario. Una volta ottenuta l'identità del proprietario l'attaccante può eseguire elaborati attacchi di phishing oppure può estorcere denaro minacciandolo di rivelare a tutti l'informazione ottenuta. 
 
 Il Dust Attack però non risulta particolarmente difficile da contrastare, nel paragrafo successivo verranno mostrati due metodi per difendersi da questo tipo di attacco.
 \subsection{Contromisure al Dust Attack}
@@ -159,12 +156,8 @@ Due metodi che un utente che ha ricevuto un importo dust può utilizzare per con
         \item utlizzare servizi di ``dust collecting". 
     \end{enumerate}
     
-La prima soluzione, semplice ed efficace, permette di troncare l'attacco sul nascere. Infatti se il dust non viene speso l'attaccante non potrà mai collegare address diversi dello stesso utente. 
-
-Diversi software wallet implementano questo metodo; per esempio Samurai Wallet \footnote{fonte:\url{https://twitter.com/samouraiwallet/status/1055345822076936192?lang=en}}, nel 2018, consigliò ai suoi utenti, possibili vittime di Dust Attack,  di contrassegnare come "do not spend" l'output dust ricevuto.
+La prima soluzione, semplice ed efficace, permette di troncare l'attacco sul nascere. Infatti se il dust non viene speso l'attaccante non potrà mai collegare address diversi dello stesso utente.  Diversi software wallet implementano questo metodo; per esempio Samurai Wallet \footnote{fonte:\url{https://twitter.com/samouraiwallet/status/1055345822076936192?lang=en}}, nel 2018, consigliò ai suoi utenti, possibili vittime di Dust Attack,  di contrassegnare come "do not spend" l'output dust ricevuto.
 
 La seconda soluzione riguarda i servizi di ``dust collecting", per esempio Dust-B-Gone \cite{Dbg}.
-Dust-B-Gone, ideato da Peter Todd già nel 2012, era un servizio che permetteva di disfarsi del dust, non lasciando il dust ricevuto come UTXO, ma trasformandolo in fee per i miner.
-
-Il programma generava un'unica transazione alla quale potevano partecipare più utenti, ogni utente inseriva tra gli input della transazione l'importo dust ricevuto così da potersene liberare. Allo stesso tempo questo servizio proteggeva gli utenti da una possibile de-anonimizzazione, poichè address diversi di una transazione potevano appartenere ad utenti diversi. Un attaccante quindi non avrebbe mai potuto collegare questi address, o comunque ne avrebbe ricavato una falsa informazione.
+Dust-B-Gone, ideato da Peter Todd già nel 2012, era un servizio che permetteva di disfarsi del dust, non lasciando il dust ricevuto come UTXO, ma trasformandolo in fee per i miner. Il programma generava un'unica transazione alla quale potevano partecipare più utenti, ogni utente inseriva tra gli input della transazione l'importo dust ricevuto così da potersene liberare. Allo stesso tempo questo servizio proteggeva gli utenti da una possibile de-anonimizzazione, poichè address diversi di una transazione potevano appartenere ad utenti diversi. Un attaccante quindi non avrebbe mai potuto collegare questi address, o comunque ne avrebbe ricavato una falsa informazione.
 Purtroppo questo servizio è stato chiuso nel 2016 per vari motivi tra cui il suo poco utilizzo \footnote{fonte: \url{https://twitter.com/SamouraiWallet/status/1293659938422652935}} . 
