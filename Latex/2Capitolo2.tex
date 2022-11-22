@@ -1,7 +1,7 @@
 \chapter{Background}
-In questo capitolo verrà descritta la tecnologia alla base di Bitcoin. Particolare attenzione verrà data alla blockchain, la struttura dati che costituisce il libro contabile dove vengono registrate le transazioni, al funzionamento delle transazioni, agli indirizzi. Infine verrà esposta la problematica relativa all'anonimato degli utenti di Bitcoin. 
+In questo capitolo verrà descritta la tecnologia alla base del protocollo Bitcoin. Particolare attenzione verrà data alla blockchain, ossia la struttura dati che costituisce il libro contabile dove vengono registrate le transazioni, al funzionamento delle transazioni e agli indirizzi. Infine verrà esposta la problematica relativa all'anonimato degli utenti di Bitcoin. 
 \section{Funzioni hash}
-Il meccanismo utilizzato da Bitcoin per garatnire l'integrità e l'immutabilità della  blockchain sono le funzioni hash.
+Il meccanismo utilizzato da Bitcoin per garantire l'integrità e l'immutabilità della  blockchain sono le funzioni hash.
 
 Una funzione hash $f$: X $\longrightarrow$ Y è una funzione matematica avente come dominio X e codominio Y, insiemi finiti tali che $|X| >> |Y |$. Tale funzione prende in input elementi di X di lunghezza qualsiasi e produce in output, a prescindere dalla lunghezza dell’input, stringhe binarie di dimensione fissa, i cosiddetti fingerprint, chiamati anche immagini hash o semplicemente hash.
 
@@ -13,7 +13,7 @@ In crittografia si usano alcune famiglie di funzioni hash molto particolari, det
     \item \textbf{Proprietà di claw-free}: Per la funzione f, deve essere computazionalmente difficile determinare due elementi $x_1$ e $x_2 \in$ X, $x_1 \neq x_2$, tali che f ($x_1$) = f ($x_2$). Ciò significa che per una funzione hash crittografica non deve essere possibile trovare praticamente due elementi che collidono.
 \end{enumerate}
 \section{Bitcoin}
-Bitcoin, l’unità monetaria elettronica a cui facciamo riferimento in questa tesi, è stata sviluppata da Satoshi Nakamoto, un misterioso autore giapponese la cui identità resta a tutt'oggi ignota, tanto da indurre molti a pensare che si tratti di uno pseudonimo, o che dietro a tale nome si celi in realtà non una singola persona, ma addirittura un gruppo di ricercatori o di informatici. L’articolo in cui viene presentato l’intero protocollo Bitcoin viene pubblicato nel 2008, sotto il nome di ”Bitcoin: A Peer-to-Peer Electronic Cash System” \cite{nakamoto2008bitcoin}; l'articolo contiene la descrizione dettagliata del protocollo alla base del funzionamento di Bitcoin.
+Bitcoin, l’unità monetaria elettronica a cui facciamo riferimento in questa tesi, è stata sviluppata da Satoshi Nakamoto, un misterioso autore la cui identità resta a tutt'oggi ignota, tanto da indurre molti a pensare che si tratti di uno pseudonimo, o che dietro a tale nome si celi in realtà non una singola persona, ma addirittura un gruppo di ricercatori o di informatici. L’articolo in cui viene presentato l’intero protocollo Bitcoin viene pubblicato nel 2008, sotto il nome di ”Bitcoin: A Peer-to-Peer Electronic Cash System” \cite{nakamoto2008bitcoin}; l'articolo contiene la descrizione dettagliata del protocollo alla base del funzionamento di Bitcoin.
 
 La peculiarità di tale sistema è l’uso di una rete Peer-to-Peer utilizzata per effettuare, diffondere e validare le transazioni. L’intero storico delle transazioni viene mantenuto in un libro contabile distribuito e di pubblica consultazione. La grande e difficile sfida che Bitcoin dunque si pone è quella di coniugare l’anonimato degli utenti con un’alta affidabilità relativamente alle transazioni e alla loro validità e integrità.
 
@@ -142,44 +142,43 @@ Il vantaggio principale di utilizzare l'UTXO set è la sua dimensione molto più
 \FloatBarrier
 In Bitcoin quindi non esiste un saldo memorizzato, il bilancio di un address infatti è calcolato dai Software Wallet. Il wallet calcola il saldo di un address scansionando la blockchain e sommando gli importi di tutti gli UTXO relativi a quel singolo address. Infatti se un address riceve diversi importi, questi non vengono aggregati ma vengono distribuiti all'interno dell'UTXO set. Il bilancio complessivo di un wallet invece non è altro che la somma dei bilanci dei singoli address appartenenti a quel wallet. 
 Non è possibile conoscere il saldo complessivo di un utente proprio perchè non sanno quali address appartengano ad un determinato wallet, esistono tuttavia delle tecniche e delle euristiche che permettono non solo di conoscere gli address di un wallet ma consentono anche di conoscere le informazioni personali del proprietario.
+
 \section{Anonimato in Bitcoin}\label{Anonimato}
-L'anonimato in Bitcoin dovrebbe garantire l'impossibilità di collegare address differenti, ovvero capire che appartengano ad uno stesso utente, e di scoprire l'identità di un proprietario di un wallet.
+Garantire l'anonimato in Bitcoin vuol dire l'impossibilità di collegare address differenti, ovvero capire che appartengano ad uno stesso utente, e di scoprire l'identità dei proprietari degli address o di un wallet.
 
-Nel protocollo Bitcoin in realtà si parla di pseudo-anonimato, infatti ogni utente utlizza degli pseudonimi, inviando e spendendo bitcoin tramite un numero arbitrario di address che non contengono informazioni sulla sua identità; per questo Bitcoin non viene definito anonimo ma pseudo-anonimo; esistono infatti diversi attacchi che permettono di violare l'anonimato di Bitcoin \cite{de-anonimizzazione} \cite{de-anon2}.
+Nel protocollo Bitcoin, però, è solo garantito lo pseudo-anonimato, infatti ogni utente utlizza degli pseudonimi, inviando e spendendo bitcoin tramite un numero arbitrario di address che non contengono informazioni sulla sua identità. Per questo Bitcoin non viene definito anonimo ma pseudo-anonimo, ed esistono diversi attacchi mirati a violare l'anonimato di Bitcoin \cite{de-anonimizzazione, de-anon2}.
 
-Uno di questi attacchi si basa sull'analisi delle transazioni salvate sulla blockchain che, come ricordiamo, è pubblica e immutabile. Lo scopo di questo attacco è di aggregare address differenti in cluster, ciascuno rappresentante un singolo utente, utilizzando le informazioni memorizzate nella blockchain. Una volta ottenuti questi cluster, se è poi possibile utilizzare informazioni esterne per identificare anche un solo address del cluster è quindi possibile identificare il proprietario di un singolo cluster. 
+Uno di questi attacchi si basa sull'analisi delle transazioni salvate sulla blockchain che, come ricordiamo, è pubblicamente leggibile ed immutabile. Lo scopo di questo attacco è di aggregare address differenti in cluster, ciascuno rappresentante un singolo utente, utilizzando le sole informazioni memorizzate nella blockchain. Una volta ottenuti questi cluster, se è poi possibile utilizzare informazioni esterne per identificare anche un solo address del cluster è quindi possibile identificare il proprietario di tutti gli address contenuti in quel cluster. 
 
 Per formare questi cluster vengono utilizzate delle euristiche basate sul comportamento degli utenti di Bitcoin, queste regole quindi dipendono dal tempo e non sono assolute. 
 
 Le due euristiche più utilizzate sono:
-\begin{enumerate}
-    \item \textbf{inputs multipli};
-    \item \textbf{change address}.
-\end{enumerate}
+\begin{itemize}
+    \item \textbf{inputs multipli}
+    \item \textbf{change address}
+\end{itemize}
 
 La prima euristica si può definire nel seguente modo:
 \begin{center}
-    ``\textit{In una transazione multi-input tutti gli address riferiti in input appartengono allo stesso utente}"
+    ``\textit{In una transazione multi-input tutti gli address degli input spesi appartengono allo stesso utente}"
 \end{center}
 
-Infatti ogni input di una transazione deve essere firmato, questo significa che per firmare la transazione sono necessarie le chiavi private di ciascun input. Questo implica che il firmatario conosca tutte le chiavi private oppure sia il proprietario di tutti gli address di input. Questa prima semplice euristica è stata utilizzata con successo in passato ma non è più valida per tutte le transazioni. La prima contromisura proposta è stata CoinJoin \cite{coinjoin} nel 2013, l'idea principale è che un insieme di utenti si incontri e crei collettivamente una singola transazione utilizzando i loro address. In questo caso si potrebbe generare quindi un falso positivo della regola euristica appena enunciata, infatti gli address di input in questo caso non appartengono ad un unico utente.
+Infatti ogni input di una transazione deve essere firmato, questo significa che per firmare la transazione sono necessarie le chiavi private di ciascun input. Questo implica che il firmatario conosca tutte le chiavi private, e quindi sia il proprietario di tutti gli address di input. Questa prima semplice euristica è stata utilizzata con successo in passato ma non è più valida per tutte le transazioni. Una famosa contromisura proposta è stata CoinJoin \cite{coinjoin} nel 2013, l'idea principale è che un insieme di utenti cooperi nel creare collettivamente una singola transazione utilizzando i loro address. In questo caso si potrebbe generare quindi un falso positivo della regola euristica appena enunciata, infatti gli address di input in questo caso non appartengono ad un unico utente.
 
 La seconda euristica si può enunciare come segue: 
 \begin{center}
     ``\textit{il change address appartiene allo stesso proprietario degli address di input}"
 \end{center}
 
-Il problema principale di questa regola è capire quali degli address di output sia il change address, escludendo il caso di ''self change", ovvero quando il change address è uno degli address di input. 
-
-Un address $a$ viene definito change address se e solo se:
+Il problema principale di questa regola è capire quale degli address di output sia il change address, escludendo il caso di ``self change", ovvero quando il change address è uno degli address di input. Una regola spesso usata per risolvere tale problema è la seguente, \emph{un address $a$ viene definito change address se e solo se:}
 \begin{itemize}
     \item la transazione non è coinbase;
     \item è presente più di un output;
-    \item negli address di output non è presente alcun address di input(niente ''self change");
+    \item negli address di output non è presente alcun address di input(niente ``self change");
     \item è la prima volta che $a$ appare nella blockchain e non ci sono altri address di output che soddisfano questa condizione.
 \end{itemize}
 
-L'attacco che verrà analizzato in questa tesi, denominato \textbf{Dust Attack}, basa la propria strategia sulla prima euristica, in particolare l'attaccante agisce in modo che le vittime generino transazioni multi-input così da poter formare un cluster di address appartenenti ad un unico utente.
+L'attacco che verrà analizzato in questa tesi, denominato \textbf{Dust Attack}, è una forma di attacco all'anonimato e basa la propria strategia sulla prima euristica. In particolare l'attaccante agisce in modo che le vittime generino transazioni multi-input così da poter formare un cluster di address appartenenti ad un unico utente.
 
 
 
