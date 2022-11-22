@@ -1,26 +1,28 @@
 \chapter{Il Dust Attack}
 Tra i molteplici attacchi all'anonimato di Bitcoin, un attacco interessante è il Dust Attack. Il Dust Attack è una nota tecnica di de-anonimizzazione il cui obiettivo è capire che certi address appartengano al medesimo wallet.
 
-Gli obiettivi principali di questa tesi sono quindi:
+In questa tesi:
 \begin{itemize}
-\item Definire il Dust Attack, spiegandone le conseguenze e le possibili contromisure;
-    \item Presentare delle statistiche generali su come venga speso il dust, in particolare mostrare se e quanto possa essere efficace un Dust Attack mostrando gli effetti del dust sulla de-anonimizzazione degli address e dei relativi wallet;
-    \item Descrivere alcuni pattern interessanti che sono stati individuati e che potrebbero essere messi in relazione con il  Dust Attack.
+\item Definiremo il concetto di dust;
+    \item Presenteremo le modalità più comuni con cui viene speso il dust, in particolare analizzeremo se e quanto possa essere efficace un Dust Attack mostrando gli effetti del dust sulla de-anonimizzazione degli address e dei relativi wallet;
+    \item Descriveremo alcuni pattern interessanti che sono stati individuati e che potrebbero essere messi in relazione con il  Dust Attack.
 \end{itemize}
 
-Siccome il Dust Attack sfrutta l'utilizzo degli importi dust, è importante quindi spiegare cosa sia il dust e in generale quali possano essere i suoi possibili impieghi.
+Poichè il Dust Attack sfrutta l'utilizzo degli importi dust, è importante quindi spiegare inizialmente cosa sia il dust e in generale quali possano essere i suoi possibili impieghi.
 \section{Definizione del dust}
+Il dust è una piccola quantità di criptovaluta presente in un UTXO sotto i limiti minimi di scambio. Per definire il valore del dust è necessario fare alcune considerazioni.
+
 Nelle transazioni di Bitcoin generalmente l'importo totale di input non viene speso completamente in output ma parte di esso viene inviato ai miners come fee. Formalmente la fee di una transazione, raccolta dai miners come ricompensa per includere la transazione in un blocco, è definita come:
 \begin{center}
     $fee = \sum_{i=0}^{\#inputs} importo(input_i) - \sum_{j=0}^{\#outputs} importo(output_i)$
 \end{center}
-La fee quindi non è altro che la differenza tra l'importo totale di input e l'importo totale di output, assume valori $\ge 0$. In generale la fee viene stabilita autonomamente dal creatore della transazione per incentivare i miners a validare la transazione stessa. 
+La fee quindi non è altro che la differenza tra l'importo totale di input e l'importo totale di output, e assume valori $\ge 0$. In generale la fee viene stabilita autonomamente dal creatore della transazione per incentivare i miners a validare la transazione stessa. 
 
-Tuttavia, per convenzione, esiste una fee minima, denominata \textit{minimum relay fee}, che una transazione deve pagare affinchè un nodo inoltri quella transazione agli altri nodi della rete. Questo valore non è prefissato e quindi può variare nel tempo. 
+Tuttavia, per convenzione, esiste una fee minima, denominata \textit{minimum relay fee}, che una transazione deve pagare affinchè un qualsiasi nodo della rete peer-to-peer inoltri quella transazione agli altri nodi della rete. Questo valore non è prefissato e quindi può variare nel tempo. 
 
 Nel client ufficiale, Bitcoin Core \cite{btccore}, esiste una convenzione, definita ``dust limit", introdotto per le transazioni standard, cioè quelle transazioni che i nodi sono suggeriti accettare e reinviare.
 
-Lo scopo è quello di considerare non-standard le transazioni che generano degli output dust proprio perchè costerebbe di più per il destinatario spendere l'importo dust rispetto al valore dell'output creato. Infatti un importo dust non può essere speso singolarmente, poichè $<$ della \textit{minimum relay fee}, perciò deve essere aggregato ad altri input.
+Lo scopo è quello di considerare non-standard le transazioni che generano solo degli output dust proprio perchè costerebbe di più per il destinatario spendere l'importo dust rispetto al valore dell'output creato. Infatti un importo dust non può essere speso singolarmente, poichè $<$ della \textit{minimum relay fee}, perciò deve essere aggregato ad altri input.
 
 Il limite attuale è di 546 satoshi \cite{BtcDev}. Quindi tutti gli importi $<$ 546 satoshi sono definiti \textbf{dust}.
 \section{Possibili utilizzi del dust}
@@ -30,13 +32,13 @@ Esistono però alcuni casi interessanti di uso del dust, tra questi consideriamo
 \subsection{Satoshi Dice}
 Satoshi Dice è un noto ``gioco di scommesse basato su blockchain" nato nell'Aprile 2012 \cite{SD}. A differenza dei tradizionali software di gioco online, le scommesse con Satoshi Dice possono essere inviate senza accedere al sito Web né eseguire alcun software client. Per giocare, viene effettuata una transazione Bitcoin a uno degli address resi pubblici da Satoshi Dice, caratterizzato da probabilità di vincita e quindi di pagamenti diversi. Tutti gli address resi pubblici da Satoshi Dice sono vanity address.
 
-Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è 1BoatSLRHtKNngkdXEeobR76b53LETtpyT, che contiene la parola Boat, barca tradotto in italiano. 
+Un vanity address in generale è un address Bitcoin con le stesse funzionalità di qualsiasi altro address ma presenta una stringa personalizzata contenente una parola o un messaggio comprensibili alle persone. Un esempio di vanity address è $1SochiWwFFySPjQoi2biVftXn8NRPCSQC$, che contiene la parola Sochi, città in cui si sono svolte le olimpiadi invernali nel 2014. 
 
-Tutti gli address di Satoshi Dice presentano il prefisso \textbf{1dice}, ogni address presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio l'address 1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale.
+Tutti gli address di Satoshi Dice presentano il prefisso \textbf{1dice}, ogni address presenta probabilità diverse di vincere la scommessa, generalmente minore è la probabilità maggiore è il compenso che si ottiene da una vincita. Per esempio l'address $1dice1e6pdhLzzWQq7yMidf6j8eAg7pkY$ offre una probabilità dello 0,0015\% di vincere 64 000 volte la puntata originale.
 
-Per determinare se una scommessa è vincente o perdente, Satoshi Dice genera un numero casuale, il quale viene assegnato al giocatore. Il servizio successivamente utilizza una combinazione dell'hash della transazione della scommessa ed esegue un hash SHA2 a 512 bit prendendo come input l'hash della transazione utilizzando un segreto sconosciuto al giocatore. I primi quattro byte dell'output diventano il numero che determina se il giocatore abbia vinto la scommessa.
+Per determinare se una scommessa è vincente o perdente, Satoshi Dice genera un numero casuale, il quale viene assegnato al giocatore. Il servizio successivamente utilizza una combinazione dell'hash della transazione della scommessa ed esegue un hash SHA2 a 512 bit prendendo come input l'hash della transazione e un altro parametro sconosciuto al giocatore. I primi quattro byte dell'output diventano il numero che determina se il giocatore abbia vinto la scommessa.
 
-Il servizio, dopo aver determinato le scommesse vincenti e quelle perdenti, invia una transazione in risposta con il pagamento al vincitore e restituisce un sinoglo satoshi ai giocatori perdenti per comunicare loro la perdita. Questo significa che Satoshi Dice utilizza il dust, 1 satoshi, per comunicare la perdita di una scommessa.
+Il servizio, dopo aver determinato le scommesse vincenti e quelle perdenti, invia una transazione in risposta con il pagamento al vincitore e restituisce un singolo satoshi ai giocatori perdenti per comunicare loro la perdita. Questo significa che Satoshi Dice utilizza il dust, 1 satoshi, per comunicare la perdita di una scommessa.
 \subsection{Dust in OP RETURN}
 Le transazioni in Bitcoin sono molto più complesse \cite{script} di come descritte nel capitolo precedente \ref{Transazioni}, non contengono solo valori come address e importo ma includono anche del codice, in particolare ogni transazione comprende anche degli script che descrivono quali siano le condizioni che devono essere verificate affinchè il destinatario dei bitcoin possa spenderli. 
 
