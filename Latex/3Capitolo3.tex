@@ -70,7 +70,14 @@ Poiché questo set, per motivi di efficienza, é solitamente memorizzato nella R
 
 Per risolvere tale problema a partire dal 2014 é stato reso standard il codice OP\_RETURN \cite{opreturnstandard}. Questo OP\_CODE era presente fin dalla nascita di Bitcoin e permette di segnare un output della transazione come non valido, quindi successivamente non potrà essere speso. Questo però era considerato uno script non-standard proprio perché la scrittura di dati arbitrari sulla blockchain non é stata considerata fin dall'inizio una buona pratica.
 
-Poiché gli output con questo OP\_CODE sono contrassegnati come non spendibili, possono essere rimossi dall'UTXO set. In questo modo OP\_RETURN risolve il problema del consumo di memoria spiegato precedentemente. Il limite iniziale per la memorizzazione dei dati con questo codice era pianificato essere di 80 byte, ma inizialmente ne furono concessi 40 (versione 0.9.0).  La versione 0.11.0 \cite{v11} ha esteso il limite di dati a 80 byte e la versione 0.12.0 \cite{v12} fino a un massimo di 83 byte. Inoltre una transazione standard non può contenere più di un output contenenti OP\_RETURN.
+Poiché gli output con questo OP\_CODE sono contrassegnati come non spendibili, possono essere rimossi dall'UTXO set. In questo modo OP\_RETURN risolve il problema del consumo di memoria spiegato precedentemente. Il limite iniziale per la memorizzazione dei dati con questo codice era pianificato essere di 80 byte, ma inizialmente ne furono concessi 40 (versione 0.9.0).  La versione 0.11.0 \cite{v11} ha esteso il limite di dati a 80 byte e la versione 0.12.0 \cite{v12} fino a un massimo di 83 byte. Inoltre una transazione standard non può contenere più di un output contenenti OP\_RETURN, la figura \ref{opreturnn} mostra un esempio di un output generato con questo script.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5, trim = 1cm 8cm 0cm 3cm, clip]{Images/opreturnn.pdf}
+    \caption{Esempio di output con OP\_RETURN}
+    \label{fig:opreturnn}
+\end{figure}
+\FloatBarrier
 
 Poiché per scrivere dati arbitrari sulla blockchain é comunque necessario generare una transazione con almeno un output risulta quindi molto più conveniente generare output con importi dust per ridurre al minimo i costi della transazione.
 
